@@ -22,6 +22,8 @@ import java.io.FileOutputStream;
 
 public class SavingUtility {
     public static final String folderName = "GHiO-CA";
+    public static final String folderPath = Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_PICTURES).getAbsolutePath() + "/" + folderName;
 
     public static boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
