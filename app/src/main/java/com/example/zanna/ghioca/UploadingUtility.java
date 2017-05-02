@@ -1,16 +1,8 @@
 package com.example.zanna.ghioca;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.URL;
 
 import io.filepicker.Filepicker;
 import io.filepicker.FilepickerCallback;
@@ -24,18 +16,20 @@ import io.filepicker.models.FPFile;
 
 public class UploadingUtility {
 
-    public static void uploadToServer(String path, final Context context) {
+    public static void uploadToServer(String path, final Context context, final UploadingListener listener) {
         Log.i("provaupload", "5");
         Filepicker.uploadLocalFile(Uri.parse(path), context, new FilepickerCallback() {
             @Override
             public void onFileUploadSuccess(final FPFile fpFile) {
                 Log.i("provaupload", "6");
-                Toast.makeText(context, fpFile.getUrl(), Toast.LENGTH_LONG).show();
+                listener.onFinish(fpFile.getUrl());
+                /*Toast.makeText(context, fpFile.getUrl(), Toast.LENGTH_LONG).show();
 
 
                     new AsyncTask<Void, Void, Void>() {
                         URLSearcher searcher = null;
                         JSONObject res = null;
+
                         @Override
                         protected Void doInBackground(Void... params) {
                             try {
@@ -58,18 +52,17 @@ public class UploadingUtility {
                                 e.printStackTrace();
                             }
                         }
-                    }.execute(null, null, null);
+                    }.execute(null, null, null);*/
             }
 
             @Override
             public void onFileUploadError(Throwable error) {
-                error.printStackTrace();
-                Log.i("provaupload", "8 " + error.toString());
+                listener.onFailure(error);
             }
 
             @Override
             public void onFileUploadProgress(Uri uri, float progress) {
-                Log.i("provaupload", uri.toString() + " " + progress);
+                listener.onProgressUpdate(Math.round(progress));
             }
         });
     }

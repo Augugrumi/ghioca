@@ -1,5 +1,7 @@
 package com.example.zanna.ghioca;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +12,9 @@ import android.widget.ImageButton;
 import com.flurgle.camerakit.CameraKit;
 import com.flurgle.camerakit.CameraListener;
 import com.flurgle.camerakit.CameraView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.sql.Timestamp;
 
@@ -81,35 +86,72 @@ public class MainActivity extends AppCompatActivity {
                 super.onPictureTaken(jpeg);
                 new AsyncTask<Void, Void, Void>(){
 
+                    ProgressDialog uploadProgressDialog;
+                    AlertDialog resultDialog;
+                    SearchingListener searchingListener;
+                    UploadingListener uploadingListener;
+
+                    @Override
+                    protected void onPreExecute() {
+                        uploadProgressDialog = new ProgressDialog(MainActivity.this,
+                                ProgressDialog.STYLE_HORIZONTAL);
+                        uploadProgressDialog.setCancelable(false);
+                        uploadProgressDialog.setTitle("Uploading the image");
+                        uploadProgressDialog.show();
+
+                        resultDialog = new AlertDialog.Builder(MainActivity.this).create();
+                        resultDialog.setTitle("Result");
+
+
+                        uploadingListener = new UploadingListener() {
+                            @Override
+                            public void onProgressUpdate(int progress) {
+                                uploadProgressDialog.setProgress(progress);
+                            }
+
+                            @Override
+                            public void onFinish(String url) {
+                                uploadProgressDialog.dismiss();
+                                SearchingUtility.searchImage(url, searchingListener);
+                            }
+
+                            @Override
+                            public void onFailure(Throwable error) {
+                                error.printStackTrace();
+                                uploadProgressDialog.dismiss();
+                            }
+                        };
+
+                        searchingListener = new SearchingListener() {
+                            @Override
+                            public void onFailure(Throwable error) {
+                                error.printStackTrace();
+                                resultDialog.dismiss();
+                            }
+
+                            @Override
+                            public void onSuccess(JSONObject answer) {
+                                try {
+                                    resultDialog.setMessage(answer.getString("best_guess"));
+                                    resultDialog.show();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+                    }
+
                     @Override
                     protected Void doInBackground(Void... params) {
                         Log.i("provaupload", "1");
                         name = photoName();
                         Log.i("provaupload", "2");
                         SavingUtility.saveFile(jpeg, name, MainActivity.this);
-
-                        /*String url = "";
-                        try {
-                            final String response = PostUtility.postRequest(url, jpeg);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(MainActivity.this, response, Toast.LENGTH_LONG);
-                                }
-                            });
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }*/
-
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Void aVoid) {
                         Log.i("provaupload", "3");
                         UploadingUtility.uploadToServer("file://" + folderPath
-                                + "/" + name, MainActivity.this);
+                                + "/" + name, MainActivity.this, uploadingListener);
                         Log.i("provaupload", "4");
+                        return null;
                     }
                 }.execute(null, null, null);
             }
