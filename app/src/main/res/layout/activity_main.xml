@@ -16,21 +16,33 @@
                 android:layout_width="368dp"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true" />
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true">
+            <Button android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pick a file"
+                    android:id="@+id/pick_file"
+                    android:layout_alignParentBottom="true"/>
 
-        <LinearLayout android:layout_height="wrap_content"
-                      android:layout_width="368dp"
-                      android:layout_alignParentBottom="true">
-            <ImageButton android:id="@+id/btn_flash"
-                         android:src="@drawable/ic_flash_on"
-                         android:layout_weight="1.01"
-                         android:layout_height="wrap_content"
-                         android:layout_width="0dp"/>
-            <ImageButton android:id="@+id/btn_camera"
-                         android:src="@drawable/ic_add_a_photo"
-                         android:layout_weight="1"
-                         android:layout_height="wrap_content"
-                         android:layout_width="0dp"/>
-        </LinearLayout>
+            <LinearLayout android:layout_height="wrap_content"
+                          android:layout_width="match_parent"
+                          android:layout_above="@+id/pick_file"
+                          android:id="@+id/button_layout">
+                <ImageButton android:id="@+id/btn_flash"
+                             android:src="@drawable/ic_flash_on"
+                             android:layout_weight="1.01"
+                             android:layout_height="wrap_content"
+                             android:layout_width="0dp"/>
+                <ImageButton android:id="@+id/btn_camera"
+                             android:src="@drawable/ic_add_a_photo"
+                             android:layout_weight="1"
+                             android:layout_height="wrap_content"
+                             android:layout_width="0dp"/>
+            </LinearLayout>
+
+
+        </RelativeLayout>
     </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.example.zanna.ghioca;
 
 import android.app.Application;
+import android.content.Context;
 
 /**
  * @author Marco Zanella
@@ -10,10 +11,16 @@ import android.app.Application;
 
 public class MyApplication extends Application {
 
+    private static Context instance;
     public static String MY_API_KEY = "AkHqkinKScahBDKyXuqzQz";
 
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
+    }
+
+    public static Context getAppContext() {
+        return instance;
     }
 }
