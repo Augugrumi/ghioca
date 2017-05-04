@@ -31,8 +31,7 @@ public class AsyncUploadAndSave extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPreExecute() {
-        uploadProgressDialog = new ProgressDialog(activity,
-                ProgressDialog.STYLE_HORIZONTAL);
+        uploadProgressDialog = new ProgressDialog(activity);
         uploadProgressDialog.setCancelable(false);
         uploadProgressDialog.setTitle("Uploading the image");
         uploadProgressDialog.show();
@@ -70,7 +69,10 @@ public class AsyncUploadAndSave extends AsyncTask<String, Void, Void> {
             @Override
             public void onSuccess(JSONObject answer) {
                 try {
-                    resultDialog.setMessage(answer.getString("best_guess"));
+                    String s = "No results found";
+                    if (answer != null)
+                        answer.getString("best_guess");
+                    resultDialog.setMessage(s);
                     resultDialog.show();
                 } catch (JSONException e) {
                     e.printStackTrace();
