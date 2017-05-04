@@ -3,7 +3,7 @@ package com.example.zanna.ghioca;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import it.polpetta.libris.google.GoogleAbstractFactory;
+import it.polpetta.libris.ReverseImageSearch;
 import it.polpetta.libris.google.imageSearch.SearchResult;
 
 import org.json.JSONObject;
@@ -24,7 +24,8 @@ public class SearchingUtility {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    SearchResult result = new GoogleAbstractFactory()
+                    SearchResult result = ReverseImageSearch
+                            .getGoogleServices()
                             .imageSearchBuildQuery()
                             .setPhoto(new URL(url))
                             .runQuery()
