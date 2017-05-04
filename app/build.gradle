@@ -31,5 +31,4 @@ dependencies {
     compile 'com.flurgle:camerakit:0.9.17'
     compile 'io.filepicker:filepicker-android:3.9.0'
     compile 'org.jsoup:jsoup:1.7.2'
-    compile files('libs/libris-0.1.1.jar')
 }

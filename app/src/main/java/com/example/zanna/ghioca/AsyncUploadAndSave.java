@@ -69,9 +69,9 @@ public class AsyncUploadAndSave extends AsyncTask<String, Void, Void> {
             @Override
             public void onSuccess(JSONObject answer) {
                 try {
-                    String s = "No results found";
-                    if (answer != null)
-                        answer.getString("best_guess");
+                    String s = answer.getString("best_guess");
+                    if (s == null)
+                        s = "No result found";
                     resultDialog.setMessage(s);
                     resultDialog.show();
                 } catch (JSONException e) {
