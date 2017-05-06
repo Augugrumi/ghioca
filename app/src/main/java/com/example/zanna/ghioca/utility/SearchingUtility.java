@@ -1,7 +1,9 @@
-package com.example.zanna.ghioca;
+package com.example.zanna.ghioca.utility;
 
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.example.zanna.ghioca.listener.SearchingListener;
 
 import it.polpetta.libris.ReverseImageSearch;
 import it.polpetta.libris.google.imageSearch.SearchResult;

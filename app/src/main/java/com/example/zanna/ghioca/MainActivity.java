@@ -1,6 +1,9 @@
 package com.example.zanna.ghioca;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,10 +12,14 @@ import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.zanna.ghioca.listener.UploadingListener;
+import com.example.zanna.ghioca.utility.SavingUtility;
+import com.example.zanna.ghioca.utility.UploadingUtility;
 import com.github.florent37.camerafragment.CameraFragment;
 import com.github.florent37.camerafragment.CameraFragmentApi;
 import com.github.florent37.camerafragment.configuration.Configuration;
@@ -35,7 +42,6 @@ import butterknife.OnClick;
 import io.filepicker.Filepicker;
 
 import static com.example.zanna.ghioca.MyApplication.MY_API_KEY;
-import static org.bouncycastle.asn1.ua.DSTU4145NamedCurves.params;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -82,9 +88,9 @@ public class MainActivity extends AppCompatActivity {
         if (!permissionsToRequest.isEmpty()) {
             ActivityCompat.requestPermissions(this, permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
         } else addCamera();
+
         // TODO -> put in more appropriate place
         Filepicker.setKey(MY_API_KEY);
-        //SavingUtility.runTimePermissionAcquirement(this);
     }
 
     @OnClick(R.id.flash_switch_view)
@@ -112,11 +118,10 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onPhotoTaken(final byte[] bytes, String filePath) {
                     Toast.makeText(getBaseContext(), "onPhotoTaken " + filePath, Toast.LENGTH_SHORT).show();
-                    
+
                     new AsyncTask<Void, Void, Void>(){
                         @Override
                         protected Void doInBackground(Void... params) {
-                            //SavingUtility.saveFile(bytes, name + ".jpeg", MainActivity.this);
                             boolean b = false;
                             File f;
                             while (!b) {
@@ -128,15 +133,47 @@ public class MainActivity extends AppCompatActivity {
                                 f = new File(SavingUtility.folderPath, name + ".jpg");
                                 b = f.exists();
                             }
-
                             return null;
                         }
 
                         @Override
                         protected void onPostExecute(Void aVoid) {
-                            new AsyncUploadAndSave()
-                                    .setContextActivity(MainActivity.this)
-                                    .execute(SavingUtility.folderPath + File.separator + name + ".jpg", null, null);
+                            final ProgressDialog uploadProgressDialog;
+                            uploadProgressDialog = new ProgressDialog(MainActivity.this);
+                            uploadProgressDialog.setCancelable(false);
+                            uploadProgressDialog.setTitle("Uploading the image");
+                            uploadProgressDialog.show();
+                            UploadingListener listener = new UploadingListener() {
+
+                                @Override
+                                public void onProgressUpdate(int progress) {
+                                    uploadProgressDialog.setProgress(progress);
+                                }
+
+                                @Override
+                                public void onFinish(String url) {
+                                    uploadProgressDialog.dismiss();
+                                    Intent intent = new Intent(MainActivity.this, ResultActivity.class);
+                                    intent.putExtra("url", url);
+                                    intent.putExtra("path", SavingUtility.folderPath +
+                                            File.separator + name + ".jpg");
+                                    startActivity(intent);
+                                }
+
+                                @Override
+                                public void onFailure(Throwable error) {
+                                    uploadProgressDialog.dismiss();
+                                    AlertDialog errorDialog;
+                                    errorDialog = new AlertDialog.Builder(MainActivity.this).create();
+                                    errorDialog.setCancelable(true);
+                                    errorDialog.setTitle("Error");
+                                    errorDialog.setMessage("An error occur during the uploading please try again");
+                                    errorDialog.show();
+                                }
+                            };
+                            Log.i("provaupload", SavingUtility.folderPath + File.separator + name + ".jpg");
+                            UploadingUtility.uploadToServer("file://" + SavingUtility.folderPath +
+                                File.separator + name + ".jpg", MainActivity.this, listener);
                         }
                     }.execute(null, null, null);
                 }

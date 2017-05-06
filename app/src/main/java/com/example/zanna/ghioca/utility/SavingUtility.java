@@ -1,4 +1,4 @@
-package com.example.zanna.ghioca;
+package com.example.zanna.ghioca.utility;
 
 import android.Manifest;
 import android.app.Activity;
@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
  * @since 0.01
  */
 
+//TODO save constants on application class and delete this class -> camera library even save the files
 public class SavingUtility {
     public static final String folderName = "GHiO-CA";
     public static final String folderPath = Environment.getExternalStoragePublicDirectory(
