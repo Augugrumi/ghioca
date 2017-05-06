@@ -31,12 +31,16 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
     compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
     compile 'com.flurgle:camerakit:0.9.17'
     compile 'io.filepicker:filepicker-android:3.9.0'
     compile 'org.jsoup:jsoup:1.7.2'
     compile "org.java-websocket:java-websocket:1.3.3"
     compile 'com.github.Polpetta:libris:v0.1.1'
+    compile 'com.github.florent37:camerafragment:1.0.5'
+    compile 'com.jakewharton:butterknife:7.0.1'
+
+    testCompile 'junit:junit:4.12'
 }
