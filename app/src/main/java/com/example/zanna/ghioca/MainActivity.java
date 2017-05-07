@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.zanna.ghioca.listener.UploadingListener;
-import com.example.zanna.ghioca.utility.SavingUtility;
 import com.example.zanna.ghioca.utility.UploadingUtility;
 import com.github.florent37.camerafragment.CameraFragment;
 import com.github.florent37.camerafragment.CameraFragmentApi;
@@ -130,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
-                                f = new File(SavingUtility.folderPath, name + ".jpg");
+                                f = new File(MyApplication.appFolderPath, name + ".jpg");
                                 b = f.exists();
                             }
                             return null;
@@ -155,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                                     uploadProgressDialog.dismiss();
                                     Intent intent = new Intent(MainActivity.this, ResultActivity.class);
                                     intent.putExtra("url", url);
-                                    intent.putExtra("path", SavingUtility.folderPath +
+                                    intent.putExtra("path", MyApplication.appFolderPath +
                                             File.separator + name + ".jpg");
                                     startActivity(intent);
                                 }
@@ -171,13 +170,13 @@ public class MainActivity extends AppCompatActivity {
                                     errorDialog.show();
                                 }
                             };
-                            Log.i("provaupload", SavingUtility.folderPath + File.separator + name + ".jpg");
-                            UploadingUtility.uploadToServer("file://" + SavingUtility.folderPath +
+                            Log.i("provaupload", MyApplication.appFolderPath + File.separator + name + ".jpg");
+                            UploadingUtility.uploadToServer("file://" + MyApplication.appFolderPath +
                                 File.separator + name + ".jpg", MainActivity.this, listener);
                         }
                     }.execute(null, null, null);
                 }
-            }, SavingUtility.folderPath, name);
+            }, MyApplication.appFolderPath, name);
         }
     }
 

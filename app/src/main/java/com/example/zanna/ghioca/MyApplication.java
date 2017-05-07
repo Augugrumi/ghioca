@@ -1,7 +1,7 @@
 package com.example.zanna.ghioca;
 
 import android.app.Application;
-import android.content.Context;
+import android.os.Environment;
 
 /**
  * @author Marco Zanella
@@ -11,10 +11,12 @@ import android.content.Context;
 
 public class MyApplication extends Application {
 
-    private static Context instance;
-    public static String MY_API_KEY = "AkHqkinKScahBDKyXuqzQz";
-
-    @Override
+    //private static Context instance;
+    public static final String MY_API_KEY = "AkHqkinKScahBDKyXuqzQz";
+    public static final String appFolderName = "GHiO-CA";
+    public static final String appFolderPath = Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_PICTURES).getAbsolutePath() + "/" + appFolderName;
+    /*@Override
     public void onCreate() {
         super.onCreate();
         instance = this;
@@ -22,5 +24,5 @@ public class MyApplication extends Application {
 
     public static Context getAppContext() {
         return instance;
-    }
+    }*/
 }
