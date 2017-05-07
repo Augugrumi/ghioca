@@ -38,9 +38,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.filepicker.Filepicker;
-
-import static com.example.zanna.ghioca.MyApplication.MY_API_KEY;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -88,8 +85,7 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
         } else addCamera();
 
-        // TODO -> put in more appropriate place
-        Filepicker.setKey(MY_API_KEY);
+
     }
 
     @OnClick(R.id.flash_switch_view)

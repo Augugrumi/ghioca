@@ -12,7 +12,6 @@ import android.os.Environment;
 public class MyApplication extends Application {
 
     //private static Context instance;
-    public static final String MY_API_KEY = "AkHqkinKScahBDKyXuqzQz";
     public static final String appFolderName = "GHiO-CA";
     public static final String appFolderPath = Environment.getExternalStoragePublicDirectory(
             Environment.DIRECTORY_PICTURES).getAbsolutePath() + "/" + appFolderName;
