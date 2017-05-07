@@ -314,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
                     ViewCompat.setRotation(flashSwitchView, degrees);
                     ViewCompat.setRotation(recordDurationText, degrees);
                     ViewCompat.setRotation(recordSizeText, degrees);
+                    ViewCompat.setRotation(pickFile, degrees);
                 }
 
 
