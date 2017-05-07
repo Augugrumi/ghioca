@@ -111,7 +111,15 @@
                     android:layout_toEndOf="@+id/record_size_mb_text"
                     android:layout_marginLeft="24dp"
                     android:layout_marginStart="24dp" />-->
-
+            <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/pick_file"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/circle_frame_background_dark"
+                    android:src="@drawable/ic_pick_file"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="70dp"/>
         </RelativeLayout>
 
     </RelativeLayout>

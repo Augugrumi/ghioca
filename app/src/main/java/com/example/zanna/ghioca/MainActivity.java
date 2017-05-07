@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,10 +15,12 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.zanna.ghioca.listener.UploadingListener;
+import com.example.zanna.ghioca.utility.ConvertUriToFilePath;
 import com.example.zanna.ghioca.utility.UploadingUtility;
 import com.github.florent37.camerafragment.CameraFragment;
 import com.github.florent37.camerafragment.CameraFragmentApi;
@@ -40,10 +43,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
-
     public static final String FRAGMENT_TAG = "camera";
+
+    private static final int SELECT_PICTURE = 100;
     private static final int REQUEST_CAMERA_PERMISSIONS = 931;
     private static final int REQUEST_PREVIEW_CODE = 1001;
+
     @Bind(R.id.settings_view)
     CameraSettingsView settingsView;
     @Bind(R.id.flash_switch_view)
@@ -52,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     CameraSwitchView cameraSwitchView;
     @Bind(R.id.record_button)
     RecordButton recordButton;
+    @Bind(R.id.pick_file)
+    ImageButton pickFile;
 
     @Bind(R.id.record_duration_text)
     TextView recordDurationText;
@@ -84,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
         if (!permissionsToRequest.isEmpty()) {
             ActivityCompat.requestPermissions(this, permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
         } else addCamera();
-
 
     }
 
@@ -184,10 +190,62 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*@OnClick(R.id.addCameraButton)
-    public void onAddCameraClicked() {
+    @OnClick(R.id.pick_file)
+    public void onPickFileClicked() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+    }
 
-    }*/
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PICTURE) {
+                // Get the url from data
+                final Uri selectedImageUri = data.getData();
+                if (null != selectedImageUri) {
+                    final String filePath = ConvertUriToFilePath.getPathFromURI(MainActivity.this,
+                            selectedImageUri);
+
+                        final ProgressDialog uploadProgressDialog;
+                        uploadProgressDialog = new ProgressDialog(MainActivity.this);
+                        uploadProgressDialog.setCancelable(false);
+                        uploadProgressDialog.setTitle("Uploading the image");
+                        uploadProgressDialog.show();
+                        UploadingListener listener = new UploadingListener() {
+
+                            @Override
+                            public void onProgressUpdate(int progress) {
+                                uploadProgressDialog.setProgress(progress);
+                            }
+
+                            @Override
+                            public void onFinish(String url) {
+                                uploadProgressDialog.dismiss();
+                                Intent intent = new Intent(MainActivity.this, ResultActivity.class);
+                                intent.putExtra("url", url);
+                                intent.putExtra("path", filePath);
+                                startActivity(intent);
+                            }
+
+                            @Override
+                            public void onFailure(Throwable error) {
+                                uploadProgressDialog.dismiss();
+                                AlertDialog errorDialog;
+                                errorDialog = new AlertDialog.Builder(MainActivity.this).create();
+                                errorDialog.setCancelable(true);
+                                errorDialog.setTitle("Error");
+                                errorDialog.setMessage("An error occur during the uploading please try again");
+                                errorDialog.show();
+                            }
+                        };
+                        Log.i("provaupload", filePath);
+                        UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
+                    }
+                }
+
+            }
+        }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
