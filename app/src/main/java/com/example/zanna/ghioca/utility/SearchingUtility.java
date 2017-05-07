@@ -46,6 +46,6 @@ public class SearchingUtility {
             protected void onPostExecute(Void aVoid) {
                 listener.onSuccess(res);
             }
-        }.execute(null, null, null);
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
     }
 }

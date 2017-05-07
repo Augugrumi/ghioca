@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                             UploadingUtility.uploadToServer("file://" + MyApplication.appFolderPath +
                                 File.separator + name + ".jpg", MainActivity.this, listener);
                         }
-                    }.execute(null, null, null);
+                    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
                 }
             }, MyApplication.appFolderPath, name);
         }
