@@ -17,7 +17,7 @@ import io.filepicker.models.FPFile;
  */
 
 public class UploadingUtility {
-    public static final String MY_API_KEY = "AkHqkinKScahBDKyXuqzQz";
+    public static final String MY_API_KEY = "AyGC1V2noQEibxzJtItUuz";
     static {
         // TODO -> put in more appropriate place
         Filepicker.setKey(MY_API_KEY);
