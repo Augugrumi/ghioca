@@ -251,12 +251,16 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length != 0) {
-            addCamera();
+            try{
+                addCamera();
+            } catch (SecurityException e){
+
+            }
         }
     }
 
     @RequiresPermission(Manifest.permission.CAMERA)
-    public void addCamera() {
+    public void addCamera() throws SecurityException{
         addCameraButton.setVisibility(View.GONE);
         cameraLayout.setVisibility(View.VISIBLE);
 
@@ -363,4 +367,6 @@ public class MainActivity extends AppCompatActivity {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         return timestamp.toString().replaceAll(" ", "_");
     }
+
+
 }
