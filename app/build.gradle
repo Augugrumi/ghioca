@@ -33,6 +33,7 @@ dependencies {
     })
 
     compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support:design:25.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'io.filepicker:filepicker-android:3.9.0'
     compile 'org.jsoup:jsoup:1.7.2'
@@ -40,6 +41,7 @@ dependencies {
     compile 'com.github.florent37:camerafragment:1.0.5'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 
     //searching image library
     compile 'com.github.Polpetta:libris:v1.0.0'

@@ -2,7 +2,10 @@ package com.example.zanna.ghioca;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.widget.ImageView;
@@ -16,10 +19,13 @@ import com.squareup.picasso.Picasso;
 import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
 import it.polpetta.libris.image.google.contract.IGoogleImageSearchResult;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ResultActivity extends AppCompatActivity {
 
@@ -29,6 +35,8 @@ public class ResultActivity extends AppCompatActivity {
     TextView searchResult;
     @Bind(R.id.description_result)
     TextView descriptionResult;
+    @Bind(R.id.share_fab)
+    FloatingActionButton share;
 
     private String url;
     private String path;
@@ -36,6 +44,7 @@ public class ResultActivity extends AppCompatActivity {
     private AzureReverseImageSearchListener azureListener;
     private int numberOfSearch;
     private ArrayList<String> results;
+    private String description;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +123,7 @@ public class ResultActivity extends AppCompatActivity {
                         for (String tag : tags)
                             if (!results.contains(tag))
                                 results.add(tag);
-                    String description = result.getDescription();
+                    description = result.getDescription();
                     if (description != null)
                         descriptionResult.setText(description);
                 }
@@ -144,5 +153,22 @@ public class ResultActivity extends AppCompatActivity {
 
         SearchingUtility.searchImageWithGoogle(url, googleListener);
         SearchingUtility.searchImageWithAzure(url, azureListener);
+    }
+
+    @OnClick(R.id.share_fab)
+    public void share() {
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("image/jpeg");
+        StringBuilder textToShare = new StringBuilder(description);
+        textToShare.append("\n");
+        for (String res : results) {
+            textToShare.append("#");
+            textToShare.append(WordUtils.uncapitalize((WordUtils.capitalize(res)).replaceAll(" ", "")));
+            textToShare.append(" ");
+        }
+        textToShare.append("#GhiCa");
+        share.putExtra(Intent.EXTRA_TEXT, textToShare.toString());
+        share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
+        startActivity(Intent.createChooser(share, "Share Image"));
     }
 }
