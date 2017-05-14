@@ -3,12 +3,12 @@ package com.example.zanna.ghioca.utility;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.zanna.ghioca.listener.SearchingListener;
+import com.example.zanna.ghioca.listener.AzureReverseImageSearchListener;
+import com.example.zanna.ghioca.listener.GoogleReverseImageSearchListener;
 
-import it.polpetta.libris.ReverseImageSearch;
-import it.polpetta.libris.google.imageSearch.SearchResult;
-
-import org.json.JSONObject;
+import it.polpetta.libris.image.ReverseImageSearch;
+import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
+import it.polpetta.libris.image.google.contract.IGoogleImageSearchResult;
 
 import java.net.URL;
 
@@ -19,22 +19,23 @@ import java.net.URL;
  */
 
 public class SearchingUtility {
-    public static void searchImage(final String url, final SearchingListener listener) {
+    final static String azureKey = "***REMOVED***";
+
+    public static void searchImageWithGoogle(final String url,
+                                             final GoogleReverseImageSearchListener listener) {
         new AsyncTask<Void, Void, Void>() {
-            JSONObject res = null;
+            IGoogleImageSearchResult result = null;
 
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    SearchResult result = ReverseImageSearch
+                    result = ReverseImageSearch
                             .getGoogleServices()
                             .imageSearchBuildQuery()
-                            .setPhoto(new URL(url))
-                            .runQuery()
-                            .getContest();
-                    res = new JSONObject(result.toJSONString());
-                    Log.i("prova", res.toString(2));
-                    Log.i("prova", res.get("best_guess").toString());
+                            .setImage(new URL(url))
+                            .build()
+                            .search();
+                    Log.i("SEARCH_RESULT", result.toJSONString());
                 } catch (Exception error) {
                     listener.onFailure(error);
                 }
@@ -44,7 +45,36 @@ public class SearchingUtility {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                listener.onSuccess(res);
+                listener.onSuccess(result);
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
+    }
+
+    public static void searchImageWithAzure(final String url,
+                                            final AzureReverseImageSearchListener listener) {
+        new AsyncTask<Void, Void, Void>() {
+            IAzureImageSearchResult result = null;
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    result = ReverseImageSearch
+                            .getAzureServices(azureKey)
+                            .imageSearchBuildQuery()
+                            .setImage(new URL(url))
+                            .build()
+                            .search();
+                    Log.i("SEARCH_RESULT", result.toJSONString());
+                } catch (Exception error) {
+                    listener.onFailure(error);
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                listener.onSuccess(result);
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
     }

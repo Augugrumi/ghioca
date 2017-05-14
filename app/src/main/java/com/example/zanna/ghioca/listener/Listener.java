@@ -6,4 +6,5 @@ package com.example.zanna.ghioca.listener;
  * @since 0.01
  */
 
-public interface SearchingListener extends NetworkCommunicationListener{}
+public interface Listener {
+}

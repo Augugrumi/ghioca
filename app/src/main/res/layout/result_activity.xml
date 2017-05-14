@@ -20,9 +20,17 @@
 
         <TextView android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
+                  android:id="@+id/description_result"
+                  android:layout_below="@+id/image_view"
+                  android:layout_centerHorizontal="true"
+                  android:layout_marginTop="50dp"
+                  android:textSize="20sp"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
                   android:id="@+id/search_result"
                   android:text="No results found"
-                  android:layout_below="@+id/image_view"
+                  android:layout_below="@+id/description_result"
                   android:layout_centerHorizontal="true"
                   android:layout_marginTop="50dp"
                   android:textSize="20sp"/>

@@ -42,7 +42,7 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
 
     //searching image library
-    compile 'com.github.Polpetta:libris:v0.1.1'
+    compile 'com.github.Polpetta:libris:v1.0.0'
 
     testCompile 'junit:junit:4.12'
 }

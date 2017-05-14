@@ -7,12 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.zanna.ghioca.listener.SearchingListener;
+import com.example.zanna.ghioca.listener.AzureReverseImageSearchListener;
+import com.example.zanna.ghioca.listener.GoogleReverseImageSearchListener;
 import com.example.zanna.ghioca.utility.SearchingUtility;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
+import it.polpetta.libris.image.google.contract.IGoogleImageSearchResult;
+
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -23,10 +26,14 @@ public class ResultActivity extends AppCompatActivity {
     ImageView imageView;
     @Bind(R.id.search_result)
     TextView searchResult;
+    @Bind(R.id.description_result)
+    TextView descriptionResult;
 
     private String url;
     private String path;
-    private SearchingListener listener;
+    private GoogleReverseImageSearchListener googleListener;
+    private AzureReverseImageSearchListener azureListener;
+    private int numberOfSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +54,35 @@ public class ResultActivity extends AppCompatActivity {
         searchProgressDialog.setTitle("Searching");
         searchProgressDialog.show();
 
-        listener = new SearchingListener() {
+        numberOfSearch = 2;
+
+        googleListener = new GoogleReverseImageSearchListener() {
             @Override
-            public void onFailure(Throwable error) {
+            public void onSuccess(final IGoogleImageSearchResult result) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (result != null) {
+                            String res = result.getBestGuess();
+                            if (res != null)
+                                if (searchResult.getText().toString().equalsIgnoreCase("No results found"))
+                                    searchResult.setText(res);
+                                else
+                                    searchResult.append("\n" + res);
+                        }
+
+                    }
+                });
+                numberOfSearch -= 1;
+                if (numberOfSearch <= 0)
+                    searchProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onStart() {}
+
+            @Override
+            public void onFailure(Exception e) {
                 searchProgressDialog.dismiss();
                 AlertDialog errorDialog;
                 errorDialog = new AlertDialog.Builder(ResultActivity.this).create();
@@ -58,22 +91,49 @@ public class ResultActivity extends AppCompatActivity {
                 errorDialog.setMessage("An error occur during the reverse search please try again");
                 errorDialog.show();
             }
+        };
+
+        azureListener = new AzureReverseImageSearchListener() {
+            @Override
+            public void onSuccess(final IAzureImageSearchResult result) {
+                if (result != null) {
+                    String res = result.getBestGuess();
+                    if (searchResult.getText().toString().equalsIgnoreCase("No results found"))
+                        searchResult.setText(res);
+                    else
+                        searchResult.append("\n" + res);
+                    ArrayList<String> tags = result.getTags();
+                    if (tags != null)
+                        for (String tag : tags)
+                            searchResult.append("\n" + tag);
+                    String description = result.getDescription();
+                    if (description != null)
+                        descriptionResult.setText(description);
+                }
+
+
+
+                numberOfSearch -= 1;
+                if (numberOfSearch <= 0)
+                    searchProgressDialog.dismiss();
+            }
 
             @Override
-            public void onSuccess(JSONObject answer) {
-                try {
-                    if (answer != null) {
-                        String res = answer.getString("best_guess");
-                        if (res != null)
-                            searchResult.setText(res);
-                    }
-                    searchProgressDialog.dismiss();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            public void onStart() {}
+
+            @Override
+            public void onFailure(Exception e) {
+                searchProgressDialog.dismiss();
+                AlertDialog errorDialog;
+                errorDialog = new AlertDialog.Builder(ResultActivity.this).create();
+                errorDialog.setCancelable(true);
+                errorDialog.setTitle("Error");
+                errorDialog.setMessage("An error occur during the reverse search please try again");
+                errorDialog.show();
             }
         };
 
-        SearchingUtility.searchImage(url, listener);
+        SearchingUtility.searchImageWithGoogle(url, googleListener);
+        SearchingUtility.searchImageWithAzure(url, azureListener);
     }
 }
