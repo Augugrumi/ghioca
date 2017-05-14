@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,14 +35,17 @@ public class ResultActivity extends AppCompatActivity {
     private GoogleReverseImageSearchListener googleListener;
     private AzureReverseImageSearchListener azureListener;
     private int numberOfSearch;
+    private ArrayList<String> results;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.result_activity);
         ButterKnife.bind(this);
+
+        searchResult.setMovementMethod(new ScrollingMovementMethod());
+        results = new ArrayList<>();
 
         url = getIntent().getStringExtra("url");
         path = getIntent().getStringExtra("path");
@@ -59,23 +63,24 @@ public class ResultActivity extends AppCompatActivity {
         googleListener = new GoogleReverseImageSearchListener() {
             @Override
             public void onSuccess(final IGoogleImageSearchResult result) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (result != null) {
-                            String res = result.getBestGuess();
-                            if (res != null)
-                                if (searchResult.getText().toString().equalsIgnoreCase("No results found"))
-                                    searchResult.setText(res);
-                                else
-                                    searchResult.append("\n" + res);
-                        }
+                if (result != null) {
+                    String res = result.getBestGuess();
+                    if (res != null)
+                        if (!results.contains(res))
+                            results.add(res);/*
+                        if (searchResult.getText().toString().equalsIgnoreCase("No results found"))
+                            searchResult.setText(res);
+                        else
+                            searchResult.append("\n" + res);*/
+                }
 
-                    }
-                });
                 numberOfSearch -= 1;
-                if (numberOfSearch <= 0)
+                if (numberOfSearch <= 0) {
                     searchProgressDialog.dismiss();
+                    searchResult.setText("");
+                    for (String s : results)
+                        searchResult.append(s + "\n");
+                }
             }
 
             @Override
@@ -98,24 +103,28 @@ public class ResultActivity extends AppCompatActivity {
             public void onSuccess(final IAzureImageSearchResult result) {
                 if (result != null) {
                     String res = result.getBestGuess();
-                    if (searchResult.getText().toString().equalsIgnoreCase("No results found"))
+                    if (!results.contains(res))
+                        results.add(res);
+                    /*if (searchResult.getText().toString().equalsIgnoreCase("No results found"))
                         searchResult.setText(res);
                     else
-                        searchResult.append("\n" + res);
+                        searchResult.append("\n" + res);*/
                     ArrayList<String> tags = result.getTags();
                     if (tags != null)
                         for (String tag : tags)
-                            searchResult.append("\n" + tag);
+                            if (!results.contains(tag))
+                                results.add(tag);
                     String description = result.getDescription();
                     if (description != null)
                         descriptionResult.setText(description);
                 }
-
-
-
                 numberOfSearch -= 1;
-                if (numberOfSearch <= 0)
+                if (numberOfSearch <= 0) {
                     searchProgressDialog.dismiss();
+                    searchResult.setText("");
+                    for (String s : results)
+                        searchResult.append(s + "\n");
+                }
             }
 
             @Override

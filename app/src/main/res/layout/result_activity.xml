@@ -7,33 +7,41 @@
         android:layout_height="match_parent"
         tools:context="com.example.zanna.ghioca.ResultActivity">
 
-    <RelativeLayout android:layout_width="368dp"
-                    android:layout_height="551dp" tools:layout_editor_absoluteY="8dp"
-                    tools:layout_editor_absoluteX="8dp">
 
-        <ImageView android:layout_width="200dp"
-                   android:layout_height="250dp"
-                   android:layout_marginTop="50dp"
-                   android:layout_alignParentTop="true"
-                   android:layout_centerHorizontal="true"
-                   android:id="@+id/image_view"/>
 
-        <TextView android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:id="@+id/description_result"
-                  android:layout_below="@+id/image_view"
-                  android:layout_centerHorizontal="true"
-                  android:layout_marginTop="50dp"
-                  android:textSize="20sp"/>
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
 
-        <TextView android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:id="@+id/search_result"
-                  android:text="No results found"
-                  android:layout_below="@+id/description_result"
-                  android:layout_centerHorizontal="true"
-                  android:layout_marginTop="50dp"
-                  android:textSize="20sp"/>
+            <ImageView android:layout_width="200dp"
+                       android:layout_height="250dp"
+                       android:layout_marginTop="50dp"
+                       android:layout_alignParentTop="true"
+                       android:layout_centerHorizontal="true"
+                       android:id="@+id/image_view"/>
 
-    </RelativeLayout>
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/description_result"
+                      android:layout_below="@+id/image_view"
+                      android:layout_centerHorizontal="true"
+                      android:textAlignment="center"
+                      android:layout_marginLeft="20dp"
+                      android:layout_marginRight="20dp"
+                      android:layout_marginTop="50dp"
+                      android:textSize="20sp"
+                      android:textStyle="italic"/>
+
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/search_result"
+                      android:maxLines="4"
+                      android:lines="4"
+                      android:text="No results found"
+                      android:layout_marginTop="20dp"
+                      android:textSize="20sp"
+                      android:textAlignment="center"
+                      android:scrollbars="vertical"
+                      android:layout_below="@id/description_result"/>
+
+        </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
