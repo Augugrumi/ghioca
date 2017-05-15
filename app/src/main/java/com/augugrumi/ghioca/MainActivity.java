@@ -1,4 +1,4 @@
-package com.example.zanna.ghioca;
+package com.augugrumi.zanna.ghioca;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -19,9 +19,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.zanna.ghioca.listener.UploadingListener;
-import com.example.zanna.ghioca.utility.ConvertUriToFilePath;
-import com.example.zanna.ghioca.utility.UploadingUtility;
+import com.augugrumi.zanna.ghioca.listener.UploadingListener;
+import com.augugrumi.zanna.ghioca.utility.ConvertUriToFilePath;
+import com.augugrumi.zanna.ghioca.utility.UploadingUtility;
 import com.github.florent37.camerafragment.CameraFragment;
 import com.github.florent37.camerafragment.CameraFragmentApi;
 import com.github.florent37.camerafragment.configuration.Configuration;

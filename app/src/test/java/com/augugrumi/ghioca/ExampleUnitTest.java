@@ -1,4 +1,4 @@
-package com.example.zanna.ghioca;
+package com.augugrumi.zanna.ghioca;
 
 import org.junit.Test;
 

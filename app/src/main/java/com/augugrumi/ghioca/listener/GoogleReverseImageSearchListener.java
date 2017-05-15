@@ -1,4 +1,4 @@
-package com.example.zanna.ghioca.listener;
+package com.augugrumi.zanna.ghioca.listener;
 
 import it.polpetta.libris.image.google.contract.IGoogleImageSearchResult;
 

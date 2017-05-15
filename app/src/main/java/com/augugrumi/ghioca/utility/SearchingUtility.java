@@ -1,10 +1,10 @@
-package com.example.zanna.ghioca.utility;
+package com.augugrumi.zanna.ghioca.utility;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.zanna.ghioca.listener.AzureReverseImageSearchListener;
-import com.example.zanna.ghioca.listener.GoogleReverseImageSearchListener;
+import com.augugrumi.zanna.ghioca.listener.AzureReverseImageSearchListener;
+import com.augugrumi.zanna.ghioca.listener.GoogleReverseImageSearchListener;
 
 import it.polpetta.libris.image.ReverseImageSearch;
 import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;

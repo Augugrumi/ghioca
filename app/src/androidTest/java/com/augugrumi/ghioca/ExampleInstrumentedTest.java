@@ -1,4 +1,4 @@
-package com.example.zanna.ghioca;
+package com.augugrumi.zanna.ghioca;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

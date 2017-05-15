@@ -1,4 +1,4 @@
-package com.example.zanna.ghioca;
+package com.augugrumi.zanna.ghioca;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -11,9 +11,9 @@ import android.text.method.ScrollingMovementMethod;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.zanna.ghioca.listener.AzureReverseImageSearchListener;
-import com.example.zanna.ghioca.listener.GoogleReverseImageSearchListener;
-import com.example.zanna.ghioca.utility.SearchingUtility;
+import com.augugrumi.zanna.ghioca.listener.AzureReverseImageSearchListener;
+import com.augugrumi.zanna.ghioca.listener.GoogleReverseImageSearchListener;
+import com.augugrumi.zanna.ghioca.utility.SearchingUtility;
 import com.squareup.picasso.Picasso;
 
 import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
