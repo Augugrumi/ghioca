@@ -1,4 +1,4 @@
-package com.augugrumi.zanna.ghioca;
+package com.augugrumi.ghioca;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -11,13 +11,11 @@ import android.text.method.ScrollingMovementMethod;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.augugrumi.zanna.ghioca.listener.AzureReverseImageSearchListener;
-import com.augugrumi.zanna.ghioca.listener.GoogleReverseImageSearchListener;
-import com.augugrumi.zanna.ghioca.utility.SearchingUtility;
+import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
+import com.augugrumi.ghioca.listener.GoogleReverseImageSearchListener;
+import com.augugrumi.ghioca.utility.SearchingUtility;
+import com.augugrumi.zanna.ghioca.R;
 import com.squareup.picasso.Picasso;
-
-import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
-import it.polpetta.libris.image.google.contract.IGoogleImageSearchResult;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -26,6 +24,8 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
+import it.polpetta.libris.image.google.contract.IGoogleImageSearchResult;
 
 public class ResultActivity extends AppCompatActivity {
 

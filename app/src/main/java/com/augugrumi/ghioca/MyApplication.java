@@ -1,4 +1,4 @@
-package com.augugrumi.zanna.ghioca;
+package com.augugrumi.ghioca;
 
 import android.app.Application;
 import android.os.Environment;

@@ -1,4 +1,4 @@
-package com.augugrumi.zanna.ghioca.listener;
+package com.augugrumi.ghioca.listener;
 
 import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
 

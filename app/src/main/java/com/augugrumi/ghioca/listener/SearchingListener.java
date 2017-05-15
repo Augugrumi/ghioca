@@ -1,4 +1,4 @@
-package com.augugrumi.zanna.ghioca.listener;
+package com.augugrumi.ghioca.listener;
 
 /**
  * @author Marco Zanella

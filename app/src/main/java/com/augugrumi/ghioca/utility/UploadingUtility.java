@@ -1,10 +1,10 @@
-package com.augugrumi.zanna.ghioca.utility;
+package com.augugrumi.ghioca.utility;
 
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.augugrumi.zanna.ghioca.listener.UploadingListener;
+import com.augugrumi.ghioca.listener.UploadingListener;
 
 import io.filepicker.Filepicker;
 import io.filepicker.FilepickerCallback;

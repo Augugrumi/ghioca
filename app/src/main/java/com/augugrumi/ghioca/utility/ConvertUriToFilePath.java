@@ -1,4 +1,4 @@
-package com.augugrumi.zanna.ghioca.utility;
+package com.augugrumi.ghioca.utility;
 
 import android.content.ContentUris;
 import android.content.Context;
