@@ -166,7 +166,7 @@ public class ResultActivity extends AppCompatActivity {
             textToShare.append(WordUtils.uncapitalize((WordUtils.capitalize(res)).replaceAll(" ", "")));
             textToShare.append(" ");
         }
-        textToShare.append("#GhiCa");
+        textToShare.append("#GhioCa");
         share.putExtra(Intent.EXTRA_TEXT, textToShare.toString());
         share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
         startActivity(Intent.createChooser(share, "Share Image"));
