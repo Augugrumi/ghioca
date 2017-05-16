@@ -43,7 +43,7 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 
     // modified CameraFragment library -> original: compile 'com.github.florent37:camerafragment:1.0.5'
-    compile 'com.github.Augugrumi:camerafragment:v1.0.2'
+    compile 'com.github.Augugrumi:camerafragment:v1.1.0'
 
     //searching image library
     compile 'com.github.Augugrumi:libris:v1.0.0'
