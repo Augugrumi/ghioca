@@ -19,8 +19,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-
 import com.augugrumi.ghioca.listener.UploadingListener;
 import com.augugrumi.ghioca.utility.ConvertUriToFilePath;
 import com.augugrumi.ghioca.utility.UploadingUtility;
@@ -79,7 +77,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        // acquiring permission runtime
+        final String[] permissions = {
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE};
+
+        final List<String> permissionsToRequest = new ArrayList<>();
+        for (String permission : permissions) {
+            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(permission);
+            }
+        }
+        if (permissionsToRequest.isEmpty())
+            addCamera();
+
+    }
+
+    @OnClick(R.id.addCameraButton)
+    public void onAddCameraClicked() {
         final String[] permissions = {
                 Manifest.permission.CAMERA,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -94,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
         if (!permissionsToRequest.isEmpty()) {
             ActivityCompat.requestPermissions(this, permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
         } else addCamera();
-
     }
 
     @OnClick(R.id.flash_switch_view)
