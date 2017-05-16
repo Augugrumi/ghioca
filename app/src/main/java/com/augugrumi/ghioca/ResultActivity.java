@@ -1,7 +1,5 @@
 package com.augugrumi.ghioca;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,7 +11,6 @@ import android.widget.TextView;
 
 import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.GoogleReverseImageSearchListener;
-import com.augugrumi.ghioca.utility.SearchingUtility;
 import com.augugrumi.zanna.ghioca.R;
 import com.squareup.picasso.Picasso;
 
@@ -24,8 +21,6 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
-import it.polpetta.libris.image.google.contract.IGoogleImageSearchResult;
 
 public class ResultActivity extends AppCompatActivity {
 
@@ -56,18 +51,18 @@ public class ResultActivity extends AppCompatActivity {
         searchResult.setMovementMethod(new ScrollingMovementMethod());
         results = new ArrayList<>();
 
-        url = getIntent().getStringExtra("url");
+        //url = getIntent().getStringExtra("url");
         path = getIntent().getStringExtra("path");
 
         Picasso.with(this).load("file://" + path).into(imageView);
 
-        final ProgressDialog searchProgressDialog;
+        /*final ProgressDialog searchProgressDialog;
         searchProgressDialog = new ProgressDialog(ResultActivity.this);
         searchProgressDialog.setCancelable(false);
         searchProgressDialog.setTitle("Searching");
         searchProgressDialog.show();
 
-        numberOfSearch = 2;
+        /*numberOfSearch = 2;
 
         googleListener = new GoogleReverseImageSearchListener() {
             @Override
@@ -80,7 +75,7 @@ public class ResultActivity extends AppCompatActivity {
                         if (searchResult.getText().toString().equalsIgnoreCase("No results found"))
                             searchResult.setText(res);
                         else
-                            searchResult.append("\n" + res);*/
+                            searchResult.append("\n" + res);
                 }
 
                 numberOfSearch -= 1;
@@ -117,7 +112,7 @@ public class ResultActivity extends AppCompatActivity {
                     /*if (searchResult.getText().toString().equalsIgnoreCase("No results found"))
                         searchResult.setText(res);
                     else
-                        searchResult.append("\n" + res);*/
+                        searchResult.append("\n" + res);
                     ArrayList<String> tags = result.getTags();
                     if (tags != null)
                         for (String tag : tags)
@@ -152,7 +147,7 @@ public class ResultActivity extends AppCompatActivity {
         };
 
         SearchingUtility.searchImageWithGoogle(url, googleListener);
-        SearchingUtility.searchImageWithAzure(url, azureListener);
+        SearchingUtility.searchImageWithAzure(url, azureListener);*/
     }
 
     @OnClick(R.id.share_fab)
