@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -14,10 +13,7 @@ import android.widget.TextView;
 
 import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.GoogleReverseImageSearchListener;
-
 import com.facebook.CallbackManager;
-import com.facebook.share.model.SharePhotoContent;
-import com.facebook.share.widget.ShareDialog;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -54,6 +50,9 @@ public class ResultActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         callbackManager = CallbackManager.Factory.create();
+
+        results = new ArrayList<>();
+        description = "";
 
         searchResult.setMovementMethod(new ScrollingMovementMethod());
         results = new ArrayList<>();
@@ -186,6 +185,5 @@ public class ResultActivity extends AppCompatActivity {
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
-
     }
 }

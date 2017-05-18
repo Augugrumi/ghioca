@@ -1,6 +1,7 @@
 package com.augugrumi.ghioca;
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -97,7 +98,7 @@ public class ShareFragment extends DialogFragment {
 
     @OnClick(R.id.fab_other)
     public void otherShare() {
-        /*ArrayList<String> results = ((ResultActivity)getActivity()).getResults();
+        ArrayList<String> results = ((ResultActivity)getActivity()).getResults();
         String description = ((ResultActivity)getActivity()).getDescription();
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/jpeg");
@@ -111,7 +112,7 @@ public class ShareFragment extends DialogFragment {
         textToShare.append("#GhioCa");
         share.putExtra(Intent.EXTRA_TEXT, textToShare.toString());
         share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
-        startActivity(Intent.createChooser(share, "Share Image"));*/
+        startActivity(Intent.createChooser(share, "Share Image"));
     }
 
     @OnClick(R.id.fab_facebook) //TODO: IMPLEMENTARE UNA SHARE DIALOG??
@@ -183,12 +184,12 @@ public class ShareFragment extends DialogFragment {
 
     }
 
-    @OnClick(R.id.fab_other)
+    @OnClick(R.id.fab_dropbox)
     public void dropboxShare(){
 
     }
 
-    @OnClick(R.id.fab_other)
+    @OnClick(R.id.fab_linkedin)
     public void linkedinShare(){
 
     }
