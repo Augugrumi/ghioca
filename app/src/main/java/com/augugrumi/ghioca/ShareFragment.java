@@ -110,7 +110,7 @@ public class ShareFragment extends DialogFragment {
 
     @OnClick(R.id.fab_facebook) //TODO: IMPLEMENTARE UNA SHARE DIALOG??
     public void facebookShare(){
-
+        ShareDialog shareDialog = new ShareDialog(this);
         if(shareDialog.canShow(SharePhotoContent.class)){
             Log.d("FACEBOOK","file://" + path);
 
@@ -136,7 +136,7 @@ public class ShareFragment extends DialogFragment {
 
             }
 
-            hashtags.setHashtag("#GhioCa");
+            hashtags.setHashtag("#GhioCa #Ciao");
 
             SharePhotoContent content = new SharePhotoContent.Builder()
                     .addPhoto(photo)
@@ -183,10 +183,5 @@ public class ShareFragment extends DialogFragment {
 
     }
 
-    public static void setFBShareDialog(ShareDialog dialog){
-        shareDialog = dialog;
-    }
-
-    private static ShareDialog shareDialog;
 
 }

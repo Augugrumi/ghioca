@@ -45,7 +45,6 @@ public class ResultActivity extends AppCompatActivity {
     private ArrayList<String> results;
     private String description;
     CallbackManager callbackManager;
-    ShareDialog shareDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +54,6 @@ public class ResultActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         callbackManager = CallbackManager.Factory.create();
-        shareDialog = new ShareDialog(this);
 
         searchResult.setMovementMethod(new ScrollingMovementMethod());
         results = new ArrayList<>();
@@ -182,7 +180,7 @@ public class ResultActivity extends AppCompatActivity {
 
     }
 
-    DialogFragment newFragment = ShareFragment.newInstance(1);
+    DialogFragment newFragment;
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
