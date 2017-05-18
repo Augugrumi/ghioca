@@ -19,7 +19,7 @@ import java.net.URL;
  */
 
 public class SearchingUtility {
-    final static String azureKey = "***REMOVED***";
+    final static String azureKey = "";
 
     public static void searchImageWithGoogle(final String url,
                                              final GoogleReverseImageSearchListener listener) {
