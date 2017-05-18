@@ -22,7 +22,6 @@ import android.widget.Toast;
 import com.augugrumi.ghioca.listener.UploadingListener;
 import com.augugrumi.ghioca.utility.ConvertUriToFilePath;
 
-import com.augugrumi.ghioca.utility.UploadingUtility;
 import com.github.florent37.camerafragment.CameraFragment;
 import com.github.florent37.camerafragment.CameraFragmentApi;
 import com.github.florent37.camerafragment.configuration.Configuration;

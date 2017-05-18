@@ -1,22 +1,40 @@
 package com.augugrumi.ghioca;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.share.model.ShareHashtag;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
+
 import org.apache.commons.lang3.text.WordUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import in.championswimmer.libsocialbuttons.fabs.FABDropbox;
+import in.championswimmer.libsocialbuttons.fabs.FABFacebook;
+import in.championswimmer.libsocialbuttons.fabs.FABGoogleplus;
+import in.championswimmer.libsocialbuttons.fabs.FABInstagram;
+import in.championswimmer.libsocialbuttons.fabs.FABLinkedin;
+import in.championswimmer.libsocialbuttons.fabs.FABTumblr;
+import in.championswimmer.libsocialbuttons.fabs.FABTwitter;
+import in.championswimmer.libsocialbuttons.fabs.FABWhatsapp;
 
-import static android.R.attr.path;
 
 /**
  * @author Marco Zanella
@@ -26,23 +44,26 @@ import static android.R.attr.path;
 
 public class ShareFragment extends DialogFragment {
     @Bind(R.id.fab_facebook)
-    FloatingActionButton fabFacebook;
+    FABFacebook fabFacebook;
     @Bind(R.id.fab_twitter)
-    FloatingActionButton fabTwitter;
+    FABTwitter fabTwitter;
     @Bind(R.id.fab_instagram)
-    FloatingActionButton fabInstagram;
+    FABInstagram fabInstagram;
     @Bind(R.id.fab_whatsapp)
-    FloatingActionButton fabWhatsapp;
+    FABWhatsapp fabWhatsapp;
     @Bind(R.id.fab_tumblr)
-    FloatingActionButton fabTumblr;
+    FABTumblr fabTumblr;
     @Bind(R.id.fab_googleplus)
-    FloatingActionButton fabGooglePlus;
+    FABGoogleplus fabGooglePlus;
     @Bind(R.id.fab_dropbox)
-    FloatingActionButton fabDropbox;
+    FABDropbox fabDropbox;
     @Bind(R.id.fab_linkedin)
-    FloatingActionButton fabLinkedin;
+    FABLinkedin fabLinkedin;
     @Bind(R.id.fab_other)
     FloatingActionButton fabOther;
+
+    private String path;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,7 +75,13 @@ public class ShareFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.share_dialogfragment, container, false);
+        View view = inflater.inflate(R.layout.share_dialogfragment, container, false);
+        ButterKnife.bind(this, view);
+        path = getActivity().getIntent().getStringExtra("path");
+        return view;
+
+
+
     }
 
     static ShareFragment newInstance(int num) {
@@ -70,7 +97,7 @@ public class ShareFragment extends DialogFragment {
 
     @OnClick(R.id.fab_other)
     public void otherShare() {
-        ArrayList<String> results = ((ResultActivity)getActivity()).getResults();
+        /*ArrayList<String> results = ((ResultActivity)getActivity()).getResults();
         String description = ((ResultActivity)getActivity()).getDescription();
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/jpeg");
@@ -84,7 +111,83 @@ public class ShareFragment extends DialogFragment {
         textToShare.append("#GhioCa");
         share.putExtra(Intent.EXTRA_TEXT, textToShare.toString());
         share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
-        startActivity(Intent.createChooser(share, "Share Image"));
+        startActivity(Intent.createChooser(share, "Share Image"));*/
     }
+
+    @OnClick(R.id.fab_facebook) //TODO: IMPLEMENTARE UNA SHARE DIALOG??
+    public void facebookShare(){
+        ShareDialog shareDialog = new ShareDialog(this);
+        if(shareDialog.canShow(SharePhotoContent.class)){
+            Log.d("FACEBOOK","file://" + path);
+
+            ContentResolver contentResolver = getContext().getContentResolver();
+            ArrayList<String> results = ((ResultActivity)getActivity()).getResults();
+            String description = ((ResultActivity)getActivity()).getDescription();
+            Bitmap image = null;
+            try {
+                image = MediaStore.Images.Media.getBitmap(contentResolver, Uri.parse("file://" + path));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            SharePhoto photo = new SharePhoto.Builder()
+                    .setBitmap(image)
+                    .build();
+
+            ShareHashtag.Builder hashtags = new ShareHashtag.Builder();
+
+            for (String res : results) {
+                String s = "#";
+                hashtags.setHashtag(s+WordUtils.uncapitalize((WordUtils.capitalize(res)).replaceAll(" ", "")));
+
+            }
+
+            hashtags.setHashtag("#GhioCa #Ciao");
+
+            SharePhotoContent content = new SharePhotoContent.Builder()
+                    .addPhoto(photo)
+                    .setShareHashtag(hashtags.build())
+                    .build();
+
+            shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
+        }
+
+    }
+
+    @OnClick(R.id.fab_twitter)
+    public void twitterShare(){
+
+    }
+
+    @OnClick(R.id.fab_instagram)
+    public void instagramShare(){
+
+    }
+
+    @OnClick(R.id.fab_whatsapp)
+    public void whatsAppShare(){
+
+    }
+
+    @OnClick(R.id.fab_tumblr)
+    public void tumblrShare(){
+
+    }
+
+    @OnClick(R.id.fab_googleplus)
+    public void googlePlusShare(){
+
+    }
+
+    @OnClick(R.id.fab_other)
+    public void dropboxShare(){
+
+    }
+
+    @OnClick(R.id.fab_other)
+    public void linkedinShare(){
+
+    }
+
 
 }
