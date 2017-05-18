@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.GoogleReverseImageSearchListener;
 import com.augugrumi.ghioca.utility.SearchingUtility;
-import com.augugrumi.zanna.ghioca.R;
 import com.squareup.picasso.Picasso;
 
 import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;

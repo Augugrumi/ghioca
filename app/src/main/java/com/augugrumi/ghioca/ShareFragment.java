@@ -9,8 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.augugrumi.zanna.ghioca.R;
-
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.ArrayList;
