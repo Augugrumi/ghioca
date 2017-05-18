@@ -156,8 +156,21 @@ public class ShareFragment extends DialogFragment {
 
     @OnClick(R.id.fab_twitter)
     public void twitterShare(){
+
+        ArrayList<String> results = ((ResultActivity)getActivity()).getResults();
+        String description = ((ResultActivity)getActivity()).getDescription();
+        StringBuilder textToShare = new StringBuilder(description);
+        textToShare.append("\n");
+        for (String res : results) {
+            textToShare.append("#");
+            textToShare.append(WordUtils.uncapitalize((WordUtils.capitalize(res)).replaceAll(" ", "")));
+            textToShare.append(" ");
+        }
+
+        textToShare.append("#GhioCa");
+
         Shareable imageShare = new Shareable.Builder(this.getActivity())
-                .message("try share on twitter")
+                .message(textToShare.toString())
                 .image(Uri.parse("file://" + path))
                 .socialChannel(Shareable.Builder.TWITTER)
                 .build();
