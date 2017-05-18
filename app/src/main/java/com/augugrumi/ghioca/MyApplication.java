@@ -1,6 +1,7 @@
 package com.augugrumi.ghioca;
 
 import android.app.Application;
+import android.content.Context;
 import android.os.Environment;
 
 /**
@@ -11,11 +12,11 @@ import android.os.Environment;
 
 public class MyApplication extends Application {
 
-    //private static Context instance;
+    private static Context instance;
     public static final String appFolderName = "GHiO-CA";
     public static final String appFolderPath = Environment.getExternalStoragePublicDirectory(
             Environment.DIRECTORY_PICTURES).getAbsolutePath() + "/" + appFolderName;
-    /*@Override
+    @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
@@ -23,5 +24,5 @@ public class MyApplication extends Application {
 
     public static Context getAppContext() {
         return instance;
-    }*/
+    }
 }

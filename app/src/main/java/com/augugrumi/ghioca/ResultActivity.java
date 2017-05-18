@@ -1,9 +1,9 @@
 package com.augugrumi.ghioca;
 
-import android.content.Intent;
-import android.net.Uri;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.widget.ImageView;
@@ -11,10 +11,8 @@ import android.widget.TextView;
 
 import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.GoogleReverseImageSearchListener;
-import com.augugrumi.zanna.ghioca.R;
-import com.squareup.picasso.Picasso;
 
-import org.apache.commons.lang3.text.WordUtils;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -150,20 +148,25 @@ public class ResultActivity extends AppCompatActivity {
         SearchingUtility.searchImageWithAzure(url, azureListener);*/
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public ArrayList<String> getResults() {
+        return results;
+    }
+
+    //TODO beautify the fragment
     @OnClick(R.id.share_fab)
     public void share() {
-        Intent share = new Intent(Intent.ACTION_SEND);
-        share.setType("image/jpeg");
-        StringBuilder textToShare = new StringBuilder(description);
-        textToShare.append("\n");
-        for (String res : results) {
-            textToShare.append("#");
-            textToShare.append(WordUtils.uncapitalize((WordUtils.capitalize(res)).replaceAll(" ", "")));
-            textToShare.append(" ");
-        }
-        textToShare.append("#GhioCa");
-        share.putExtra(Intent.EXTRA_TEXT, textToShare.toString());
-        share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
-        startActivity(Intent.createChooser(share, "Share Image"));
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        android.support.v4.app.Fragment prev = getSupportFragmentManager().findFragmentById(R.id.share_fragment);
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        DialogFragment newFragment = ShareFragment.newInstance(1);
+        newFragment.show(getSupportFragmentManager(), "dialog");
+
     }
 }
