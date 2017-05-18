@@ -1,7 +1,6 @@
 package com.augugrumi.ghioca;
 
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,10 +16,10 @@ import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
+import com.robertsimoes.shareable.Shareable;
 
 import org.apache.commons.lang3.text.WordUtils;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -139,7 +138,7 @@ public class ShareFragment extends DialogFragment {
 
             for (String res : results) {
                 String s = "#";
-                hashtags.setHashtag(s+WordUtils.uncapitalize((WordUtils.capitalize(res)).replaceAll(" ", "")));
+                hashtags.setHashtag(s+ WordUtils.uncapitalize((WordUtils.capitalize(res)).replaceAll(" ", "")));
 
             }
 
@@ -152,40 +151,21 @@ public class ShareFragment extends DialogFragment {
 
             shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
         }
-
     }
 
     @OnClick(R.id.fab_twitter)
     public void twitterShare(){
-
+        Shareable imageShare = new Shareable.Builder(this.getActivity())
+                .message("try share on twitter")
+                .image(Uri.parse("file://" + path))
+                .socialChannel(Shareable.Builder.TWITTER)
+                .build();
+        imageShare.share();
     }
 
     @OnClick(R.id.fab_instagram)
     public void instagramShare(){
-        Intent intent = getContext().getPackageManager().getLaunchIntentForPackage("com.instagram.android");
-        if (intent != null)
-        {
-            Intent shareIntent = new Intent();
-            shareIntent.setAction(Intent.ACTION_SEND);
-            shareIntent.setPackage("com.instagram.android");
 
-            Log.d("INSTAGRAM","file://" + path);
-            shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.encode("file://" + path));
-            //shareIntent.putExtra(Intent.EXTRA_TEXT, "#HELLOOOO");
-
-            shareIntent.setType("image/*");
-
-            startActivity(shareIntent);
-        }
-        else
-        {
-            // bring user to the market to download the app.
-            // or let them choose an app?
-            intent = new Intent(Intent.ACTION_VIEW);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.setData(Uri.parse("market://details?id="+"com.instagram.android"));
-            startActivity(intent);
-        }
     }
 
     @OnClick(R.id.fab_whatsapp)
@@ -212,8 +192,6 @@ public class ShareFragment extends DialogFragment {
     public void linkedinShare(){
 
     }
-
-    //TODO aggiungere messenger
 
 
 }
