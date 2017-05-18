@@ -42,6 +42,10 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 
+    //sharing
+    compile 'com.github.robertsimoes:Shareable:0.1.0'
+    compile 'com.github.championswimmer:Android-SocialButtons:1.0'
+
     // modified CameraFragment library -> original: compile 'com.github.florent37:camerafragment:1.0.5'
     compile 'com.github.Augugrumi:camerafragment:v1.0.2'
 
