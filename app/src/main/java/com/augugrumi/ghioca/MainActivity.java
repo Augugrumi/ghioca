@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CAMERA_PERMISSIONS = 931;
     private static final int REQUEST_PREVIEW_CODE = 1001;
 
+    private TurnOnWiFiFragment wiFiFragment;
+
     @Bind(R.id.settings_view)
     CameraSettingsView settingsView;
     @Bind(R.id.flash_switch_view)
