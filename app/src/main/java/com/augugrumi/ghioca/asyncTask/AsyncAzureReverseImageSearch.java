@@ -3,6 +3,8 @@ package com.augugrumi.ghioca.asyncTask;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.augugrumi.ghioca.MyApplication;
+import com.augugrumi.ghioca.R;
 import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
 
 import it.polpetta.libris.image.ReverseImageSearch;
@@ -19,7 +21,7 @@ import java.net.URL;
 public class AsyncAzureReverseImageSearch extends AsyncTask<Void, Void, Void> {
 
     //todo manage azure key
-    private static String azureKey = "";
+    private static String azureKey = MyApplication.getAppContext().getString(R.string.AZURE_KEY);
 
     private AzureReverseImageSearchListener listener;
     private IAzureImageSearchResult result;

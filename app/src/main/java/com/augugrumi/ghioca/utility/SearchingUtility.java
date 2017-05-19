@@ -5,8 +5,12 @@ import android.util.Log;
 
 import com.augugrumi.ghioca.MyApplication;
 import com.augugrumi.ghioca.R;
+import com.augugrumi.ghioca.asyncTask.AsyncAzureReverseImageSearch;
+import com.augugrumi.ghioca.asyncTask.AsyncGoogleReverseImageSearch;
 import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.GoogleReverseImageSearchListener;
+import com.augugrumi.ghioca.listener.ImaggaReverseImageSearchListener;
+import com.augugrumi.ghioca.listener.WatsonReverseImageSearchListener;
 
 import it.polpetta.libris.image.ReverseImageSearch;
 import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
@@ -21,67 +25,25 @@ import java.net.URL;
  */
 
 public class SearchingUtility {
-    final static String azureKey = MyApplication.getAppContext().getString(R.string.AZURE_KEY);
-
-    static {
-        Log.i("PROVA_CHIAVI", azureKey);
-    }
 
     public static void searchImageWithGoogle(final String url,
                                              final GoogleReverseImageSearchListener listener) {
-        new AsyncTask<Void, Void, Void>() {
-            IGoogleImageSearchResult result = null;
 
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    result = ReverseImageSearch
-                            .getGoogleServices()
-                            .imageSearchBuildQuery()
-                            .setImage(new URL(url))
-                            .build()
-                            .search();
-                    Log.i("SEARCH_RESULT", result.toJSONString());
-                } catch (Exception error) {
-                    listener.onFailure(error);
-                }
+        new AsyncGoogleReverseImageSearch(url, listener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
 
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                listener.onSuccess(result);
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
     }
 
     public static void searchImageWithAzure(final String url,
                                             final AzureReverseImageSearchListener listener) {
-        new AsyncTask<Void, Void, Void>() {
-            IAzureImageSearchResult result = null;
+        new AsyncAzureReverseImageSearch(url, listener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
 
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    result = ReverseImageSearch
-                            .getAzureServices(azureKey)
-                            .imageSearchBuildQuery()
-                            .setImage(new URL(url))
-                            .build()
-                            .search();
-                    Log.i("SEARCH_RESULT", result.toJSONString());
-                } catch (Exception error) {
-                    listener.onFailure(error);
-                }
+    }
 
-                return null;
-            }
+    public static void searchImageWithWatson(final String url, final WatsonReverseImageSearchListener listener){
 
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                listener.onSuccess(result);
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
+    }
+
+    public static void searchImageWithImagga(final String url, final ImaggaReverseImageSearchListener listener){
+
     }
 }
