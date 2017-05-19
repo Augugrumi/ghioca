@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -21,7 +22,6 @@ import android.widget.Toast;
 
 import com.augugrumi.ghioca.listener.UploadingListener;
 import com.augugrumi.ghioca.utility.ConvertUriToFilePath;
-
 import com.github.florent37.camerafragment.CameraFragment;
 import com.github.florent37.camerafragment.CameraFragmentApi;
 import com.github.florent37.camerafragment.configuration.Configuration;
@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.addCameraButton)
     View addCameraButton;
 
+    private TurnOnWiFiFragment fragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +94,12 @@ public class MainActivity extends AppCompatActivity {
         if (permissionsToRequest.isEmpty())
             addCamera();
 
+        FragmentManager fm = getSupportFragmentManager();
+        if(savedInstanceState == null) {
+            fragment = new TurnOnWiFiFragment();
+        }
+        if (fragment != null)
+            fragment.show(getFragmentManager(), "");
     }
 
     @OnClick(R.id.addCameraButton)

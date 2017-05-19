@@ -1,5 +1,6 @@
 package com.augugrumi.ghioca;
 
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -30,6 +31,15 @@ public class TurnOnWiFiFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        Dialog dialog = getDialog();
+        if (dialog != null && getRetainInstance()) {
+            dialog.setDismissMessage(null);
+        }
+        super.onDestroyView();
     }
 
     @Override
