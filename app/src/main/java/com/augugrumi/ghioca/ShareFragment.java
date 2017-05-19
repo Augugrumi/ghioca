@@ -27,6 +27,7 @@ import com.robertsimoes.shareable.Shareable;
 
 import org.apache.commons.lang3.text.WordUtils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -236,7 +237,28 @@ public class ShareFragment extends DialogFragment {
 
     @OnClick(R.id.fab_instagram)
     public void instagramShare(){
+        Intent intent = getContext().getPackageManager().getLaunchIntentForPackage("com.instagram.android");
+        if (intent != null)
+        {
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.setPackage("com.instagram.android");
 
+            shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
+
+            shareIntent.setType("image/*");
+
+            startActivity(shareIntent);
+        }
+        else
+        {
+            // bring user to the market to download the app.
+            // or let them choose an app?
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setData(Uri.parse("market://details?id="+"com.instagram.android"));
+            startActivity(intent);
+        }
     }
 
     @OnClick(R.id.fab_whatsapp)
