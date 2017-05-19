@@ -3,6 +3,8 @@ package com.augugrumi.ghioca;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -229,7 +231,26 @@ public class ShareFragment extends DialogFragment {
 
     @OnClick(R.id.fab_whatsapp)
     public void whatsAppShare(){
+        PackageManager pm = this.getActivity().getPackageManager();
+        try {
+            Intent waIntent = new Intent(Intent.ACTION_SEND);
+            waIntent.setType("image/jpeg");
 
+            //TODO remove this line (debug purposes) and uncomment the line below!
+            String toShare = "una bella descrizione della foto\n#prova #prova #prova #prova ";
+            //String toShare = shareContent();
+
+            PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
+            //Check if package exists or not. If not then code in catch block will be called
+            waIntent.setPackage("com.whatsapp");
+
+            waIntent.putExtra(Intent.EXTRA_TEXT, toShare);
+            waIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
+            startActivity(Intent.createChooser(waIntent, "Share Image"));
+
+        } catch (PackageManager.NameNotFoundException e) {
+            Toast.makeText(this.getActivity(), "WhatsApp not Installed", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @OnClick(R.id.fab_tumblr)
