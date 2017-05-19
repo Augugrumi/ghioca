@@ -1,10 +1,10 @@
 package com.augugrumi.ghioca;
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -41,6 +41,7 @@ public class ResultActivity extends AppCompatActivity {
     private ArrayList<String> results;
     private String description;
     CallbackManager callbackManager;
+    DialogFragment newFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,11 @@ public class ResultActivity extends AppCompatActivity {
         path = getIntent().getStringExtra("path");
         Log.d("RESULT_ACTIVITY",path);
         Picasso.with(this).load("file://" + path).into(imageView);
+
+        FragmentManager fm = getSupportFragmentManager();
+        if(savedInstanceState == null) {
+            newFragment = new ShareFragment();
+        }
 
         /*final ProgressDialog searchProgressDialog;
         searchProgressDialog = new ProgressDialog(ResultActivity.this);
@@ -168,18 +174,16 @@ public class ResultActivity extends AppCompatActivity {
     @OnClick(R.id.share_fab)
     public void share() {
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+       /* FragmentTransaction ft = getFragmentManager().beginTransaction();
         android.support.v4.app.Fragment prev = getSupportFragmentManager().findFragmentById(R.id.share_dialogfragment);
         ft.addToBackStack(null);
 
         // Create and show the dialog.
-        newFragment = ShareFragment.newInstance(1);
+        newFragment = ShareFragment.newInstance(1);*/
         newFragment.show(getSupportFragmentManager(), "dialog");
 
 
     }
-
-    DialogFragment newFragment;
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {

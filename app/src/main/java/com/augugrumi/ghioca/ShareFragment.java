@@ -1,5 +1,6 @@
 package com.augugrumi.ghioca;
 
+import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -74,7 +75,7 @@ public class ShareFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setAllowReturnTransitionOverlap(true);
+        setRetainInstance(true);
     }
 
     @Override
@@ -91,7 +92,16 @@ public class ShareFragment extends DialogFragment {
         return view;
     }
 
-    static ShareFragment newInstance(int num) {
+    @Override
+    public void onDestroyView() {
+        Dialog dialog = getDialog();
+        if (dialog != null && getRetainInstance()) {
+            dialog.setDismissMessage(null);
+        }
+        super.onDestroyView();
+    }
+
+    /*static ShareFragment newInstance(int num) {
         ShareFragment f = new ShareFragment();
 
         // Supply num input as an argument.
@@ -100,7 +110,7 @@ public class ShareFragment extends DialogFragment {
         f.setArguments(args);
 
         return f;
-    }
+    }*/
 
     @OnClick(R.id.fab_other)
     public void otherShare() {
