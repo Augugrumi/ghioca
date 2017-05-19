@@ -50,7 +50,7 @@ dependencies {
     compile 'com.github.Augugrumi:camerafragment:v1.1.0'
 
     //searching image library
-    compile 'com.github.Augugrumi:libris:v1.0.0'
+    compile 'com.github.Augugrumi:libris:v2.0.0'
 
     testCompile 'junit:junit:4.12'
 
