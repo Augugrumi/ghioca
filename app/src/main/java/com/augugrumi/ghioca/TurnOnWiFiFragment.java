@@ -5,8 +5,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.augugrumi.ghioca.utility.NetworkingUtility;
+
+import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * @author Marco Zanella
@@ -15,6 +20,11 @@ import butterknife.ButterKnife;
  */
 
 public class TurnOnWiFiFragment extends DialogFragment {
+    @Bind(R.id.turn_on_wifi)
+    Button wifiActivationButton;
+    @Bind(R.id.cancel_button)
+    Button cancelButton;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,5 +41,13 @@ public class TurnOnWiFiFragment extends DialogFragment {
         return view;
     }
 
+    @OnClick(R.id.turn_on_wifi)
+    public void onAccept() {
+        NetworkingUtility.turnOnWiFi();
+    }
 
+    @OnClick(R.id.cancel_button)
+    public void onCancel() {
+        dismiss();
+    }
 }
