@@ -15,11 +15,14 @@ import android.widget.TextView;
 
 import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.GoogleReverseImageSearchListener;
+import com.augugrumi.ghioca.listener.ImaggaReverseImageSearchListener;
+import com.augugrumi.ghioca.listener.WatsonReverseImageSearchListener;
 import com.augugrumi.ghioca.utility.SearchingUtility;
 import com.facebook.CallbackManager;
 import com.squareup.picasso.Picasso;
 
 import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
+import it.polpetta.libris.image.contract.IImageSearchResult;
 import it.polpetta.libris.image.google.contract.IGoogleImageSearchResult;
 
 import java.io.IOException;
@@ -28,6 +31,7 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import it.polpetta.libris.image.ibm.contract.IIBMImageSearchResult;
 
 public class ResultActivity extends AppCompatActivity {
 
@@ -44,6 +48,8 @@ public class ResultActivity extends AppCompatActivity {
     private String path;
     private GoogleReverseImageSearchListener googleListener;
     private AzureReverseImageSearchListener azureListener;
+    private WatsonReverseImageSearchListener watsonListener;
+    private ImaggaReverseImageSearchListener imaggaListener;
     private int numberOfSearch;
     private ArrayList<String> results;
     private String description;
@@ -183,8 +189,109 @@ public class ResultActivity extends AppCompatActivity {
             }
         };
 
+        watsonListener = new WatsonReverseImageSearchListener() {
+            @Override
+            public void onSuccess(IIBMImageSearchResult result) {
+                if (result != null) {
+                    String res = result.getBestGuess();
+                    if (res != null)
+                        if (!results.contains(res))
+                            results.add(res);
+                    if (searchResult.getText().toString().equalsIgnoreCase("No results found"))
+                        searchResult.setText(res);
+                    else
+                        searchResult.append("\n" + res);
+                }
+
+                numberOfSearch -= 1;
+                if (numberOfSearch <= 0) {
+                    searchProgressDialog.dismiss();
+                    searchResult.setText("");
+                    for (String s : results)
+                        searchResult.append(s + "\n");
+                }
+            }
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                if (e instanceof IOException) {
+                    searchProgressDialog.dismiss();
+                    AlertDialog errorDialog;
+                    errorDialog = new AlertDialog.Builder(ResultActivity.this).create();
+                    errorDialog.setCancelable(true);
+                    errorDialog.setTitle("Error");
+                    errorDialog.setMessage("An error occur during the reverse search please try again");
+                    errorDialog.show();
+                    numberOfSearch -= 1;
+                    if (numberOfSearch <= 0) {
+                        searchProgressDialog.dismiss();
+                        searchResult.setText("");
+                        for (String s : results)
+                            searchResult.append(s + "\n");
+                    }
+                }
+            }
+        };
+
+        imaggaListener = new ImaggaReverseImageSearchListener() {
+            @Override
+            public void onSuccess(IImageSearchResult result) {
+                if (result != null) {
+                    String res = result.getBestGuess();
+                    if (res != null)
+                        if (!results.contains(res))
+                            results.add(res);
+                    if (searchResult.getText().toString().equalsIgnoreCase("No results found"))
+                        searchResult.setText(res);
+                    else
+                        searchResult.append("\n" + res);
+                }
+
+                numberOfSearch -= 1;
+                if (numberOfSearch <= 0) {
+                    searchProgressDialog.dismiss();
+                    searchResult.setText("");
+                    for (String s : results)
+                        searchResult.append(s + "\n");
+                }
+            }
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                if (e instanceof IOException) {
+                    searchProgressDialog.dismiss();
+                    AlertDialog errorDialog;
+                    errorDialog = new AlertDialog.Builder(ResultActivity.this).create();
+                    errorDialog.setCancelable(true);
+                    errorDialog.setTitle("Error");
+                    errorDialog.setMessage("An error occur during the reverse search please try again");
+                    errorDialog.show();
+                    numberOfSearch -= 1;
+                    if (numberOfSearch <= 0) {
+                        searchProgressDialog.dismiss();
+                        searchResult.setText("");
+                        for (String s : results)
+                            searchResult.append(s + "\n");
+                    }
+                }
+            }
+        };
+
         SearchingUtility.searchImageWithGoogle(url, googleListener);
         SearchingUtility.searchImageWithAzure(url, azureListener);
+        SearchingUtility.searchImageWithWatson(url, watsonListener);
+        SearchingUtility.searchImageWithImagga(url, imaggaListener);
+
     }
 
     public String getDescription() {

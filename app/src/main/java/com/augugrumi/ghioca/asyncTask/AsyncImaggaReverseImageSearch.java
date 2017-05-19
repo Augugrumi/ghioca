@@ -21,7 +21,7 @@ import java.net.URL;
 
 public class AsyncImaggaReverseImageSearch extends AsyncTask<Void, Void, Void> {
 
-    private static String watsonKey =
+    private static String imaggaKey =
             MyApplication.getAppContext().getString(R.string.IMAGGA_KEY);
 
     private ImaggaReverseImageSearchListener listener;
@@ -48,7 +48,7 @@ public class AsyncImaggaReverseImageSearch extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... params) {
         try {
             result = ReverseImageSearch
-                    .getIBMServices(watsonKey)
+                    .getIBMServices(imaggaKey)
                     .imageSearchBuildQuery()
                     .setImage(new URL(url))
                     .build()

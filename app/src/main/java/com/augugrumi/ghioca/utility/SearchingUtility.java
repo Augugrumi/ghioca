@@ -7,6 +7,8 @@ import com.augugrumi.ghioca.MyApplication;
 import com.augugrumi.ghioca.R;
 import com.augugrumi.ghioca.asyncTask.AsyncAzureReverseImageSearch;
 import com.augugrumi.ghioca.asyncTask.AsyncGoogleReverseImageSearch;
+import com.augugrumi.ghioca.asyncTask.AsyncImaggaReverseImageSearch;
+import com.augugrumi.ghioca.asyncTask.AsyncWatsonReverseImageSearch;
 import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.GoogleReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.ImaggaReverseImageSearchListener;
@@ -41,10 +43,10 @@ public class SearchingUtility {
     }
 
     public static void searchImageWithWatson(final String url, final WatsonReverseImageSearchListener listener){
-
+        new AsyncWatsonReverseImageSearch(url, listener);
     }
 
     public static void searchImageWithImagga(final String url, final ImaggaReverseImageSearchListener listener){
-
+        new AsyncImaggaReverseImageSearch(url, listener);
     }
 }

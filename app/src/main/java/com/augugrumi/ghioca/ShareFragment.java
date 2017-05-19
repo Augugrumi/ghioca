@@ -118,7 +118,7 @@ public class ShareFragment extends DialogFragment {
         ArrayList<String> results = ((ResultActivity)getActivity()).getResults();
         String description = ((ResultActivity)getActivity()).getDescription();
         Intent share = new Intent(Intent.ACTION_SEND);
-        share.setType("image/jpeg");
+        share.setType("image/*");
         StringBuilder textToShare = new StringBuilder(description);
         textToShare.append("\n");
         for (String res : results) {
