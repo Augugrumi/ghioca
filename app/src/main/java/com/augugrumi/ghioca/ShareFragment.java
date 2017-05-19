@@ -237,28 +237,19 @@ public class ShareFragment extends DialogFragment {
 
     @OnClick(R.id.fab_instagram)
     public void instagramShare(){
-        Intent intent = getContext().getPackageManager().getLaunchIntentForPackage("com.instagram.android");
-        if (intent != null)
-        {
-            Intent shareIntent = new Intent();
-            shareIntent.setAction(Intent.ACTION_SEND);
-            shareIntent.setPackage("com.instagram.android");
+        // Create the new Intent using the 'Send' action.
+        Intent share = new Intent(Intent.ACTION_SEND);
 
-            shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
+        // Set the MIME type
+        share.setType("image/*");
 
-            shareIntent.setType("image/*");
+        share.setPackage("com.instagram.android");
 
-            startActivity(shareIntent);
-        }
-        else
-        {
-            // bring user to the market to download the app.
-            // or let them choose an app?
-            intent = new Intent(Intent.ACTION_VIEW);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.setData(Uri.parse("market://details?id="+"com.instagram.android"));
-            startActivity(intent);
-        }
+        // Add the URI to the Intent.
+        share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"+path));
+
+        // Broadcast the Intent.
+        startActivity(Intent.createChooser(share, "Share to"));
     }
 
     @OnClick(R.id.fab_whatsapp)
@@ -268,8 +259,6 @@ public class ShareFragment extends DialogFragment {
             Intent waIntent = new Intent(Intent.ACTION_SEND);
             waIntent.setType("image/jpeg");
 
-            //TODO remove this line (debug purposes) and uncomment the line below!
-            //String toShare = "una bella descrizione della foto\n#prova #prova #prova #prova ";
             String toShare = shareContent();
 
             PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
