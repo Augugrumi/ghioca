@@ -16,6 +16,7 @@ import it.polpetta.libris.image.ReverseImageSearch;
 import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
 import it.polpetta.libris.image.google.contract.IGoogleImageSearchResult;
 
+import java.io.IOException;
 import java.net.URL;
 
 /**
