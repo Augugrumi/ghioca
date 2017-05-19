@@ -22,6 +22,7 @@ import com.squareup.picasso.Picasso;
 import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
 import it.polpetta.libris.image.google.contract.IGoogleImageSearchResult;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -110,25 +111,21 @@ public class ResultActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Exception e) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        searchProgressDialog.dismiss();
-                        AlertDialog errorDialog;
-                        errorDialog = new AlertDialog.Builder(ResultActivity.this).create();
-                        errorDialog.setCancelable(true);
-                        errorDialog.setTitle("Error");
-                        errorDialog.setMessage("An error occur during the reverse search please try again");
-                        errorDialog.show();
-                    }
-                });
-
-                numberOfSearch -= 1;
-                if (numberOfSearch <= 0) {
+                if (e instanceof IOException) {
                     searchProgressDialog.dismiss();
-                    searchResult.setText("");
-                    for (String s : results)
-                        searchResult.append(s + "\n");
+                    AlertDialog errorDialog;
+                    errorDialog = new AlertDialog.Builder(ResultActivity.this).create();
+                    errorDialog.setCancelable(true);
+                    errorDialog.setTitle("Error");
+                    errorDialog.setMessage("An error occur during the reverse search please try again");
+                    errorDialog.show();
+                    numberOfSearch -= 1;
+                    if (numberOfSearch <= 0) {
+                        searchProgressDialog.dismiss();
+                        searchResult.setText("");
+                        for (String s : results)
+                            searchResult.append(s + "\n");
+                    }
                 }
             }
         };
@@ -167,24 +164,21 @@ public class ResultActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Exception e) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        searchProgressDialog.dismiss();
-                        AlertDialog errorDialog;
-                        errorDialog = new AlertDialog.Builder(ResultActivity.this).create();
-                        errorDialog.setCancelable(true);
-                        errorDialog.setTitle("Error");
-                        errorDialog.setMessage("An error occur during the reverse search please try again");
-                        errorDialog.show();
-                    }
-                });
-                numberOfSearch -= 1;
-                if (numberOfSearch <= 0) {
+                if (e instanceof IOException) {
                     searchProgressDialog.dismiss();
-                    searchResult.setText("");
-                    for (String s : results)
-                        searchResult.append(s + "\n");
+                    AlertDialog errorDialog;
+                    errorDialog = new AlertDialog.Builder(ResultActivity.this).create();
+                    errorDialog.setCancelable(true);
+                    errorDialog.setTitle("Error");
+                    errorDialog.setMessage("An error occur during the reverse search please try again");
+                    errorDialog.show();
+                    numberOfSearch -= 1;
+                    if (numberOfSearch <= 0) {
+                        searchProgressDialog.dismiss();
+                        searchResult.setText("");
+                        for (String s : results)
+                            searchResult.append(s + "\n");
+                    }
                 }
             }
         };

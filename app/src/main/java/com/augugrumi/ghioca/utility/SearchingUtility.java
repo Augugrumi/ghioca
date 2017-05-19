@@ -12,6 +12,7 @@ import it.polpetta.libris.image.ReverseImageSearch;
 import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
 import it.polpetta.libris.image.google.contract.IGoogleImageSearchResult;
 
+import java.io.IOException;
 import java.net.URL;
 
 /**
@@ -41,10 +42,11 @@ public class SearchingUtility {
                             .setImage(new URL(url))
                             .build()
                             .search();
-                    Log.i("SEARCH_RESULT", result.toJSONString());
-                } catch (Exception error) {
-                    listener.onFailure(error);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                Log.i("SEARCH_RESULT", result.toJSONString());
+
 
                 return null;
             }
