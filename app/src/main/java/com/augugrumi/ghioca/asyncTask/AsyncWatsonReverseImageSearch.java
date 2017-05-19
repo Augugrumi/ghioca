@@ -57,6 +57,7 @@ public class AsyncWatsonReverseImageSearch extends AsyncTask<Void, Void, Void> {
             Log.i("SEARCH_RESULT", result.toJSONString());
         } catch (Exception error) {
             e = error;
+            Log.e("WATSON_ERROR",e.toString());
         }
 
         return null;

@@ -115,19 +115,13 @@ public class ShareFragment extends DialogFragment {
 
     @OnClick(R.id.fab_other)
     public void otherShare() {
-        ArrayList<String> results = ((ResultActivity)getActivity()).getResults();
-        String description = ((ResultActivity)getActivity()).getDescription();
+
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/*");
-        StringBuilder textToShare = new StringBuilder(description);
-        textToShare.append("\n");
-        for (String res : results) {
-            textToShare.append("#");
-            textToShare.append(WordUtils.uncapitalize((WordUtils.capitalize(res)).replaceAll(" ", "")));
-            textToShare.append(" ");
-        }
-        textToShare.append("#GhioCa");
-        share.putExtra(Intent.EXTRA_TEXT, textToShare.toString());
+
+        String toShare = shareContent();
+
+        share.putExtra(Intent.EXTRA_TEXT, toShare);
         share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
         startActivity(Intent.createChooser(share, "Share Image"));
     }
@@ -144,6 +138,8 @@ public class ShareFragment extends DialogFragment {
             toShare.append(" ");
         }
 
+        toShare.append("#GhioCa");
+
         return toShare.toString();
     }
 
@@ -158,10 +154,9 @@ public class ShareFragment extends DialogFragment {
                 "Hastags and description copied to the clipboard", Toast.LENGTH_LONG).show();
     }
 
-    @OnClick(R.id.fab_facebook) //TODO: IMPLEMENTARE UNA SHARE DIALOG??
+    @OnClick(R.id.fab_facebook)
     public void facebookShare(){
-        //TODO remove this line (debug purposes) and uncomment the line below!
-        //String toShare = "una bella descrizione della foto\n#prova #prova #prova #prova ";
+
         String toShare = shareContent();
         copyToClipboard(toShare);
 
@@ -215,68 +210,69 @@ public class ShareFragment extends DialogFragment {
     @OnClick(R.id.fab_twitter)
     public void twitterShare(){
 
-        ArrayList<String> results = ((ResultActivity)getActivity()).getResults();
-        String description = ((ResultActivity)getActivity()).getDescription();
-        StringBuilder textToShare = new StringBuilder(description);
-        textToShare.append("\n");
-        for (String res : results) {
-            textToShare.append("#");
-            textToShare.append(WordUtils.uncapitalize((WordUtils.capitalize(res)).replaceAll(" ", "")));
-            textToShare.append(" ");
+        String packageName = "com.twitter.android";
+        if(AppInstallationChecker.isPackageInstalled(packageName, getContext().getPackageManager())){
+            String toShare = shareContent();
+
+            Shareable imageShare = new Shareable.Builder(this.getActivity())
+                    .message(toShare)
+                    .image(Uri.parse("file://" + path))
+                    .socialChannel(Shareable.Builder.TWITTER)
+                    .build();
+
+            imageShare.share();
+        }
+        else{
+            redirectToGooglePlay(packageName);
         }
 
-        textToShare.append("#GhioCa");
 
-        Shareable imageShare = new Shareable.Builder(this.getActivity())
-                .message(textToShare.toString())
-                .image(Uri.parse("file://" + path))
-                .socialChannel(Shareable.Builder.TWITTER)
-                .build();
-        imageShare.share();
+
     }
 
     @OnClick(R.id.fab_instagram)
     public void instagramShare(){
-        
-        if(AppInstallationChecker.isPackageInstalled("com.instagram.android", getContext().getPackageManager())){
+
+        String packageName = "com.instagram.android";
+        String toShare = shareContent();
+        copyToClipboard(toShare);
+        if(AppInstallationChecker.isPackageInstalled(packageName, getContext().getPackageManager())){
             // Create the new Intent using the 'Send' action.
             Intent share = new Intent(Intent.ACTION_SEND);
 
             // Set the MIME type
             share.setType("image/*");
 
-            share.setPackage("com.instagram.android");
+            share.setPackage(packageName);
 
             // Add the URI to the Intent.
             share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"+path));
 
             // Broadcast the Intent.
-            startActivity(Intent.createChooser(share, "Share to"));
+            startActivity(share);
         }
         else{
-            //// TODO: 19/05/17 request to install instagram or redirect to play store
+            redirectToGooglePlay(packageName);
         }
     }
 
     @OnClick(R.id.fab_whatsapp)
     public void whatsAppShare(){
+        String packageName = "com.whatsapp.android";
         PackageManager pm = this.getActivity().getPackageManager();
-        try {
+        if(AppInstallationChecker.isPackageInstalled(packageName,getContext().getPackageManager())){
             Intent waIntent = new Intent(Intent.ACTION_SEND);
-            waIntent.setType("image/jpeg");
+            waIntent.setType("image/*");
+            waIntent.setPackage(packageName);
 
             String toShare = shareContent();
-
-            PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
-            //Check if package exists or not. If not then code in catch block will be called
-            waIntent.setPackage("com.whatsapp");
 
             waIntent.putExtra(Intent.EXTRA_TEXT, toShare);
             waIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
             startActivity(Intent.createChooser(waIntent, "Share Image"));
 
-        } catch (PackageManager.NameNotFoundException e) {
-            Toast.makeText(this.getActivity(), "WhatsApp not Installed", Toast.LENGTH_SHORT).show();
+        } else {
+            redirectToGooglePlay(packageName);
         }
     }
 
@@ -298,6 +294,14 @@ public class ShareFragment extends DialogFragment {
     @OnClick(R.id.fab_linkedin)
     public void linkedinShare(){
 
+    }
+
+    private void redirectToGooglePlay(String appPackageName){
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        } catch (android.content.ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
     }
 
 
