@@ -2,6 +2,7 @@ package com.augugrumi.ghioca;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.support.v4.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.addCameraButton)
     View addCameraButton;
 
-    private TurnOnWiFiFragment fragment;
+    private DialogFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             fragment = new TurnOnWiFiFragment();
         }
         if (fragment != null)
-            fragment.show(getFragmentManager(), "");
+            fragment.show(fm, "dialog");
     }
 
     @OnClick(R.id.addCameraButton)
