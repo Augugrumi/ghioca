@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import com.augugrumi.ghioca.MyApplication;
+import com.augugrumi.ghioca.R;
 import com.augugrumi.ghioca.listener.UploadingListener;
 
 import io.filepicker.Filepicker;
@@ -17,7 +19,8 @@ import io.filepicker.models.FPFile;
  */
 
 public class UploadingUtility {
-    public static final String MY_API_KEY = "AyGC1V2noQEibxzJtItUuz";
+    public static final String MY_API_KEY =
+            MyApplication.getAppContext().getString(R.string.FILESTACK_KEY);
     static {
         // TODO -> put in more appropriate place
         Filepicker.setKey(MY_API_KEY);
@@ -28,7 +31,7 @@ public class UploadingUtility {
         Filepicker.uploadLocalFile(Uri.parse(path), context, new FilepickerCallback() {
             @Override
             public void onFileUploadSuccess(final FPFile fpFile) {
-                Log.i("provaupload", "6");
+                Log.i("provaupload", "6" + fpFile.getUrl().toString());
                 listener.onFinish(fpFile.getUrl());
             }
 

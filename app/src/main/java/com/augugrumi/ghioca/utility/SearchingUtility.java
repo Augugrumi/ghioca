@@ -3,6 +3,8 @@ package com.augugrumi.ghioca.utility;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.augugrumi.ghioca.MyApplication;
+import com.augugrumi.ghioca.R;
 import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.GoogleReverseImageSearchListener;
 
@@ -19,7 +21,11 @@ import java.net.URL;
  */
 
 public class SearchingUtility {
-    final static String azureKey = "***REMOVED***";
+    final static String azureKey = MyApplication.getAppContext().getString(R.string.AZURE_KEY);
+
+    static {
+        Log.i("PROVA_CHIAVI", azureKey);
+    }
 
     public static void searchImageWithGoogle(final String url,
                                              final GoogleReverseImageSearchListener listener) {

@@ -86,9 +86,9 @@ public class ShareFragment extends DialogFragment {
         ButterKnife.bind(this, view);
         path = getActivity().getIntent().getStringExtra("path");
         //TODO try with a mock url
-        //url = getActivity().getIntent().getStringExtra("url");
-        url = "https://previews.123rf.com/images/burakowski/burakowski1202/burakowski120200227/" +
-                "12222018-Example-rubber-stamp-Stock-Vector-sample.jpg";
+        url = getActivity().getIntent().getStringExtra("url");
+        //url = "https://previews.123rf.com/images/burakowski/burakowski1202/burakowski120200227/" +
+        //        "12222018-Example-rubber-stamp-Stock-Vector-sample.jpg";
         return view;
     }
 
@@ -160,8 +160,8 @@ public class ShareFragment extends DialogFragment {
     @OnClick(R.id.fab_facebook) //TODO: IMPLEMENTARE UNA SHARE DIALOG??
     public void facebookShare(){
         //TODO remove this line (debug purposes) and uncomment the line below!
-        String toShare = "una bella descrizione della foto\n#prova #prova #prova #prova ";
-        //String toShare = shareContent();
+        //String toShare = "una bella descrizione della foto\n#prova #prova #prova #prova ";
+        String toShare = shareContent();
         copyToClipboard(toShare);
 
         ShareDialog shareDialog = new ShareDialog(this);
@@ -247,8 +247,8 @@ public class ShareFragment extends DialogFragment {
             waIntent.setType("image/jpeg");
 
             //TODO remove this line (debug purposes) and uncomment the line below!
-            String toShare = "una bella descrizione della foto\n#prova #prova #prova #prova ";
-            //String toShare = shareContent();
+            //String toShare = "una bella descrizione della foto\n#prova #prova #prova #prova ";
+            String toShare = shareContent();
 
             PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
             //Check if package exists or not. If not then code in catch block will be called

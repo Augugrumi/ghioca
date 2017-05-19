@@ -21,7 +21,7 @@ import android.widget.Toast;
 
 import com.augugrumi.ghioca.listener.UploadingListener;
 import com.augugrumi.ghioca.utility.ConvertUriToFilePath;
-
+import com.augugrumi.ghioca.utility.UploadingUtility;
 import com.github.florent37.camerafragment.CameraFragment;
 import com.github.florent37.camerafragment.CameraFragmentApi;
 import com.github.florent37.camerafragment.configuration.Configuration;
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                                     File.separator + name + ".jpg");
                             startActivity(intent);
 
-                            /*final ProgressDialog uploadProgressDialog;
+                            final ProgressDialog uploadProgressDialog;
                             uploadProgressDialog = new ProgressDialog(MainActivity.this);
                             uploadProgressDialog.setCancelable(false);
                             uploadProgressDialog.setTitle("Uploading the image");
@@ -195,8 +195,8 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             };
                             Log.i("provaupload", MyApplication.appFolderPath + File.separator + name + ".jpg");
-                            //UploadingUtility.uploadToServer("file://" + MyApplication.appFolderPath +
-                            // File.separator + name + ".jpg", MainActivity.this, listener);*/
+                            UploadingUtility.uploadToServer("file://" + MyApplication.appFolderPath +
+                             File.separator + name + ".jpg", MainActivity.this, listener);
                         }
                     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
                 }
@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         };
                         Log.i("provaupload", filePath);
-                        //UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
+                        UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
                     }
                 }
 
