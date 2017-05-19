@@ -154,13 +154,19 @@ public class ResultActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Exception e) {
-                searchProgressDialog.dismiss();
-                AlertDialog errorDialog;
-                errorDialog = new AlertDialog.Builder(ResultActivity.this).create();
-                errorDialog.setCancelable(true);
-                errorDialog.setTitle("Error");
-                errorDialog.setMessage("An error occur during the reverse search please try again");
-                errorDialog.show();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        searchProgressDialog.dismiss();
+                        AlertDialog errorDialog;
+                        errorDialog = new AlertDialog.Builder(ResultActivity.this).create();
+                        errorDialog.setCancelable(true);
+                        errorDialog.setTitle("Error");
+                        errorDialog.setMessage("An error occur during the reverse search please try again");
+                        errorDialog.show();
+                    }
+                });
+
             }
         };
 
