@@ -27,6 +27,7 @@ import com.robertsimoes.shareable.Shareable;
 
 import org.apache.commons.lang3.text.WordUtils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -236,7 +237,25 @@ public class ShareFragment extends DialogFragment {
 
     @OnClick(R.id.fab_instagram)
     public void instagramShare(){
+        
+        if(AppInstallationChecker.isPackageInstalled("com.instagram.android", getContext().getPackageManager())){
+            // Create the new Intent using the 'Send' action.
+            Intent share = new Intent(Intent.ACTION_SEND);
 
+            // Set the MIME type
+            share.setType("image/*");
+
+            share.setPackage("com.instagram.android");
+
+            // Add the URI to the Intent.
+            share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"+path));
+
+            // Broadcast the Intent.
+            startActivity(Intent.createChooser(share, "Share to"));
+        }
+        else{
+            //// TODO: 19/05/17 request to install instagram or redirect to play store
+        }
     }
 
     @OnClick(R.id.fab_whatsapp)
@@ -246,8 +265,6 @@ public class ShareFragment extends DialogFragment {
             Intent waIntent = new Intent(Intent.ACTION_SEND);
             waIntent.setType("image/jpeg");
 
-            //TODO remove this line (debug purposes) and uncomment the line below!
-            //String toShare = "una bella descrizione della foto\n#prova #prova #prova #prova ";
             String toShare = shareContent();
 
             PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
