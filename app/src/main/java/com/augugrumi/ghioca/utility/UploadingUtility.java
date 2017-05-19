@@ -32,6 +32,7 @@ public class UploadingUtility {
             @Override
             public void onFileUploadSuccess(final FPFile fpFile) {
                 Log.i("provaupload", "6" + fpFile.getUrl().toString());
+                Log.i("provaupload", "7 url->" + fpFile.getUrl().toString());
                 listener.onFinish(fpFile.getUrl());
             }
 
