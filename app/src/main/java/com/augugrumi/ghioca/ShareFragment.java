@@ -237,19 +237,25 @@ public class ShareFragment extends DialogFragment {
 
     @OnClick(R.id.fab_instagram)
     public void instagramShare(){
-        // Create the new Intent using the 'Send' action.
-        Intent share = new Intent(Intent.ACTION_SEND);
+        
+        if(AppInstallationChecker.isPackageInstalled("com.instagram.android", getContext().getPackageManager())){
+            // Create the new Intent using the 'Send' action.
+            Intent share = new Intent(Intent.ACTION_SEND);
 
-        // Set the MIME type
-        share.setType("image/*");
+            // Set the MIME type
+            share.setType("image/*");
 
-        share.setPackage("com.instagram.android");
+            share.setPackage("com.instagram.android");
 
-        // Add the URI to the Intent.
-        share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"+path));
+            // Add the URI to the Intent.
+            share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"+path));
 
-        // Broadcast the Intent.
-        startActivity(Intent.createChooser(share, "Share to"));
+            // Broadcast the Intent.
+            startActivity(Intent.createChooser(share, "Share to"));
+        }
+        else{
+            //// TODO: 19/05/17 request to install instagram or redirect to play store
+        }
     }
 
     @OnClick(R.id.fab_whatsapp)
