@@ -1,7 +1,6 @@
 package com.augugrumi.ghioca.listener;
 
 import it.polpetta.libris.image.contract.IImageSearchResult;
-
 /**
  * @author Marco Zanella
  * @version 0.01
