@@ -1,4 +1,4 @@
-package com.augugrumi.ghioca.listener.defaultinplementation;
+package com.augugrumi.ghioca.listener.defaultimplementation;
 
 import android.app.Activity;
 import android.app.AlertDialog;

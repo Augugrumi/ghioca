@@ -17,7 +17,7 @@ import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.GoogleReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.ImaggaReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.WatsonReverseImageSearchListener;
-import com.augugrumi.ghioca.listener.defaultinplementation.DefaultUploadingListener;
+import com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener;
 import com.augugrumi.ghioca.utility.SearchingUtility;
 import com.facebook.CallbackManager;
 import com.squareup.picasso.Picasso;

@@ -20,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.augugrumi.ghioca.listener.UploadingListener;
-import com.augugrumi.ghioca.listener.defaultinplementation.DefaultUploadingListener;
+import com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener;
 import com.augugrumi.ghioca.utility.ConvertUriToFilePath;
 import com.augugrumi.ghioca.utility.NetworkingUtility;
 import com.augugrumi.ghioca.utility.UploadingUtility;
