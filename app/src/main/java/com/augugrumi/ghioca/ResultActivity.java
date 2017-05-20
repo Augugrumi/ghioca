@@ -203,6 +203,13 @@ public class ResultActivity extends AppCompatActivity {
                         searchResult.setText(res);
                     else
                         searchResult.append("\n" + res);
+
+                    ArrayList<String> tags = result.getTags();
+                    if (tags != null)
+                        for (String tag : tags)
+                            if (!results.contains(tag))
+                                results.add(tag);
+
                 }
 
                 numberOfSearch -= 1;
@@ -252,6 +259,11 @@ public class ResultActivity extends AppCompatActivity {
                         searchResult.setText(res);
                     else
                         searchResult.append("\n" + res);
+                    ArrayList<String> tags = result.getTags();
+                    if (tags != null)
+                        for (String tag : tags)
+                            if (!results.contains(tag))
+                                results.add(tag);
                 }
 
                 numberOfSearch -= 1;
@@ -290,12 +302,12 @@ public class ResultActivity extends AppCompatActivity {
         };
 
 
-        //SearchingUtility.searchImageWithGoogle(url, googleListener);
-        //SearchingUtility.searchImageWithAzure(url, azureListener);
+        SearchingUtility.searchImageWithGoogle(url, googleListener);
+        SearchingUtility.searchImageWithAzure(url, azureListener);
 
 
-        SearchingUtility.searchImageWithWatson("https://it.wikipedia.org/wiki/Luis_Herrera#/media/File:Luis_Herrera.jpg", watsonListener);
-        //SearchingUtility.searchImageWithImagga(url, imaggaListener);
+        SearchingUtility.searchImageWithWatson(url, watsonListener);
+        SearchingUtility.searchImageWithImagga(url, imaggaListener);
 
     }
 

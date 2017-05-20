@@ -32,7 +32,6 @@ public class AsyncWatsonReverseImageSearch extends AsyncTask<Void, Void, Void> {
     private Exception e;
 
     public AsyncWatsonReverseImageSearch(String url, WatsonReverseImageSearchListener listener) {
-        Log.i("WATSON_SEARCH_RESULT", "creation");
         this.listener = listener;
         this.url = url;
         error = false;
@@ -42,24 +41,17 @@ public class AsyncWatsonReverseImageSearch extends AsyncTask<Void, Void, Void> {
     protected void onPreExecute() {
         super.onPreExecute();
         listener.onStart();
-        Log.i("WATSON_SEARCH_RESULT", "on pre execute");
     }
 
 
     @Override
     protected Void doInBackground(Void... params) {
         try {
-            Log.i("WATSON_SEARCH", "1");
             URL newUrl = new URL(url);
-            Log.i("WATSON_SEARCH", "2");
             IAbstractIBMImageFactoryReverseSearchProvider factory = ReverseImageSearch.getIBMServices(watsonKey);
-            Log.i("WATSON_SEARCH", "3");
             URLIBMImageSearcher.Builder builder = factory.imageSearchBuildQuery();
-            Log.i("WATSON_SEARCH", "4");
             builder.setImage(newUrl);
-            Log.i("WATSON_SEARCH", "5");
             URLIBMImageSearcher searcher = builder.build();
-            Log.i("WATSON_SEARCH", "6");
             result = searcher.search();
             /*result = ReverseImageSearch
                     .getIBMServices(watsonKey)
@@ -67,10 +59,8 @@ public class AsyncWatsonReverseImageSearch extends AsyncTask<Void, Void, Void> {
                     .setImage(newUrl)
                     .build()
                     .search();*/
-            Log.i("WATSON_SEARCH_RESULT", result.toJSONString());
         } catch (Exception error) {
             e = error;
-            Log.e("WATSON_ERROR",e.toString() + " " + url);
         }
 
         return null;

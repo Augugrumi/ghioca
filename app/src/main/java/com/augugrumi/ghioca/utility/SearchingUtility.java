@@ -34,7 +34,6 @@ public class SearchingUtility {
     }
 
     public static void searchImageWithWatson(final String url, final WatsonReverseImageSearchListener listener){
-        Log.i("URL__", " " + url);
         new AsyncWatsonReverseImageSearch(url, listener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);;
     }
 

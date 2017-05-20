@@ -88,8 +88,7 @@ public class ShareFragment extends DialogFragment {
         path = getActivity().getIntent().getStringExtra("path");
         //TODO try with a mock url
         url = getActivity().getIntent().getStringExtra("url");
-        //url = "https://previews.123rf.com/images/burakowski/burakowski1202/burakowski120200227/" +
-        //        "12222018-Example-rubber-stamp-Stock-Vector-sample.jpg";
+
         return view;
     }
 
