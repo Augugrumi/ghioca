@@ -5,12 +5,12 @@ import android.util.Log;
 
 import com.augugrumi.ghioca.MyApplication;
 import com.augugrumi.ghioca.R;
-import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
-import com.augugrumi.ghioca.listener.ImaggaReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.WatsonReverseImageSearchListener;
 
 import it.polpetta.libris.image.ReverseImageSearch;
+import it.polpetta.libris.image.ibm.contract.IAbstractIBMImageFactoryReverseSearchProvider;
 import it.polpetta.libris.image.ibm.contract.IIBMImageSearchResult;
+import it.polpetta.libris.image.ibm.visualRecognition.URLIBMImageSearcher;
 
 import java.net.URL;
 
@@ -32,6 +32,7 @@ public class AsyncWatsonReverseImageSearch extends AsyncTask<Void, Void, Void> {
     private Exception e;
 
     public AsyncWatsonReverseImageSearch(String url, WatsonReverseImageSearchListener listener) {
+        Log.i("WATSON_SEARCH_RESULT", "creation");
         this.listener = listener;
         this.url = url;
         error = false;
@@ -40,24 +41,36 @@ public class AsyncWatsonReverseImageSearch extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-
         listener.onStart();
+        Log.i("WATSON_SEARCH_RESULT", "on pre execute");
     }
 
 
     @Override
     protected Void doInBackground(Void... params) {
         try {
-            result = ReverseImageSearch
+            Log.i("WATSON_SEARCH", "1");
+            URL newUrl = new URL(url);
+            Log.i("WATSON_SEARCH", "2");
+            IAbstractIBMImageFactoryReverseSearchProvider factory = ReverseImageSearch.getIBMServices(watsonKey);
+            Log.i("WATSON_SEARCH", "3");
+            URLIBMImageSearcher.Builder builder = factory.imageSearchBuildQuery();
+            Log.i("WATSON_SEARCH", "4");
+            builder.setImage(newUrl);
+            Log.i("WATSON_SEARCH", "5");
+            URLIBMImageSearcher searcher = builder.build();
+            Log.i("WATSON_SEARCH", "6");
+            result = searcher.search();
+            /*result = ReverseImageSearch
                     .getIBMServices(watsonKey)
                     .imageSearchBuildQuery()
-                    .setImage(new URL(url))
+                    .setImage(newUrl)
                     .build()
-                    .search();
-            Log.i("SEARCH_RESULT", result.toJSONString());
+                    .search();*/
+            Log.i("WATSON_SEARCH_RESULT", result.toJSONString());
         } catch (Exception error) {
             e = error;
-            Log.e("WATSON_ERROR",e.toString());
+            Log.e("WATSON_ERROR",e.toString() + " " + url);
         }
 
         return null;

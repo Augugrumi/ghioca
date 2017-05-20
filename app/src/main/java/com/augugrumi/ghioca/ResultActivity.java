@@ -24,6 +24,7 @@ import com.squareup.picasso.Picasso;
 import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
 import it.polpetta.libris.image.contract.IImageSearchResult;
 import it.polpetta.libris.image.google.contract.IGoogleImageSearchResult;
+import it.polpetta.libris.image.ibm.contract.IIBMImageSearchResult;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,7 +32,6 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import it.polpetta.libris.image.ibm.contract.IIBMImageSearchResult;
 
 public class ResultActivity extends AppCompatActivity {
 
@@ -71,8 +71,10 @@ public class ResultActivity extends AppCompatActivity {
         searchResult.setMovementMethod(new ScrollingMovementMethod());
         results = new ArrayList<>();
 
-        url = getIntent().getStringExtra("url");
+        url = getIntent().getExtras().getString("url");
         path = getIntent().getStringExtra("path");
+        Log.i("WATSON_ONCREATEACTIVITY", url + " ");
+
         Log.d("RESULT_ACTIVITY",path);
         Picasso.with(this).load("file://" + path).into(imageView);
 
@@ -87,7 +89,7 @@ public class ResultActivity extends AppCompatActivity {
         searchProgressDialog.setTitle("Searching");
         searchProgressDialog.show();
 
-        numberOfSearch = 2;
+        numberOfSearch = 1;
 
         googleListener = new GoogleReverseImageSearchListener() {
             @Override
@@ -287,10 +289,13 @@ public class ResultActivity extends AppCompatActivity {
             }
         };
 
-        SearchingUtility.searchImageWithGoogle(url, googleListener);
-        SearchingUtility.searchImageWithAzure(url, azureListener);
-        SearchingUtility.searchImageWithWatson(url, watsonListener);
-        SearchingUtility.searchImageWithImagga(url, imaggaListener);
+
+        //SearchingUtility.searchImageWithGoogle(url, googleListener);
+        //SearchingUtility.searchImageWithAzure(url, azureListener);
+
+
+        SearchingUtility.searchImageWithWatson("https://it.wikipedia.org/wiki/Luis_Herrera#/media/File:Luis_Herrera.jpg", watsonListener);
+        //SearchingUtility.searchImageWithImagga(url, imaggaListener);
 
     }
 

@@ -155,11 +155,6 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         protected void onPostExecute(Void aVoid) {
-                            Intent intent = new Intent(MainActivity.this, ResultActivity.class);
-                            //intent.putExtra("url", url);
-                            intent.putExtra("path", MyApplication.appFolderPath +
-                                    File.separator + name + ".jpg");
-                            startActivity(intent);
 
                             final ProgressDialog uploadProgressDialog;
                             uploadProgressDialog = new ProgressDialog(MainActivity.this);

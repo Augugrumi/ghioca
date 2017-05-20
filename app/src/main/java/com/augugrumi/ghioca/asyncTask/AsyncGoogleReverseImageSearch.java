@@ -46,7 +46,7 @@ public class AsyncGoogleReverseImageSearch extends AsyncTask<Void, Void, Void> {
                     .setImage(new URL(url))
                     .build()
                     .search();
-            Log.i("SEARCH_RESULT", result.toJSONString());
+            Log.i("GOOGLE_SEARCH_RESULT", result.toJSONString());
         } catch (Exception error) {
             e = error;
         }

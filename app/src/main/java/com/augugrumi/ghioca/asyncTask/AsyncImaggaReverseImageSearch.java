@@ -6,10 +6,9 @@ import android.util.Log;
 import com.augugrumi.ghioca.MyApplication;
 import com.augugrumi.ghioca.R;
 import com.augugrumi.ghioca.listener.ImaggaReverseImageSearchListener;
-import com.augugrumi.ghioca.listener.WatsonReverseImageSearchListener;
 
 import it.polpetta.libris.image.ReverseImageSearch;
-import it.polpetta.libris.image.ibm.contract.IIBMImageSearchResult;
+import it.polpetta.libris.image.imagga.contract.IImaggaImageSearchResult;
 
 import java.net.URL;
 
@@ -25,7 +24,7 @@ public class AsyncImaggaReverseImageSearch extends AsyncTask<Void, Void, Void> {
             MyApplication.getAppContext().getString(R.string.IMAGGA_KEY);
 
     private ImaggaReverseImageSearchListener listener;
-    private IIBMImageSearchResult result;
+    private IImaggaImageSearchResult result;
     private boolean error;
     private String url;
     private Exception e;
@@ -48,12 +47,12 @@ public class AsyncImaggaReverseImageSearch extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... params) {
         try {
             result = ReverseImageSearch
-                    .getIBMServices(imaggaKey)
+                    .getImaggaServices(imaggaKey)
                     .imageSearchBuildQuery()
                     .setImage(new URL(url))
                     .build()
                     .search();
-            Log.i("SEARCH_RESULT", result.toJSONString());
+            Log.i("IMAGGA_SEARCH_RESULT", result.toJSONString());
         } catch (Exception error) {
             e = error;
         }
