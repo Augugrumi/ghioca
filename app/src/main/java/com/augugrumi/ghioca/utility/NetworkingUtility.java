@@ -1,6 +1,8 @@
 package com.augugrumi.ghioca.utility;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
@@ -13,20 +15,36 @@ import com.augugrumi.ghioca.MyApplication;
  * @since 0.01
  */
 
-public class NetworkingUtility {
+public class NetworkingUtility extends BroadcastReceiver{
+
+    private static boolean wifiEnabled;
+    private static boolean connectivityAvailable;
+
+    static {
+        wifiEnabled = wifiCheck();
+        connectivityAvailable = connectivityCheck();
+    }
+
     public static boolean isWifiEnabled() {
+        return wifiEnabled;
+    }
+
+    public static boolean isConnectivityAvailable() {
+        return connectivityAvailable;
+    }
+
+    private static boolean connectivityCheck() {
+        ConnectivityManager connectivityManager = (ConnectivityManager)
+                MyApplication.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
+    private static boolean wifiCheck() {
         WifiManager wifi = (WifiManager) MyApplication.getAppContext()
                 .getApplicationContext()
                 .getSystemService(Context.WIFI_SERVICE);
         return wifi.isWifiEnabled();
-    }
-
-    public static boolean isConnectivityAvailable() {
-        ConnectivityManager conMgr = (ConnectivityManager)MyApplication.getAppContext()
-            .getApplicationContext()
-            .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
-        return netInfo == null;
     }
 
     public static void turnOnWiFi() {
@@ -34,5 +52,11 @@ public class NetworkingUtility {
                 .getApplicationContext()
                 .getSystemService(Context.WIFI_SERVICE);
         wifiManager.setWifiEnabled(true);
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        wifiEnabled = wifiCheck();
+        connectivityAvailable = connectivityCheck();
     }
 }

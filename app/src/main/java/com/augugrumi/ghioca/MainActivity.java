@@ -2,7 +2,6 @@ package com.augugrumi.ghioca;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.support.v4.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.augugrumi.ghioca.listener.UploadingListener;
 import com.augugrumi.ghioca.utility.ConvertUriToFilePath;
+import com.augugrumi.ghioca.utility.NetworkingUtility;
 import com.github.florent37.camerafragment.CameraFragment;
 import com.github.florent37.camerafragment.CameraFragmentApi;
 import com.github.florent37.camerafragment.configuration.Configuration;
@@ -49,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int SELECT_PICTURE = 100;
     private static final int REQUEST_CAMERA_PERMISSIONS = 931;
     private static final int REQUEST_PREVIEW_CODE = 1001;
-
-    private TurnOnWiFiFragment wiFiFragment;
 
     @Bind(R.id.settings_view)
     CameraSettingsView settingsView;
@@ -97,9 +96,9 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentManager fm = getSupportFragmentManager();
         if(savedInstanceState == null) {
-            fragment = new TurnOnWiFiFragment();
+            fragment = new WiFiFragment();
         }
-        if (fragment != null)
+        if (fragment != null && !NetworkingUtility.isWifiEnabled())
             fragment.show(fm, "dialog");
     }
 
@@ -166,11 +165,15 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         protected void onPostExecute(Void aVoid) {
-                            Intent intent = new Intent(MainActivity.this, ResultActivity.class);
-                            //intent.putExtra("url", url);
-                            intent.putExtra("path", MyApplication.appFolderPath +
-                                    File.separator + name + ".jpg");
-                            startActivity(intent);
+                            if (NetworkingUtility.isConnectivityAvailable()) {
+                                Intent intent = new Intent(MainActivity.this, ResultActivity.class);
+                                //intent.putExtra("url", url);
+                                intent.putExtra("path", MyApplication.appFolderPath +
+                                        File.separator + name + ".jpg");
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(MainActivity.this, "No internet", Toast.LENGTH_LONG).show();
+                            }
 
                             /*final ProgressDialog uploadProgressDialog;
                             uploadProgressDialog = new ProgressDialog(MainActivity.this);

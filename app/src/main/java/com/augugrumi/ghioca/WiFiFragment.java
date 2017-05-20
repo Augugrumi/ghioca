@@ -20,16 +20,24 @@ import butterknife.OnClick;
  * @since 0.01
  */
 
-public class TurnOnWiFiFragment extends DialogFragment {
+public class WiFiFragment extends DialogFragment {
     @Bind(R.id.turn_on_wifi)
     Button wifiActivationButton;
-    @Bind(R.id.cancel_button)
+    @Bind(R.id.cancel)
     Button cancelButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.wifi_dialogfragment, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
@@ -41,22 +49,17 @@ public class TurnOnWiFiFragment extends DialogFragment {
         super.onDestroyView();
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.turnonwifi_dialogfragment, container, false);
-        ButterKnife.bind(this, view);
-        return view;
-    }
+
 
     @OnClick(R.id.turn_on_wifi)
     public void onAccept() {
         NetworkingUtility.turnOnWiFi();
+        dismiss();
     }
 
-    @OnClick(R.id.cancel_button)
+    @OnClick(R.id.cancel)
     public void onCancel() {
         dismiss();
     }
+
 }

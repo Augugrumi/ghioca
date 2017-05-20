@@ -45,6 +45,13 @@
 
         </activity>
 
+
+        <receiver android:name="com.augugrumi.ghioca.utility.NetworkingUtility">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.net.conn.WIFI_STATE_CHANGED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

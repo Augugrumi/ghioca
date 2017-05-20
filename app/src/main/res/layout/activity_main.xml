@@ -124,12 +124,13 @@
                     android:layout_marginEnd="70dp"/>
         </RelativeLayout>
 
+        <fragment android:name="com.augugrumi.ghioca.WiFiFragment"
+                  android:id="@+id/headlines_fragment"
+                  android:layout_weight="1"
+                  android:layout_width="0dp"
+                  android:layout_height="match_parent" />
     </RelativeLayout>
 
-    <fragment class="com.augugrumi.ghioca.TurnOnWiFiFragment"
-              android:id="@+id/turn_on_wifi_fragment"
-              android:layout_weight="1"
-              android:layout_width="0dp"
-              android:layout_height="match_parent" />
+
 
 </FrameLayout>
