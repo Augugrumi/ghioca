@@ -2,7 +2,6 @@ package com.augugrumi.ghioca;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -15,7 +14,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -215,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
                     final String filePath = ConvertUriToFilePath.getPathFromURI(MainActivity.this,
                             selectedImageUri);
                         UploadingListener listener = new DefaultUploadingListener(filePath, MainActivity.this);
+                        listener.onStart();
                         UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
                     }
                 }
