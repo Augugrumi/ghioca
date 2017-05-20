@@ -22,8 +22,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.augugrumi.ghioca.listener.UploadingListener;
+import com.augugrumi.ghioca.listener.defaultinplementation.DefaultUploadingListener;
 import com.augugrumi.ghioca.utility.ConvertUriToFilePath;
 import com.augugrumi.ghioca.utility.NetworkingUtility;
+import com.augugrumi.ghioca.utility.UploadingUtility;
 import com.github.florent37.camerafragment.CameraFragment;
 import com.github.florent37.camerafragment.CameraFragmentApi;
 import com.github.florent37.camerafragment.configuration.Configuration;
@@ -166,51 +168,21 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         protected void onPostExecute(Void aVoid) {
                             if (NetworkingUtility.isConnectivityAvailable()) {
-                                Intent intent = new Intent(MainActivity.this, ResultActivity.class);
-                                //intent.putExtra("url", url);
-                                intent.putExtra("path", MyApplication.appFolderPath +
-                                        File.separator + name + ".jpg");
-                                startActivity(intent);
+                                final String filePath = MyApplication.appFolderPath +
+                                        File.separator + name + ".jpg";
+                                UploadingListener listener = new DefaultUploadingListener(filePath, MainActivity.this);
+                                listener.onStart();
+                                UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
                             } else {
-                                Toast.makeText(MainActivity.this, "No internet", Toast.LENGTH_LONG).show();
+                                AlertDialog errorDialog;
+                                errorDialog = new AlertDialog.Builder(MainActivity.this).create();
+                                errorDialog.setCancelable(true);
+                                errorDialog.setTitle("No internet available");
+                                errorDialog.setMessage("Connect to internet and retry");
+                                errorDialog.show();
                             }
 
-                            /*final ProgressDialog uploadProgressDialog;
-                            uploadProgressDialog = new ProgressDialog(MainActivity.this);
-                            uploadProgressDialog.setCancelable(false);
-                            uploadProgressDialog.setTitle("Uploading the image");
-                            uploadProgressDialog.show();
-                            UploadingListener listener = new UploadingListener() {
 
-                                @Override
-                                public void onProgressUpdate(int progress) {
-                                    uploadProgressDialog.setProgress(progress);
-                                }
-
-                                @Override
-                                public void onFinish(String url) {
-                                    uploadProgressDialog.dismiss();
-                                    Intent intent = new Intent(MainActivity.this, ResultActivity.class);
-                                    intent.putExtra("url", url);
-                                    intent.putExtra("path", MyApplication.appFolderPath +
-                                            File.separator + name + ".jpg");
-                                    startActivity(intent);
-                                }
-
-                                @Override
-                                public void onFailure(Throwable error) {
-                                    uploadProgressDialog.dismiss();
-                                    AlertDialog errorDialog;
-                                    errorDialog = new AlertDialog.Builder(MainActivity.this).create();
-                                    errorDialog.setCancelable(true);
-                                    errorDialog.setTitle("Error");
-                                    errorDialog.setMessage("An error occur during the uploading please try again");
-                                    errorDialog.show();
-                                }
-                            };
-                            Log.i("provaupload", MyApplication.appFolderPath + File.separator + name + ".jpg");
-                            //UploadingUtility.uploadToServer("file://" + MyApplication.appFolderPath +
-                            // File.separator + name + ".jpg", MainActivity.this, listener);*/
                         }
                     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
                 }
@@ -242,41 +214,8 @@ public class MainActivity extends AppCompatActivity {
                 if (null != selectedImageUri) {
                     final String filePath = ConvertUriToFilePath.getPathFromURI(MainActivity.this,
                             selectedImageUri);
-
-                        final ProgressDialog uploadProgressDialog;
-                        uploadProgressDialog = new ProgressDialog(MainActivity.this);
-                        uploadProgressDialog.setCancelable(false);
-                        uploadProgressDialog.setTitle("Uploading the image");
-                        uploadProgressDialog.show();
-                        UploadingListener listener = new UploadingListener() {
-
-                            @Override
-                            public void onProgressUpdate(int progress) {
-                                uploadProgressDialog.setProgress(progress);
-                            }
-
-                            @Override
-                            public void onFinish(String url) {
-                                uploadProgressDialog.dismiss();
-                                Intent intent = new Intent(MainActivity.this, ResultActivity.class);
-                                intent.putExtra("url", url);
-                                intent.putExtra("path", filePath);
-                                startActivity(intent);
-                            }
-
-                            @Override
-                            public void onFailure(Throwable error) {
-                                uploadProgressDialog.dismiss();
-                                AlertDialog errorDialog;
-                                errorDialog = new AlertDialog.Builder(MainActivity.this).create();
-                                errorDialog.setCancelable(true);
-                                errorDialog.setTitle("Error");
-                                errorDialog.setMessage("An error occur during the uploading please try again");
-                                errorDialog.show();
-                            }
-                        };
-                        Log.i("provaupload", filePath);
-                        //UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
+                        UploadingListener listener = new DefaultUploadingListener(filePath, MainActivity.this);
+                        UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
                     }
                 }
 
@@ -290,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
             try{
                 addCamera();
             } catch (SecurityException e){
-
+                e.printStackTrace();
             }
         }
     }
