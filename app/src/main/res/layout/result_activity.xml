@@ -52,9 +52,15 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"/>
 
-    <fragment android:name="com.augugrumi.ghioca.ShareFragment"
-              android:id="@+id/share_fragment"
+    <fragment class="com.augugrumi.ghioca.ShareFragment"
+              android:id="@+id/share_dialogfragment"
               android:layout_weight="1"
               android:layout_width="0dp"
               android:layout_height="match_parent" />
+
+    <!--<fragment class="com.augugrumi.ghioca.ImageSearchingDialogFragmentagment
+              android:id="@+id/searching_dialogfragment"
+              android:layout_weight="1"
+              android:layout_width="0dp"
+              android:layout_height="match_parent" />-->
 </RelativeLayout>

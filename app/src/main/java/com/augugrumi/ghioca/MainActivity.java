@@ -1,8 +1,6 @@
 package com.augugrumi.ghioca;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -11,16 +9,19 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.augugrumi.ghioca.listener.UploadingListener;
+import com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener;
 import com.augugrumi.ghioca.utility.ConvertUriToFilePath;
+import com.augugrumi.ghioca.utility.NetworkingUtility;
 import com.augugrumi.ghioca.utility.UploadingUtility;
 import com.github.florent37.camerafragment.CameraFragment;
 import com.github.florent37.camerafragment.CameraFragmentApi;
@@ -70,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.addCameraButton)
     View addCameraButton;
 
+    private DialogFragment wifiFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +93,17 @@ public class MainActivity extends AppCompatActivity {
         if (permissionsToRequest.isEmpty())
             addCamera();
 
+        FragmentManager fm = getSupportFragmentManager();
+        if(savedInstanceState == null) {
+            wifiFragment = new WiFiFragment();
+        }
+        if (wifiFragment != null && !NetworkingUtility.isWifiEnabled())
+            wifiFragment.show(fm, WiFiFragment.TAG_WIFI_FRAGMENT);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @OnClick(R.id.addCameraButton)
@@ -155,42 +169,17 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         protected void onPostExecute(Void aVoid) {
-                            final ProgressDialog uploadProgressDialog;
-                            uploadProgressDialog = new ProgressDialog(MainActivity.this);
-                            uploadProgressDialog.setCancelable(false);
-                            uploadProgressDialog.setTitle("Uploading the image");
-                            uploadProgressDialog.show();
-                            UploadingListener listener = new UploadingListener() {
+                            final String filePath = MyApplication.appFolderPath +
+                                    File.separator + name + ".jpg";
+                            UploadingListener listener = new DefaultUploadingListener(filePath, MainActivity.this);
+                            if (NetworkingUtility.isConnectivityAvailable()) {
 
-                                @Override
-                                public void onProgressUpdate(int progress) {
-                                    uploadProgressDialog.setProgress(progress);
-                                }
+                                listener.onStart();
+                                UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
 
-                                @Override
-                                public void onFinish(String url) {
-                                    uploadProgressDialog.dismiss();
-                                    Intent intent = new Intent(MainActivity.this, ResultActivity.class);
-                                    intent.putExtra("url", url);
-                                    intent.putExtra("path", MyApplication.appFolderPath +
-                                            File.separator + name + ".jpg");
-                                    startActivity(intent);
-                                }
-
-                                @Override
-                                public void onFailure(Throwable error) {
-                                    uploadProgressDialog.dismiss();
-                                    AlertDialog errorDialog;
-                                    errorDialog = new AlertDialog.Builder(MainActivity.this).create();
-                                    errorDialog.setCancelable(true);
-                                    errorDialog.setTitle("Error");
-                                    errorDialog.setMessage("An error occur during the uploading please try again");
-                                    errorDialog.show();
-                                }
-                            };
-                            Log.i("provaupload", MyApplication.appFolderPath + File.separator + name + ".jpg");
-                            UploadingUtility.uploadToServer("file://" + MyApplication.appFolderPath +
-                                File.separator + name + ".jpg", MainActivity.this, listener);
+                            } else {
+                                listener.onFailure(null);
+                            }
                         }
                     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
                 }
@@ -214,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
     }
 
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
@@ -222,41 +212,10 @@ public class MainActivity extends AppCompatActivity {
                 if (null != selectedImageUri) {
                     final String filePath = ConvertUriToFilePath.getPathFromURI(MainActivity.this,
                             selectedImageUri);
-
-                        final ProgressDialog uploadProgressDialog;
-                        uploadProgressDialog = new ProgressDialog(MainActivity.this);
-                        uploadProgressDialog.setCancelable(false);
-                        uploadProgressDialog.setTitle("Uploading the image");
-                        uploadProgressDialog.show();
-                        UploadingListener listener = new UploadingListener() {
-
-                            @Override
-                            public void onProgressUpdate(int progress) {
-                                uploadProgressDialog.setProgress(progress);
-                            }
-
-                            @Override
-                            public void onFinish(String url) {
-                                uploadProgressDialog.dismiss();
-                                Intent intent = new Intent(MainActivity.this, ResultActivity.class);
-                                intent.putExtra("url", url);
-                                intent.putExtra("path", filePath);
-                                startActivity(intent);
-                            }
-
-                            @Override
-                            public void onFailure(Throwable error) {
-                                uploadProgressDialog.dismiss();
-                                AlertDialog errorDialog;
-                                errorDialog = new AlertDialog.Builder(MainActivity.this).create();
-                                errorDialog.setCancelable(true);
-                                errorDialog.setTitle("Error");
-                                errorDialog.setMessage("An error occur during the uploading please try again");
-                                errorDialog.show();
-                            }
-                        };
-                        Log.i("provaupload", filePath);
+                        UploadingListener listener = new DefaultUploadingListener(filePath, MainActivity.this);
+                        listener.onStart();
                         UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
+
                     }
                 }
 
@@ -270,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
             try{
                 addCamera();
             } catch (SecurityException e){
-
+                e.printStackTrace();
             }
         }
     }
@@ -383,6 +342,4 @@ public class MainActivity extends AppCompatActivity {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         return timestamp.toString().replaceAll(" ", "_");
     }
-
-
 }

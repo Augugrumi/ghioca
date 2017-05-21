@@ -5,10 +5,10 @@ import android.util.Log;
 
 import com.augugrumi.ghioca.MyApplication;
 import com.augugrumi.ghioca.R;
-import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
+import com.augugrumi.ghioca.listener.ImaggaReverseImageSearchListener;
 
 import it.polpetta.libris.image.ReverseImageSearch;
-import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
+import it.polpetta.libris.image.imagga.contract.IImaggaImageSearchResult;
 
 import java.net.URL;
 
@@ -18,18 +18,18 @@ import java.net.URL;
  * @since 0.01
  */
 
-public class AsyncAzureReverseImageSearch extends AsyncTask<Void, Void, Void> {
+public class AsyncImaggaReverseImageSearch extends AsyncTask<Void, Void, Void> {
 
-    //todo manage azure key
-    private static String azureKey = MyApplication.getAppContext().getString(R.string.AZURE_KEY);
+    private static String imaggaKey =
+            MyApplication.getAppContext().getString(R.string.IMAGGA_KEY);
 
-    private AzureReverseImageSearchListener listener;
-    private IAzureImageSearchResult result;
+    private ImaggaReverseImageSearchListener listener;
+    private IImaggaImageSearchResult result;
     private boolean error;
     private String url;
     private Exception e;
 
-    public AsyncAzureReverseImageSearch (String url, AzureReverseImageSearchListener listener) {
+    public AsyncImaggaReverseImageSearch(String url, ImaggaReverseImageSearchListener listener) {
         this.listener = listener;
         this.url = url;
         error = false;
@@ -38,7 +38,6 @@ public class AsyncAzureReverseImageSearch extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-
         listener.onStart();
     }
 
@@ -47,14 +46,16 @@ public class AsyncAzureReverseImageSearch extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... params) {
         try {
             result = ReverseImageSearch
-                    .getAzureServices(azureKey)
+                    .getImaggaServices(imaggaKey)
                     .imageSearchBuildQuery()
                     .setImage(new URL(url))
                     .build()
                     .search();
-            Log.i("SEARCH_RESULT", result.toJSONString());
-        } catch (Exception error) {
-            e = error;
+            Log.i("IMAGGA_SEARCH_RESULT", result.toJSONString());
+        } catch (Exception exception) {
+            e = exception;
+            e.printStackTrace();
+            error = true;
         }
 
         return null;
@@ -63,7 +64,6 @@ public class AsyncAzureReverseImageSearch extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-
         // TODO think if it could be the right thing to do
         if (error)
             listener.onFailure(e);

@@ -1,23 +1,17 @@
 package com.augugrumi.ghioca;
 
-import android.app.AlertDialog;
-import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
-import com.augugrumi.ghioca.listener.GoogleReverseImageSearchListener;
-import com.augugrumi.ghioca.utility.SearchingUtility;
+import com.facebook.CallbackManager;
 import com.squareup.picasso.Picasso;
-
-import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
-import it.polpetta.libris.image.google.contract.IGoogleImageSearchResult;
 
 import java.util.ArrayList;
 
@@ -25,7 +19,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ResultActivity extends AppCompatActivity {
+import static com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener.FILE_PATH_INTENT_EXTRA;
+import static com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener.URL_INTENT_EXTRA;
+
+public class ResultActivity extends AppCompatActivity
+        implements ImageSearchingDialogFragment.ImageSearchingStatusCallback {
 
     @Bind(R.id.image_view)
     ImageView imageView;
@@ -38,11 +36,13 @@ public class ResultActivity extends AppCompatActivity {
 
     private String url;
     private String path;
-    private GoogleReverseImageSearchListener googleListener;
-    private AzureReverseImageSearchListener azureListener;
     private int numberOfSearch;
     private ArrayList<String> results;
     private String description;
+    private CallbackManager callbackManager;
+    private DialogFragment shareFragment;
+    private ImageSearchingDialogFragment searchingFragment;
+    private ErrorDialogFragment errorDialogFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,106 +51,34 @@ public class ResultActivity extends AppCompatActivity {
         setContentView(R.layout.result_activity);
         ButterKnife.bind(this);
 
+        callbackManager = CallbackManager.Factory.create();
+
+        results = new ArrayList<>();
+        description = "";
+
         searchResult.setMovementMethod(new ScrollingMovementMethod());
         results = new ArrayList<>();
 
-        url = getIntent().getStringExtra("url");
-        path = getIntent().getStringExtra("path");
+        url = getIntent().getExtras().getString(URL_INTENT_EXTRA);
+        path = getIntent().getStringExtra(FILE_PATH_INTENT_EXTRA);
 
         Picasso.with(this).load("file://" + path).into(imageView);
 
-        final ProgressDialog searchProgressDialog;
-        searchProgressDialog = new ProgressDialog(ResultActivity.this);
-        searchProgressDialog.setCancelable(false);
-        searchProgressDialog.setTitle("Searching");
-        searchProgressDialog.show();
+        FragmentManager fm = getSupportFragmentManager();
+        if(savedInstanceState == null) {
+            shareFragment = new ShareFragment();
+        }
 
-        numberOfSearch = 2;
+        searchingFragment = (ImageSearchingDialogFragment) fm
+                .findFragmentByTag(ImageSearchingDialogFragment.TAG_IMAGE_SEARCHING_FRAGMENT);
+        if (searchingFragment == null) {
+            searchingFragment = new ImageSearchingDialogFragment();
+            fm.beginTransaction()
+                    .add(searchingFragment, ImageSearchingDialogFragment.TAG_IMAGE_SEARCHING_FRAGMENT)
+                    .show(searchingFragment)
+                    .commit();
+        }
 
-        googleListener = new GoogleReverseImageSearchListener() {
-            @Override
-            public void onSuccess(final IGoogleImageSearchResult result) {
-                if (result != null) {
-                    String res = result.getBestGuess();
-                    if (res != null)
-                        if (!results.contains(res))
-                            results.add(res);/*
-                        if (searchResult.getText().toString().equalsIgnoreCase("No results found"))
-                            searchResult.setText(res);
-                        else
-                            searchResult.append("\n" + res);*/
-                }
-
-                numberOfSearch -= 1;
-                if (numberOfSearch <= 0) {
-                    searchProgressDialog.dismiss();
-                    searchResult.setText("");
-                    for (String s : results)
-                        searchResult.append(s + "\n");
-                }
-            }
-
-            @Override
-            public void onStart() {}
-
-            @Override
-            public void onFailure(Exception e) {
-                searchProgressDialog.dismiss();
-                AlertDialog errorDialog;
-                errorDialog = new AlertDialog.Builder(ResultActivity.this).create();
-                errorDialog.setCancelable(true);
-                errorDialog.setTitle("Error");
-                errorDialog.setMessage("An error occur during the reverse search please try again");
-                errorDialog.show();
-            }
-        };
-
-        azureListener = new AzureReverseImageSearchListener() {
-            @Override
-            public void onSuccess(final IAzureImageSearchResult result) {
-                if (result != null) {
-                    String res = result.getBestGuess();
-                    if (!results.contains(res))
-                        results.add(res);
-                    /*if (searchResult.getText().toString().equalsIgnoreCase("No results found"))
-                        searchResult.setText(res);
-                    else
-                        searchResult.append("\n" + res);*/
-                    ArrayList<String> tags = result.getTags();
-                    if (tags != null)
-                        for (String tag : tags)
-                            if (!results.contains(tag))
-                                results.add(tag);
-                    description = result.getDescription();
-                    if (description != null)
-                        descriptionResult.setText(description);
-                }
-                numberOfSearch -= 1;
-                if (numberOfSearch <= 0) {
-                    searchProgressDialog.dismiss();
-                    searchResult.setText("");
-                    for (String s : results)
-                        searchResult.append(s + "\n");
-                }
-            }
-
-            @Override
-            public void onStart() {}
-
-            @Override
-            public void onFailure(Exception e) {
-                searchProgressDialog.dismiss();
-                AlertDialog errorDialog;
-                errorDialog = new AlertDialog.Builder(ResultActivity.this).create();
-                errorDialog.setCancelable(true);
-                errorDialog.setTitle("Error");
-                errorDialog.setMessage("An error occur during the reverse search please try again");
-                errorDialog.show();
-            }
-        };
-
-        SearchingUtility.searchImageWithGoogle(url, googleListener);
-        SearchingUtility.searchImageWithAzure(url, azureListener);
     }
 
     public String getDescription() {
@@ -164,14 +92,73 @@ public class ResultActivity extends AppCompatActivity {
     //TODO beautify the fragment
     @OnClick(R.id.share_fab)
     public void share() {
+        shareFragment.show(getSupportFragmentManager(), "dialog");
+    }
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        android.support.v4.app.Fragment prev = getSupportFragmentManager().findFragmentById(R.id.share_fragment);
-        ft.addToBackStack(null);
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
 
-        // Create and show the dialog.
-        DialogFragment newFragment = ShareFragment.newInstance(1);
-        newFragment.show(getSupportFragmentManager(), "dialog");
+    @Override
+    public void onPreExecute() {}
 
+    @Override
+    public void onPostExecute(String description, ArrayList<String> tags) {
+        FragmentManager fm = getSupportFragmentManager();
+        searchingFragment = (ImageSearchingDialogFragment) fm
+                .findFragmentByTag(ImageSearchingDialogFragment.TAG_IMAGE_SEARCHING_FRAGMENT);
+        if (searchingFragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .hide(searchingFragment)
+                    .remove(searchingFragment)
+                    .commit();
+        }
+        if (!description.equals(""))
+            descriptionResult.setText(description);
+        for (String tag : tags) {
+            if (searchResult.getText().toString().equalsIgnoreCase("No results found"))
+                searchResult.setText(tag);
+            else
+                searchResult.append("\n" + tag);
+        }
+
+    }
+
+    @Override
+    public void onError() {
+        FragmentManager fm = getSupportFragmentManager();
+        searchingFragment = (ImageSearchingDialogFragment) fm
+                .findFragmentByTag(ImageSearchingDialogFragment.TAG_IMAGE_SEARCHING_FRAGMENT);
+        if (searchingFragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .hide(searchingFragment)
+                    .remove(searchingFragment)
+                    .commit();
+        }
+
+        errorDialogFragment = (ErrorDialogFragment) fm
+                .findFragmentByTag(ErrorDialogFragment.TAG_ERROR_FRAGMENT);
+        if (errorDialogFragment == null) {
+            errorDialogFragment = new ErrorDialogFragment();
+            fm.beginTransaction()
+                    .add(errorDialogFragment, ErrorDialogFragment.TAG_ERROR_FRAGMENT)
+                    .show(errorDialogFragment)
+                    .commit();
+        } else
+            errorDialogFragment.show(fm, ErrorDialogFragment.TAG_ERROR_FRAGMENT);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0)
+            super.onBackPressed();
+        else {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
     }
 }

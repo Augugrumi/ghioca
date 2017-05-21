@@ -3,6 +3,8 @@
           package="com.augugrumi.ghioca">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.FLASHLIGHT"/>
@@ -16,6 +18,12 @@
             android:label="@string/app_name"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
+        <provider android:authorities="com.facebook.app.FacebookContentProvider1418629758198644"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
 
         <activity
                 android:name="com.augugrumi.ghioca.SplashActivity"
@@ -36,6 +44,14 @@
         <activity android:name="com.augugrumi.ghioca.ResultActivity">
 
         </activity>
+
+
+        <receiver android:name="com.augugrumi.ghioca.utility.NetworkingUtility">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.net.conn.WIFI_STATE_CHANGED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -10,6 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -32,8 +33,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'com.android.support:design:25.2.0'
+    compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'com.android.support:design:25.3.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'io.filepicker:filepicker-android:3.9.0'
     compile 'org.jsoup:jsoup:1.7.2'
@@ -47,10 +48,15 @@ dependencies {
     compile 'com.github.championswimmer:Android-SocialButtons:1.0'
 
     // modified CameraFragment library -> original: compile 'com.github.florent37:camerafragment:1.0.5'
-    compile 'com.github.Augugrumi:camerafragment:v1.0.2'
+    compile 'com.github.Augugrumi:camerafragment:v1.1.0'
 
     //searching image library
-    compile 'com.github.Augugrumi:libris:v1.0.0'
+    compile 'com.github.Augugrumi:libris:v2.0.0'
+
+    //loading animations
+    compile 'com.wang.avi:library:2.1.3'
 
     testCompile 'junit:junit:4.12'
+
+    compile 'com.facebook.android:facebook-android-sdk:4.+'
 }
