@@ -124,7 +124,7 @@ public class ResultActivity extends AppCompatActivity {
 
                 addNewResults(result);
 
-                if (result.getDescription() != null) {
+                if (result != null && result.getDescription() != null) {
                     setDescription(result.getDescription());
                 }
 
