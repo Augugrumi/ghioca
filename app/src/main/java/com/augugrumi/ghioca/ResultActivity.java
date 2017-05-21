@@ -60,6 +60,7 @@ public class ResultActivity extends AppCompatActivity {
     private WatsonReverseImageSearchListener watsonListener;
     private ImaggaReverseImageSearchListener imaggaListener;
     private volatile ArrayList<String> results;
+    private ArrayList<String> selectedChips;
     private String description;
     private ProgressDialog searchProgressDialog;
     CallbackManager callbackManager;
@@ -228,13 +229,6 @@ public class ResultActivity extends AppCompatActivity {
         Log.d("ADDINGRESULTS", newResults.toString());
 
         results.addAll(newResults);
-
-        // Eliminating duplicates...
-        Set<String> tmp = new HashSet<>();
-        tmp.addAll(results);
-        results.clear();
-        // With a set we loose the elements order in the list, but we don't care
-        results.addAll(tmp);
     }
 
     private synchronized void refreshResultView() {
@@ -249,6 +243,43 @@ public class ResultActivity extends AppCompatActivity {
         /*searchResult.setText("");
         for (String s : results)
             searchResult.append(s + "\n");*/
+
+        cleanDuplicates();
+        chipListManager.removeAllViews();
+        final int defaultChipsPerNumber = 2;
+
+        for (int j = 0; j < results.size(); j=j+defaultChipsPerNumber) {
+
+            LinearLayout line = new LinearLayout(this, null);
+            line.setPadding(0,5,0,5);
+
+            int chipsPerLine = defaultChipsPerNumber;
+            if ((results.size() - j) < 3) {
+
+                chipsPerLine = results.size() - j;
+            }
+
+            for (int i = j; i < chipsPerLine + j; i++) {
+
+                Chip chip = new Chip(this, null);
+                chip.setChipText(results.get(i));
+                chip.setClosable(true);
+
+                line.addView(chip);
+            }
+
+            chipListManager.addView(line);
+        }
+    }
+
+    private synchronized void cleanDuplicates() {
+
+        // Eliminating duplicates...
+        Set<String> tmp = new HashSet<>();
+        tmp.addAll(results);
+        results.clear();
+        // With a set we loose the elements order in the list, but we don't care
+        results.addAll(tmp);
     }
 
     private synchronized void setDescription(String newDescription) {
@@ -288,11 +319,13 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     public synchronized String getDescription() {
+
         return description;
     }
 
     public synchronized ArrayList<String> getResults() {
 
+        cleanDuplicates();
         return results;
     }
 }
