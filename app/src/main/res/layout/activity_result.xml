@@ -26,35 +26,34 @@
             <com.github.florent37.arclayout.ArcLayout
                 android:id="@+id/photoPresentation"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="350dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:elevation="10dip"
-                app:arc_cropDirection="cropInside"
-                app:arc_position="bottom"
+                android:elevation="10dp"
+                app:arc_cropDirection="cropOutside"
                 app:arc_height="50dp"
-                >
+                app:arc_position="bottom">
 
                 <com.flaviofaria.kenburnsview.KenBurnsView
                     android:id="@+id/mainPhoto"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ghiocalogo"
-                    />
+                    android:src="@drawable/ghiocalogo" />
 
             </com.github.florent37.arclayout.ArcLayout>
 
             <android.support.design.widget.FloatingActionButton
+                android:id="@+id/share_fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="20dp"
-                android:layout_marginTop="255dp"
+                android:layout_marginTop="300dp"
                 android:src="@drawable/ic_share"
-                app:backgroundTint="#ce471d"
-                app:elevation="10dp"
+                app:backgroundTint="@color/colorPrimary"
+                app:elevation="15dp"
                 app:fabSize="normal" />
 
             <LinearLayout
@@ -64,12 +63,12 @@
                 android:layout_below="@+id/photoPresentation"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical"
-                android:padding="20dp"
-                >
+                android:padding="20dp">
 
 
                 <TextView
                     android:id="@+id/Best_guessTitle"
+                    android:textColor="@android:color/primary_text_light"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/whatISee"
@@ -79,6 +78,7 @@
 
                 <TextView
                     android:id="@+id/best_guess"
+                    android:textColor="@android:color/primary_text_light"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
@@ -88,6 +88,7 @@
 
                 <TextView
                     android:id="@+id/ChipTitle"
+                    android:textColor="@android:color/primary_text_light"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/chipTitle"
@@ -100,23 +101,21 @@
                     android:id="@+id/chipList"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
                     android:layout_marginTop="10dp"
-                    android:padding="20dp"
-                    >
+                    android:orientation="horizontal"
+                    android:padding="20dp">
 
                     <com.robertlevonyan.views.chip.Chip
                         android:id="@+id/chip1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:chipText="Bla"
-                        app:textColor="@android:color/white"
-                        app:hasIcon="true"
-                        app:chipIcon="@drawable/hashtag"
-                        app:closable="true"
                         app:backgroundColor="@android:color/holo_green_light"
+                        app:chipIcon="@drawable/hashtag"
+                        app:chipText="Bla"
+                        app:closable="true"
                         app:closeColor="@android:color/white"
-                        />
+                        app:hasIcon="true"
+                        app:textColor="@android:color/white" />
 
                 </LinearLayout>
 

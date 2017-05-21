@@ -7,6 +7,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,6 +23,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -209,22 +212,39 @@ public class Result extends AppCompatActivity {
                 toAdd.add(res);
             }
 
-            toAdd.addAll(result.getTags());
-            addResults(toAdd);
+            ArrayList<String> newTags = result.getTags();
+
+            if (newTags != null) {
+
+                toAdd.addAll(newTags);
+                addResults(toAdd);
+            }
 
         }
     }
 
     private synchronized void addResults(ArrayList<String> newResults) {
 
+        Log.d("ADDINGRESULTS", newResults.toString());
+
         results.addAll(newResults);
+
+        // Eliminating duplicates...
+        Set<String> tmp = new HashSet<>();
+        tmp.addAll(results);
+        results.clear();
+        // With a set we loose the elements order in the list, but we don't care
+        results.addAll(tmp);
     }
 
     private synchronized void refreshResultView() {
+
+        Log.d("ADDINGRESULTS", "View refreshed");
+
         searchProgressDialog.dismiss();
 
         // TODO create chips and put it in the view
-        // useful: http://stackoverflow.com/questions/6661261/adding-content-to-a-linear-layout-dynamically
+        // check out: http://stackoverflow.com/questions/6661261/adding-content-to-a-linear-layout-dynamically
 
         /*searchResult.setText("");
         for (String s : results)
@@ -233,7 +253,17 @@ public class Result extends AppCompatActivity {
 
     private synchronized void setDescription(String newDescription) {
 
-        bestGuess.setText(newDescription);
+        StringBuilder stringBuilder = new StringBuilder()
+                .append("...")
+                .append(newDescription)
+                .append("!");
+
+        bestGuess.setText(stringBuilder.toString());
+
+        String capitalizedNewDescription= newDescription.substring(0, 1)
+                .toUpperCase() + newDescription.substring(1);
+
+        description = capitalizedNewDescription;
     }
 
     //TODO beautify the fragment
@@ -255,5 +285,14 @@ public class Result extends AppCompatActivity {
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public synchronized String getDescription() {
+        return description;
+    }
+
+    public synchronized ArrayList<String> getResults() {
+
+        return results;
     }
 }
