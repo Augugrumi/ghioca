@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onFinish(String url) {
                                     uploadProgressDialog.dismiss();
-                                    Intent intent = new Intent(MainActivity.this, Result.class);
+                                    Intent intent = new Intent(MainActivity.this, ResultActivity.class);
                                     intent.putExtra("url", url);
                                     intent.putExtra("path", MyApplication.appFolderPath +
                                             File.separator + name + ".jpg");
@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onFinish(String url) {
                                 uploadProgressDialog.dismiss();
-                                Intent intent = new Intent(MainActivity.this, Result.class);
+                                Intent intent = new Intent(MainActivity.this, ResultActivity.class);
                                 intent.putExtra("url", url);
                                 intent.putExtra("path", filePath);
                                 startActivity(intent);

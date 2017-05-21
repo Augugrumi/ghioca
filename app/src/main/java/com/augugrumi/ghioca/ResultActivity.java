@@ -2,15 +2,13 @@ package com.augugrumi.ghioca;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.method.ScrollingMovementMethod;
+import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
@@ -19,30 +17,41 @@ import com.augugrumi.ghioca.listener.ImaggaReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.WatsonReverseImageSearchListener;
 import com.augugrumi.ghioca.utility.SearchingUtility;
 import com.facebook.CallbackManager;
+import com.flaviofaria.kenburnsview.KenBurnsView;
+import com.robertlevonyan.views.chip.Chip;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
 import it.polpetta.libris.image.contract.IImageSearchResult;
 import it.polpetta.libris.image.google.contract.IGoogleImageSearchResult;
 import it.polpetta.libris.image.ibm.contract.IIBMImageSearchResult;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class ResultActivity extends AppCompatActivity {
 
-    @Bind(R.id.image_view)
-    ImageView imageView;
-    @Bind(R.id.search_result)
-    TextView searchResult;
-    @Bind(R.id.description_result)
-    TextView descriptionResult;
+    // BINDINGS
+
+    @Bind(R.id.mainPhoto)
+    KenBurnsView mainPhoto;
+
+    @Bind(R.id.best_guess)
+    TextView bestGuess;
+
     @Bind(R.id.share_fab)
     FloatingActionButton share;
+
+    @Bind(R.id.chipList)
+    LinearLayout chipListManager;
+
+    // END BINDINGS
+
 
     private String url;
     private String path;
@@ -50,68 +59,53 @@ public class ResultActivity extends AppCompatActivity {
     private AzureReverseImageSearchListener azureListener;
     private WatsonReverseImageSearchListener watsonListener;
     private ImaggaReverseImageSearchListener imaggaListener;
-    private int numberOfSearch;
-    private ArrayList<String> results;
+    private volatile ArrayList<String> results;
     private String description;
+    private ProgressDialog searchProgressDialog;
     CallbackManager callbackManager;
     DialogFragment newFragment;
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_result);
 
-        setContentView(R.layout.result_activity);
+
         ButterKnife.bind(this);
 
         callbackManager = CallbackManager.Factory.create();
 
+        // INITIALIZATIONS
+
         results = new ArrayList<>();
         description = "";
-
-        searchResult.setMovementMethod(new ScrollingMovementMethod());
-        results = new ArrayList<>();
-
         url = getIntent().getExtras().getString("url");
         path = getIntent().getStringExtra("path");
-        Log.i("WATSON_ONCREATEACTIVITY", url + " ");
+        Picasso.with(this).load("file://" + path).into(mainPhoto);
 
-        Log.d("RESULT_ACTIVITY",path);
-        Picasso.with(this).load("file://" + path).into(imageView);
+        // END OF INITIALIZATIONS
 
-        FragmentManager fm = getSupportFragmentManager();
         if(savedInstanceState == null) {
             newFragment = new ShareFragment();
         }
 
-        final ProgressDialog searchProgressDialog;
         searchProgressDialog = new ProgressDialog(ResultActivity.this);
         searchProgressDialog.setCancelable(false);
         searchProgressDialog.setTitle("Searching");
         searchProgressDialog.show();
 
-        numberOfSearch = 1;
+        // SEARCHERS
 
         googleListener = new GoogleReverseImageSearchListener() {
             @Override
             public void onSuccess(final IGoogleImageSearchResult result) {
-                if (result != null) {
-                    String res = result.getBestGuess();
-                    if (res != null)
-                        if (!results.contains(res))
-                            results.add(res);
-                        if (searchResult.getText().toString().equalsIgnoreCase("No results found"))
-                            searchResult.setText(res);
-                        else
-                            searchResult.append("\n" + res);
-                }
 
-                numberOfSearch -= 1;
-                if (numberOfSearch <= 0) {
-                    searchProgressDialog.dismiss();
-                    searchResult.setText("");
-                    for (String s : results)
-                        searchResult.append(s + "\n");
-                }
+                addNewResults(result);
+                refreshResultView();
             }
 
             @Override
@@ -119,52 +113,21 @@ public class ResultActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Exception e) {
-                if (e instanceof IOException) {
-                    searchProgressDialog.dismiss();
-                    AlertDialog errorDialog;
-                    errorDialog = new AlertDialog.Builder(ResultActivity.this).create();
-                    errorDialog.setCancelable(true);
-                    errorDialog.setTitle("Error");
-                    errorDialog.setMessage("An error occur during the reverse search please try again");
-                    errorDialog.show();
-                    numberOfSearch -= 1;
-                    if (numberOfSearch <= 0) {
-                        searchProgressDialog.dismiss();
-                        searchResult.setText("");
-                        for (String s : results)
-                            searchResult.append(s + "\n");
-                    }
-                }
+                onSearchFailure(e);
             }
         };
 
         azureListener = new AzureReverseImageSearchListener() {
             @Override
             public void onSuccess(final IAzureImageSearchResult result) {
-                if (result != null) {
-                    String res = result.getBestGuess();
-                    if (!results.contains(res))
-                        results.add(res);
-                    if (searchResult.getText().toString().equalsIgnoreCase("No results found"))
-                        searchResult.setText(res);
-                    else
-                        searchResult.append("\n" + res);
-                    ArrayList<String> tags = result.getTags();
-                    if (tags != null)
-                        for (String tag : tags)
-                            if (!results.contains(tag))
-                                results.add(tag);
-                    description = result.getDescription();
-                    if (description != null)
-                        descriptionResult.setText(description);
+
+                addNewResults(result);
+
+                if (result.getDescription() != null) {
+                    setDescription(result.getDescription());
                 }
-                numberOfSearch -= 1;
-                if (numberOfSearch <= 0) {
-                    searchProgressDialog.dismiss();
-                    searchResult.setText("");
-                    for (String s : results)
-                        searchResult.append(s + "\n");
-                }
+
+                refreshResultView();
             }
 
             @Override
@@ -172,53 +135,16 @@ public class ResultActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Exception e) {
-                if (e instanceof IOException) {
-                    searchProgressDialog.dismiss();
-                    AlertDialog errorDialog;
-                    errorDialog = new AlertDialog.Builder(ResultActivity.this).create();
-                    errorDialog.setCancelable(true);
-                    errorDialog.setTitle("Error");
-                    errorDialog.setMessage("An error occur during the reverse search please try again");
-                    errorDialog.show();
-                    numberOfSearch -= 1;
-                    if (numberOfSearch <= 0) {
-                        searchProgressDialog.dismiss();
-                        searchResult.setText("");
-                        for (String s : results)
-                            searchResult.append(s + "\n");
-                    }
-                }
+                onSearchFailure(e);
             }
         };
 
         watsonListener = new WatsonReverseImageSearchListener() {
             @Override
             public void onSuccess(IIBMImageSearchResult result) {
-                if (result != null) {
-                    String res = result.getBestGuess();
-                    if (res != null)
-                        if (!results.contains(res))
-                            results.add(res);
-                    if (searchResult.getText().toString().equalsIgnoreCase("No results found"))
-                        searchResult.setText(res);
-                    else
-                        searchResult.append("\n" + res);
 
-                    ArrayList<String> tags = result.getTags();
-                    if (tags != null)
-                        for (String tag : tags)
-                            if (!results.contains(tag))
-                                results.add(tag);
-
-                }
-
-                numberOfSearch -= 1;
-                if (numberOfSearch <= 0) {
-                    searchProgressDialog.dismiss();
-                    searchResult.setText("");
-                    for (String s : results)
-                        searchResult.append(s + "\n");
-                }
+                addNewResults(result);
+                refreshResultView();
             }
 
             @Override
@@ -228,51 +154,16 @@ public class ResultActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Exception e) {
-                if (e instanceof IOException) {
-                    searchProgressDialog.dismiss();
-                    AlertDialog errorDialog;
-                    errorDialog = new AlertDialog.Builder(ResultActivity.this).create();
-                    errorDialog.setCancelable(true);
-                    errorDialog.setTitle("Error");
-                    errorDialog.setMessage("An error occur during the reverse search please try again");
-                    errorDialog.show();
-                    numberOfSearch -= 1;
-                    if (numberOfSearch <= 0) {
-                        searchProgressDialog.dismiss();
-                        searchResult.setText("");
-                        for (String s : results)
-                            searchResult.append(s + "\n");
-                    }
-                }
+                onSearchFailure(e);
             }
         };
 
         imaggaListener = new ImaggaReverseImageSearchListener() {
             @Override
             public void onSuccess(IImageSearchResult result) {
-                if (result != null) {
-                    String res = result.getBestGuess();
-                    if (res != null)
-                        if (!results.contains(res))
-                            results.add(res);
-                    if (searchResult.getText().toString().equalsIgnoreCase("No results found"))
-                        searchResult.setText(res);
-                    else
-                        searchResult.append("\n" + res);
-                    ArrayList<String> tags = result.getTags();
-                    if (tags != null)
-                        for (String tag : tags)
-                            if (!results.contains(tag))
-                                results.add(tag);
-                }
 
-                numberOfSearch -= 1;
-                if (numberOfSearch <= 0) {
-                    searchProgressDialog.dismiss();
-                    searchResult.setText("");
-                    for (String s : results)
-                        searchResult.append(s + "\n");
-                }
+                addNewResults(result);
+                refreshResultView();
             }
 
             @Override
@@ -282,24 +173,11 @@ public class ResultActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Exception e) {
-                if (e instanceof IOException) {
-                    searchProgressDialog.dismiss();
-                    AlertDialog errorDialog;
-                    errorDialog = new AlertDialog.Builder(ResultActivity.this).create();
-                    errorDialog.setCancelable(true);
-                    errorDialog.setTitle("Error");
-                    errorDialog.setMessage("An error occur during the reverse search please try again");
-                    errorDialog.show();
-                    numberOfSearch -= 1;
-                    if (numberOfSearch <= 0) {
-                        searchProgressDialog.dismiss();
-                        searchResult.setText("");
-                        for (String s : results)
-                            searchResult.append(s + "\n");
-                    }
-                }
+                onSearchFailure(e);
             }
         };
+
+        // END OF SEARCHERS
 
 
         SearchingUtility.searchImageWithGoogle(url, googleListener);
@@ -311,12 +189,81 @@ public class ResultActivity extends AppCompatActivity {
 
     }
 
-    public String getDescription() {
-        return description;
+    private void onSearchFailure(Exception e) {
+        if (e instanceof IOException) {
+            searchProgressDialog.dismiss();
+            AlertDialog errorDialog;
+            errorDialog = new AlertDialog.Builder(ResultActivity.this).create();
+            errorDialog.setCancelable(true);
+            errorDialog.setTitle("Error");
+            errorDialog.setMessage("An error occur during the reverse search please try again");
+            errorDialog.show();
+
+            refreshResultView();
+        }
     }
 
-    public ArrayList<String> getResults() {
-        return results;
+    private void addNewResults(IImageSearchResult result) {
+        if (result != null) {
+            ArrayList<String> toAdd = new ArrayList<>();
+            String res = result.getBestGuess();
+
+            if (res != null) {
+                toAdd.add(res);
+            }
+
+            ArrayList<String> newTags = result.getTags();
+
+            if (newTags != null) {
+
+                toAdd.addAll(newTags);
+                addResults(toAdd);
+            }
+
+        }
+    }
+
+    private synchronized void addResults(ArrayList<String> newResults) {
+
+        Log.d("ADDINGRESULTS", newResults.toString());
+
+        results.addAll(newResults);
+
+        // Eliminating duplicates...
+        Set<String> tmp = new HashSet<>();
+        tmp.addAll(results);
+        results.clear();
+        // With a set we loose the elements order in the list, but we don't care
+        results.addAll(tmp);
+    }
+
+    private synchronized void refreshResultView() {
+
+        Log.d("ADDINGRESULTS", "View refreshed");
+
+        searchProgressDialog.dismiss();
+
+        // TODO create chips and put it in the view
+        // check out: http://stackoverflow.com/questions/6661261/adding-content-to-a-linear-layout-dynamically
+
+        /*searchResult.setText("");
+        for (String s : results)
+            searchResult.append(s + "\n");*/
+    }
+
+    private synchronized void setDescription(String newDescription) {
+
+        StringBuilder stringBuilder = new StringBuilder()
+                .append("...")
+                .append(newDescription)
+                .append("!");
+
+        bestGuess.setText(stringBuilder.toString());
+
+        String capitalizedNewDescription= newDescription.substring(0, 1)
+                .toUpperCase() + newDescription.substring(1);
+
+        description = capitalizedNewDescription;
     }
 
     //TODO beautify the fragment
@@ -338,5 +285,14 @@ public class ResultActivity extends AppCompatActivity {
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public synchronized String getDescription() {
+        return description;
+    }
+
+    public synchronized ArrayList<String> getResults() {
+
+        return results;
     }
 }
