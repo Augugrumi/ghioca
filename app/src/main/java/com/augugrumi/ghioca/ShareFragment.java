@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -18,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.augugrumi.ghioca.utility.AppInstallationChecker;
-import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
@@ -27,7 +25,6 @@ import com.robertsimoes.shareable.Shareable;
 
 import org.apache.commons.lang3.text.WordUtils;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -249,7 +246,7 @@ public class ShareFragment extends DialogFragment {
 
     @OnClick(R.id.fab_whatsapp)
     public void whatsAppShare(){
-        String packageName = "com.whatsapp.android";
+        String packageName = "com.whatsapp";
         PackageManager pm = this.getActivity().getPackageManager();
         if(AppInstallationChecker.isPackageInstalled(packageName,getContext().getPackageManager())){
             Intent waIntent = new Intent(Intent.ACTION_SEND);
