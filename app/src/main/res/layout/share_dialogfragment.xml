@@ -1,66 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:columnCount="3"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:background="@color/white">
 
-    <in.championswimmer.libsocialbuttons.fabs.FABFacebook
-            android:id="@+id/fab_facebook"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="7dp" />
+    <TextView android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="Share..."
+              android:textStyle="bold"
+              android:textSize="24sp"
+              android:textColor="@android:color/primary_text_light_nodisable"
+              android:layout_gravity="center"
+              android:layout_margin="8dp"/>
 
-    <in.championswimmer.libsocialbuttons.fabs.FABTwitter
-            android:id="@+id/fab_twitter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="7dp"/>
+    <View android:background="@android:color/holo_blue_dark"
+          android:layout_width = "match_parent"
+          android:layout_height="1dp"/>
 
-    <in.championswimmer.libsocialbuttons.fabs.FABInstagram
-            android:id="@+id/fab_instagram"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="7dp"/>
+    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="horizontal"
+                android:columnCount="3"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal">
 
-    <in.championswimmer.libsocialbuttons.fabs.FABWhatsapp
-            android:id="@+id/fab_whatsapp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="7dp"/>
+        <in.championswimmer.libsocialbuttons.fabs.FABFacebook
+                android:id="@+id/fab_facebook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp" />
 
-    <in.championswimmer.libsocialbuttons.fabs.FABTumblr
-            android:id="@+id/fab_tumblr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="7dp"/>
+        <in.championswimmer.libsocialbuttons.fabs.FABTwitter
+                android:id="@+id/fab_twitter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"/>
 
-    <in.championswimmer.libsocialbuttons.fabs.FABGoogleplus
-            android:id="@+id/fab_googleplus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="7dp"/>
+        <in.championswimmer.libsocialbuttons.fabs.FABInstagram
+                android:id="@+id/fab_instagram"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"/>
 
-    <in.championswimmer.libsocialbuttons.fabs.FABDropbox
-            android:id="@+id/fab_dropbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="7dp"/>
+        <in.championswimmer.libsocialbuttons.fabs.FABWhatsapp
+                android:id="@+id/fab_whatsapp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"/>
 
-    <in.championswimmer.libsocialbuttons.fabs.FABLinkedin
-            android:id="@+id/fab_linkedin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="7dp"/>
+        <in.championswimmer.libsocialbuttons.fabs.FABTumblr
+                android:id="@+id/fab_tumblr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"/>
 
-    <!--Add other default share button-->
-    <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_other"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:backgroundTint="#FFFFFFFF"
-            android:src="@drawable/ic_three_dots"
-            android:layout_margin="7dp"/>
+        <in.championswimmer.libsocialbuttons.fabs.FABGoogleplus
+                android:id="@+id/fab_googleplus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"/>
 
-</GridLayout>
+        <in.championswimmer.libsocialbuttons.fabs.FABDropbox
+                android:id="@+id/fab_dropbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"/>
+
+        <in.championswimmer.libsocialbuttons.fabs.FABLinkedin
+                android:id="@+id/fab_linkedin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"/>
+
+        <!--Add other default share button-->
+        <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_other"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:backgroundTint="#FFFFFFFF"
+                android:src="@drawable/ic_three_dots"
+                android:layout_margin="8dp"/>
+    </GridLayout>
+</LinearLayout>
