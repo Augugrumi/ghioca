@@ -72,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.addCameraButton)
     View addCameraButton;
 
-    private DialogFragment fragment;
+    private DialogFragment wifiFragment;
+    private UploadingDialogFragment uploadFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,10 +97,11 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentManager fm = getSupportFragmentManager();
         if(savedInstanceState == null) {
-            fragment = new WiFiFragment();
+            wifiFragment = new WiFiFragment();
+            uploadFragment = new UploadingDialogFragment();
         }
-        if (fragment != null && !NetworkingUtility.isWifiEnabled())
-            fragment.show(fm, "dialog");
+        if (wifiFragment != null && !NetworkingUtility.isWifiEnabled())
+            wifiFragment.show(fm, "dialog");
     }
 
     @OnClick(R.id.addCameraButton)
@@ -168,9 +170,14 @@ public class MainActivity extends AppCompatActivity {
                             if (NetworkingUtility.isConnectivityAvailable()) {
                                 final String filePath = MyApplication.appFolderPath +
                                         File.separator + name + ".jpg";
+                                /*uploadFragment.setFilePath(filePath);
+                                FragmentManager fm = getSupportFragmentManager();
+                                uploadFragment.show(fm, "dialog");
+                                uploadFragment.upload();*/
                                 UploadingListener listener = new DefaultUploadingListener(filePath, MainActivity.this);
                                 listener.onStart();
                                 UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
+
                             } else {
                                 AlertDialog errorDialog;
                                 errorDialog = new AlertDialog.Builder(MainActivity.this).create();
@@ -215,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
                         UploadingListener listener = new DefaultUploadingListener(filePath, MainActivity.this);
                         listener.onStart();
                         UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
+
                     }
                 }
 

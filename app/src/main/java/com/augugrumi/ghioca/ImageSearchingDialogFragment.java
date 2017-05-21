@@ -1,9 +1,13 @@
 package com.augugrumi.ghioca;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.GoogleReverseImageSearchListener;
@@ -19,17 +23,19 @@ import it.polpetta.libris.image.ibm.contract.IIBMImageSearchResult;
 
 import java.util.ArrayList;
 
+import butterknife.ButterKnife;
+
 /**
  * @author Marco Zanella
  * @version 0.01
  * @since 0.01
  */
 
-public class HeadlessImageSearchingFragment extends Fragment {
+public class ImageSearchingDialogFragment extends DialogFragment {
 
-    public static String TAG_HEADLESS_SEARCHING_FRAGMENT = "headlessSearchingFragmentTag";
+    public static String TAG_IMAGE_SEARCHING_FRAGMENT = "headlessSearchingFragmentTag";
 
-    public static interface TaskStatusCallback {
+    public static interface ImageSearchingStatusCallback {
         void onPreExecute();
         void onPostExecute(String description, ArrayList<String> tags);
         void onError();
@@ -56,7 +62,7 @@ public class HeadlessImageSearchingFragment extends Fragment {
     private int numberOfActiveSearchers = 0;
     private int numberOfSuccesses = 0;
     private int numberOfFailures = 0;
-    private TaskStatusCallback callback;
+    private ImageSearchingStatusCallback callback;
     private GoogleReverseImageSearchListener googleListener;
     private AzureReverseImageSearchListener azureListener;
     private WatsonReverseImageSearchListener watsonListener;
@@ -65,12 +71,21 @@ public class HeadlessImageSearchingFragment extends Fragment {
     private String description;
     private String url;
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.searching_dialogfragment, container, false);
+        ButterKnife.bind(this, view);
+        setCancelable(false);
+        return view;
+    }
 
     @SuppressWarnings("deprecation")
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        callback = (TaskStatusCallback)activity;
+        callback = (ImageSearchingStatusCallback)activity;
         search();
     }
 
@@ -81,6 +96,15 @@ public class HeadlessImageSearchingFragment extends Fragment {
         results = new ArrayList<>();
         description = "";
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        Dialog dialog = getDialog();
+        if (dialog != null && getRetainInstance()) {
+            dialog.setDismissMessage(null);
+        }
+        super.onDestroyView();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.augugrumi.ghioca;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -23,7 +22,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ResultActivity extends AppCompatActivity
-        implements HeadlessImageSearchingFragment.TaskStatusCallback {
+        implements ImageSearchingDialogFragment.ImageSearchingStatusCallback {
 
     @Bind(R.id.image_view)
     ImageView imageView;
@@ -41,7 +40,7 @@ public class ResultActivity extends AppCompatActivity
     private String description;
     CallbackManager callbackManager;
     DialogFragment shareFragment;
-    HeadlessImageSearchingFragment searchingFragment;
+    ImageSearchingDialogFragment searchingFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,14 +65,17 @@ public class ResultActivity extends AppCompatActivity
         FragmentManager fm = getSupportFragmentManager();
         if(savedInstanceState == null) {
             shareFragment = new ShareFragment();
+            //searchingFragment = new ImageSearchingDialogFragment();
+            //searchingFragment.show(fm, ImageSearchingDialogFragment.TAG_IMAGE_SEARCHING_FRAGMENT);
         }
 
-        searchingFragment = (HeadlessImageSearchingFragment) fm
-                .findFragmentByTag(HeadlessImageSearchingFragment.TAG_HEADLESS_SEARCHING_FRAGMENT);
+        searchingFragment = (ImageSearchingDialogFragment) fm
+                .findFragmentByTag(ImageSearchingDialogFragment.TAG_IMAGE_SEARCHING_FRAGMENT);
         if (searchingFragment == null) {
-            searchingFragment = new HeadlessImageSearchingFragment();
+            searchingFragment = new ImageSearchingDialogFragment();
             fm.beginTransaction()
-                    .add(searchingFragment, HeadlessImageSearchingFragment.TAG_HEADLESS_SEARCHING_FRAGMENT)
+                    .add(searchingFragment, ImageSearchingDialogFragment.TAG_IMAGE_SEARCHING_FRAGMENT)
+                    .show(searchingFragment)
                     .commit();
         }
 
@@ -108,18 +110,22 @@ public class ResultActivity extends AppCompatActivity
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    ProgressDialog searchProgressDialog;
+    //ProgressDialog searchProgressDialog;
     @Override
-    public void onPreExecute() {
-        searchProgressDialog = new ProgressDialog(ResultActivity.this);
-        searchProgressDialog.setCancelable(false);
-        searchProgressDialog.setTitle("Searching");
-        searchProgressDialog.show();
-    }
+    public void onPreExecute() {}
 
     @Override
     public void onPostExecute(String description, ArrayList<String> tags) {
-        searchProgressDialog.dismiss();
+        FragmentManager fm = getSupportFragmentManager();
+        searchingFragment = (ImageSearchingDialogFragment) fm
+                .findFragmentByTag(ImageSearchingDialogFragment.TAG_IMAGE_SEARCHING_FRAGMENT);
+        if (searchingFragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .hide(searchingFragment)
+                    .remove(searchingFragment)
+                    .commit();
+        }
         if (!description.equals(""))
             descriptionResult.setText(description);
         for (String tag : tags) {
@@ -128,6 +134,7 @@ public class ResultActivity extends AppCompatActivity
             else
                 searchResult.append("\n" + tag);
         }
+
     }
 
     @Override
