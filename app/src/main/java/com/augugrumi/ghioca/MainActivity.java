@@ -26,6 +26,7 @@ import com.augugrumi.ghioca.utility.UploadingUtility;
 import com.github.florent37.camerafragment.CameraFragment;
 import com.github.florent37.camerafragment.CameraFragmentApi;
 import com.github.florent37.camerafragment.configuration.Configuration;
+import com.github.florent37.camerafragment.internal.ui.BaseAnncaFragment;
 import com.github.florent37.camerafragment.listeners.CameraFragmentControlsAdapter;
 import com.github.florent37.camerafragment.listeners.CameraFragmentResultAdapter;
 import com.github.florent37.camerafragment.listeners.CameraFragmentStateAdapter;
@@ -145,11 +146,12 @@ public class MainActivity extends AppCompatActivity {
         final CameraFragmentApi cameraFragment = getCameraFragment();
         if (cameraFragment != null) {
             final String name = photoName();
+
             cameraFragment.takePhotoOrCaptureVideo(new CameraFragmentResultAdapter() {
                 @Override
                 public void onPhotoTaken(final byte[] bytes, String filePath) {
-                    Toast.makeText(getBaseContext(), "onPhotoTaken " + filePath, Toast.LENGTH_SHORT).show();
-
+                    //Toast.makeText(getBaseContext(), "onPhotoTaken " + filePath, Toast.LENGTH_SHORT).show();
+                    ((BaseAnncaFragment) cameraFragment).reSetZoom();
                     new AsyncTask<Void, Void, Void>(){
                         @Override
                         protected Void doInBackground(Void... params) {

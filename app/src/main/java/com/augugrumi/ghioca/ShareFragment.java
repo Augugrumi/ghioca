@@ -175,12 +175,8 @@ public class ShareFragment extends DialogFragment {
                     .setBitmap(image)
                     .build();
 
-                ShareHashtag.Builder hashtags = new ShareHashtag.Builder()
-                        .setHashtag("#GhioCa");
-
                 SharePhotoContent content = new SharePhotoContent.Builder()
                         .addPhoto(photo)
-                        .setShareHashtag(hashtags.build())
                         .build();
 
                 shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
@@ -191,12 +187,8 @@ public class ShareFragment extends DialogFragment {
                         .setContentUrl(Uri.parse(url))
                         .build();
 
-                ShareHashtag.Builder hashtags = new ShareHashtag.Builder()
-                        .setHashtag("#GhioCa");
-
                 ShareLinkContent content = new ShareLinkContent.Builder()
                         .readFrom(link)
-                        .setShareHashtag(hashtags.build())
                         .build();
 
                 shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
@@ -245,10 +237,10 @@ public class ShareFragment extends DialogFragment {
             share.setPackage(packageName);
 
             // Add the URI to the Intent.
-            share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"+path));
+            share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
 
             // Broadcast the Intent.
-            startActivity(share);
+            startActivity(Intent.createChooser(share,""));
         }
         else{
             redirectToGooglePlay(packageName);
