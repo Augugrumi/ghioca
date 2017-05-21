@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.LinearLayout;
@@ -21,9 +20,6 @@ import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.robertlevonyan.views.chip.Chip;
 import com.squareup.picasso.Picasso;
 
-import it.polpetta.libris.image.contract.IImageSearchResult;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -75,35 +71,35 @@ public class ResultActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
-
-
         ButterKnife.bind(this);
-
         callbackManager = CallbackManager.Factory.create();
 
         // INITIALIZATIONS
-
-        results = new ArrayList<>();
-        description = "";
         url = getIntent().getExtras().getString(URL_INTENT_EXTRA);
         path = getIntent().getStringExtra(FILE_PATH_INTENT_EXTRA);
         Picasso.with(this).load("file://" + path).into(mainPhoto);
 
         // END OF INITIALIZATIONS
 
-        if(savedInstanceState == null) {
-            shareFragment = new ShareFragment();
-        }
+        shareFragment = new ShareFragment();
 
-        FragmentManager fm = getSupportFragmentManager();
-        searchingFragment = (ImageSearchingDialogFragment) fm
-                .findFragmentByTag(ImageSearchingDialogFragment.TAG_IMAGE_SEARCHING_FRAGMENT);
-        if (searchingFragment == null) {
-            searchingFragment = new ImageSearchingDialogFragment();
-            fm.beginTransaction()
-                    .add(searchingFragment, ImageSearchingDialogFragment.TAG_IMAGE_SEARCHING_FRAGMENT)
-                    .show(searchingFragment)
-                    .commit();
+        if(savedInstanceState == null) {
+            results = new ArrayList<>();
+            description = "";
+            FragmentManager fm = getSupportFragmentManager();
+            searchingFragment = (ImageSearchingDialogFragment) fm
+                    .findFragmentByTag(ImageSearchingDialogFragment.TAG_IMAGE_SEARCHING_FRAGMENT);
+            if (searchingFragment == null) {
+                searchingFragment = new ImageSearchingDialogFragment();
+                fm.beginTransaction()
+                        .add(searchingFragment, ImageSearchingDialogFragment.TAG_IMAGE_SEARCHING_FRAGMENT)
+                        .addToBackStack(null)
+                        .show(searchingFragment)
+                        .commit();
+            }
+        } else {
+            onRestoreInstanceState(savedInstanceState);
+            refreshResultView();
         }
 
     }
@@ -149,7 +145,10 @@ public class ResultActivity extends AppCompatActivity
             }
 
             chipListManager.addView(line);
+
+            line.bringToFront();
         }
+
     }
 
     private void cleanDuplicates() {
@@ -252,5 +251,20 @@ public class ResultActivity extends AppCompatActivity
 
     public ArrayList<String> getResults() {
         return results;
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putString("description", description);
+        savedInstanceState.putStringArrayList("results", results);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        results = savedInstanceState.getStringArrayList("results");
+        description = savedInstanceState.getString("description");
     }
 }
