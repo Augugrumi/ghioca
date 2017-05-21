@@ -14,6 +14,7 @@ import com.augugrumi.ghioca.listener.GoogleReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.ImaggaReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.WatsonReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener;
+import com.augugrumi.ghioca.utility.NetworkingUtility;
 import com.augugrumi.ghioca.utility.SearchingUtility;
 
 import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
@@ -33,7 +34,7 @@ import butterknife.ButterKnife;
 
 public class ImageSearchingDialogFragment extends DialogFragment {
 
-    public static String TAG_IMAGE_SEARCHING_FRAGMENT = "headlessSearchingFragmentTag";
+    public static final String TAG_IMAGE_SEARCHING_FRAGMENT = "headlessSearchingFragmentTag";
 
     public static interface ImageSearchingStatusCallback {
         void onPreExecute();
@@ -115,132 +116,134 @@ public class ImageSearchingDialogFragment extends DialogFragment {
 
 
     public void search() {
-        url = getActivity().getIntent().getStringExtra(DefaultUploadingListener.URL_INTENT_EXTRA);
-        googleListener = new GoogleReverseImageSearchListener()  {
-            @Override
-            public void onSuccess(IGoogleImageSearchResult result) {
-                if (result != null) {
-                    String res = result.getBestGuess();
-                    if (res != null)
-                        if (!results.contains(res))
-                            results.add(res);
-                }
-                onSearcherSuccess();
-                Log.i("SUCCESS", "GOOGLE");
-            }
-
-            @Override
-            public void onStart() {
-                numberOfActiveSearchers++;
-                Log.i("START", "GOOGLE");
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                onSearcherFailure();
-                Log.i("FAILURE", "GOOGLE");
-            }
-        };
-
-        azureListener = new AzureReverseImageSearchListener()  {
-            @Override
-            public void onSuccess(IAzureImageSearchResult result) {
-                if (result != null) {
-                    String res = result.getBestGuess();
-                    if (!results.contains(res))
-                        results.add(res);
-                    ArrayList<String> tags = result.getTags();
-                    if (tags != null)
-                        for (String tag : tags)
-                            if (!results.contains(tag))
-                                results.add(tag);
-                    description = result.getDescription();
-                }
-                onSearcherSuccess();
-                Log.i("SUCCESS", "AZURE");
-            }
-
-            @Override
-            public void onStart() {
-                numberOfActiveSearchers++;
-                Log.i("START", "AZURE");
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                onSearcherFailure();
-                Log.i("FAILURE", "AZURE");
-            }
-        };
-
-        watsonListener = new WatsonReverseImageSearchListener()  {
-            @Override
-            public void onSuccess(IIBMImageSearchResult result) {
-                if (result != null) {
-                    String res = result.getBestGuess();
-                    if (res != null)
-                        if (!results.contains(res))
-                            results.add(res);
-                    ArrayList<String> tags = result.getTags();
-                    if (tags != null)
-                        for (String tag : tags)
-                            if (!results.contains(tag))
-                                results.add(tag);
-
-                }
-                onSearcherSuccess();
-                Log.i("SUCCESS", "WATSON");
-            }
-
-            @Override
-            public void onStart() {
-                numberOfActiveSearchers++;
-                Log.i("START", "WATSON");
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                onSearcherFailure();
-                Log.i("FAILURE", "WATSON");
-            }
-        };
-
-        imaggaListener = new ImaggaReverseImageSearchListener() {
-            @Override
-            public void onSuccess(IImageSearchResult result) {
-                if (result != null) {
-                    String res = result.getBestGuess();
-                    if (res != null)
-                        if (!results.contains(res))
-                            results.add(res);
-                    ArrayList<String> tags = result.getTags();
-                    if (tags != null)
-                        for (String tag : tags)
-                            if (!results.contains(tag))
-                                results.add(tag);
-                }
-                onSearcherSuccess();
-                Log.i("SUCCESS", "IMAGGA");
-            }
-
-            @Override
-            public void onStart() {
-                numberOfActiveSearchers++;
-                Log.i("START", "IMMAGA");
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                onSearcherFailure();
-                Log.i("FAILURE", "IMMAGA");
-            }
-        };
-
-        SearchingUtility.searchImageWithGoogle(url, googleListener);
-        //SearchingUtility.searchImageWithAzure(url, azureListener);
-        SearchingUtility.searchImageWithWatson(url, watsonListener);
-        SearchingUtility.searchImageWithImagga(url, imaggaListener);
-
         callback.onPreExecute();
+        if (NetworkingUtility.isConnectivityAvailable()) {
+            url = getActivity().getIntent().getStringExtra(DefaultUploadingListener.URL_INTENT_EXTRA);
+            googleListener = new GoogleReverseImageSearchListener() {
+                @Override
+                public void onSuccess(IGoogleImageSearchResult result) {
+                    if (result != null) {
+                        String res = result.getBestGuess();
+                        if (res != null)
+                            if (!results.contains(res))
+                                results.add(res);
+                    }
+                    onSearcherSuccess();
+                    Log.i("SUCCESS", "GOOGLE");
+                }
+
+                @Override
+                public void onStart() {
+                    numberOfActiveSearchers++;
+                    Log.i("START", "GOOGLE");
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    onSearcherFailure();
+                    Log.i("FAILURE", "GOOGLE");
+                }
+            };
+
+            azureListener = new AzureReverseImageSearchListener() {
+                @Override
+                public void onSuccess(IAzureImageSearchResult result) {
+                    if (result != null) {
+                        String res = result.getBestGuess();
+                        if (!results.contains(res))
+                            results.add(res);
+                        ArrayList<String> tags = result.getTags();
+                        if (tags != null)
+                            for (String tag : tags)
+                                if (!results.contains(tag))
+                                    results.add(tag);
+                        description = result.getDescription();
+                    }
+                    onSearcherSuccess();
+                    Log.i("SUCCESS", "AZURE");
+                }
+
+                @Override
+                public void onStart() {
+                    numberOfActiveSearchers++;
+                    Log.i("START", "AZURE");
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    onSearcherFailure();
+                    Log.i("FAILURE", "AZURE");
+                }
+            };
+
+            watsonListener = new WatsonReverseImageSearchListener() {
+                @Override
+                public void onSuccess(IIBMImageSearchResult result) {
+                    if (result != null) {
+                        String res = result.getBestGuess();
+                        if (res != null)
+                            if (!results.contains(res))
+                                results.add(res);
+                        ArrayList<String> tags = result.getTags();
+                        if (tags != null)
+                            for (String tag : tags)
+                                if (!results.contains(tag))
+                                    results.add(tag);
+
+                    }
+                    onSearcherSuccess();
+                    Log.i("SUCCESS", "WATSON");
+                }
+
+                @Override
+                public void onStart() {
+                    numberOfActiveSearchers++;
+                    Log.i("START", "WATSON");
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    onSearcherFailure();
+                    Log.i("FAILURE", "WATSON");
+                }
+            };
+
+            imaggaListener = new ImaggaReverseImageSearchListener() {
+                @Override
+                public void onSuccess(IImageSearchResult result) {
+                    if (result != null) {
+                        String res = result.getBestGuess();
+                        if (res != null)
+                            if (!results.contains(res))
+                                results.add(res);
+                        ArrayList<String> tags = result.getTags();
+                        if (tags != null)
+                            for (String tag : tags)
+                                if (!results.contains(tag))
+                                    results.add(tag);
+                    }
+                    onSearcherSuccess();
+                    Log.i("SUCCESS", "IMAGGA");
+                }
+
+                @Override
+                public void onStart() {
+                    numberOfActiveSearchers++;
+                    Log.i("START", "IMMAGA");
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    onSearcherFailure();
+                    Log.i("FAILURE", "IMMAGA");
+                }
+            };
+
+            SearchingUtility.searchImageWithGoogle(url, googleListener);
+            //SearchingUtility.searchImageWithAzure(url, azureListener);
+            SearchingUtility.searchImageWithWatson(url, watsonListener);
+            SearchingUtility.searchImageWithImagga(url, imaggaListener);
+        } else
+            callback.onError();
     }
 }

@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.augugrumi.ghioca.utility.NetworkingUtility;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -20,14 +18,12 @@ import butterknife.OnClick;
  * @since 0.01
  */
 
-public class WiFiFragment extends DialogFragment {
+public class ErrorDialogFragment extends DialogFragment {
 
-    public static final String TAG_WIFI_FRAGMENT = "wifiFragmentTag";
+    public static final String TAG_ERROR_FRAGMENT = "errorFragmentTag";
 
-    @Bind(R.id.turn_on_wifi)
+    @Bind(R.id.ok_button)
     Button wifiActivationButton;
-    @Bind(R.id.cancel)
-    Button cancelButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,7 +34,7 @@ public class WiFiFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.wifi_dialogfragment, container, false);
+        View view = inflater.inflate(R.layout.error_dialogfragment, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -52,16 +48,8 @@ public class WiFiFragment extends DialogFragment {
         super.onDestroyView();
     }
 
-
-
-    @OnClick(R.id.turn_on_wifi)
+    @OnClick(R.id.ok_button)
     public void onAccept() {
-        NetworkingUtility.turnOnWiFi();
-        dismiss();
-    }
-
-    @OnClick(R.id.cancel)
-    public void onCancel() {
         dismiss();
     }
 

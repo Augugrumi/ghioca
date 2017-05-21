@@ -5,13 +5,11 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener;
 import com.facebook.CallbackManager;
 import com.squareup.picasso.Picasso;
 
@@ -20,6 +18,9 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener.FILE_PATH_INTENT_EXTRA;
+import static com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener.URL_INTENT_EXTRA;
 
 public class ResultActivity extends AppCompatActivity
         implements ImageSearchingDialogFragment.ImageSearchingStatusCallback {
@@ -38,9 +39,10 @@ public class ResultActivity extends AppCompatActivity
     private int numberOfSearch;
     private ArrayList<String> results;
     private String description;
-    CallbackManager callbackManager;
-    DialogFragment shareFragment;
-    ImageSearchingDialogFragment searchingFragment;
+    private CallbackManager callbackManager;
+    private DialogFragment shareFragment;
+    private ImageSearchingDialogFragment searchingFragment;
+    private ErrorDialogFragment errorDialogFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,16 +59,14 @@ public class ResultActivity extends AppCompatActivity
         searchResult.setMovementMethod(new ScrollingMovementMethod());
         results = new ArrayList<>();
 
-        url = getIntent().getExtras().getString(DefaultUploadingListener.URL_INTENT_EXTRA);
-        path = getIntent().getStringExtra(DefaultUploadingListener.FILE_PATH_INTENT_EXTRA);
+        url = getIntent().getExtras().getString(URL_INTENT_EXTRA);
+        path = getIntent().getStringExtra(FILE_PATH_INTENT_EXTRA);
 
         Picasso.with(this).load("file://" + path).into(imageView);
 
         FragmentManager fm = getSupportFragmentManager();
         if(savedInstanceState == null) {
             shareFragment = new ShareFragment();
-            //searchingFragment = new ImageSearchingDialogFragment();
-            //searchingFragment.show(fm, ImageSearchingDialogFragment.TAG_IMAGE_SEARCHING_FRAGMENT);
         }
 
         searchingFragment = (ImageSearchingDialogFragment) fm
@@ -92,16 +92,7 @@ public class ResultActivity extends AppCompatActivity
     //TODO beautify the fragment
     @OnClick(R.id.share_fab)
     public void share() {
-
-       /* FragmentTransaction ft = getFragmentManager().beginTransaction();
-        android.support.v4.app.Fragment prev = getSupportFragmentManager().findFragmentById(R.id.share_dialogfragment);
-        ft.addToBackStack(null);
-
-        // Create and show the dialog.
-        shareFragment = ShareFragment.newInstance(1);*/
         shareFragment.show(getSupportFragmentManager(), "dialog");
-
-
     }
 
     @Override
@@ -110,7 +101,6 @@ public class ResultActivity extends AppCompatActivity
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    //ProgressDialog searchProgressDialog;
     @Override
     public void onPreExecute() {}
 
@@ -139,11 +129,36 @@ public class ResultActivity extends AppCompatActivity
 
     @Override
     public void onError() {
-        AlertDialog errorDialog;
-        errorDialog = new AlertDialog.Builder(ResultActivity.this).create();
-        errorDialog.setCancelable(true);
-        errorDialog.setTitle("Error");
-        errorDialog.setMessage("An error occur during the reverse search please try again");
-        errorDialog.show();
+        FragmentManager fm = getSupportFragmentManager();
+        searchingFragment = (ImageSearchingDialogFragment) fm
+                .findFragmentByTag(ImageSearchingDialogFragment.TAG_IMAGE_SEARCHING_FRAGMENT);
+        if (searchingFragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .hide(searchingFragment)
+                    .remove(searchingFragment)
+                    .commit();
+        }
+
+        errorDialogFragment = (ErrorDialogFragment) fm
+                .findFragmentByTag(ErrorDialogFragment.TAG_ERROR_FRAGMENT);
+        if (errorDialogFragment == null) {
+            errorDialogFragment = new ErrorDialogFragment();
+            fm.beginTransaction()
+                    .add(errorDialogFragment, ErrorDialogFragment.TAG_ERROR_FRAGMENT)
+                    .show(errorDialogFragment)
+                    .commit();
+        } else
+            errorDialogFragment.show(fm, ErrorDialogFragment.TAG_ERROR_FRAGMENT);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0)
+            super.onBackPressed();
+        else {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
     }
 }

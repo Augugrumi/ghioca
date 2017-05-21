@@ -1,7 +1,6 @@
 package com.augugrumi.ghioca;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -73,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
     View addCameraButton;
 
     private DialogFragment wifiFragment;
-    private UploadingDialogFragment uploadFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,10 +96,14 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         if(savedInstanceState == null) {
             wifiFragment = new WiFiFragment();
-            uploadFragment = new UploadingDialogFragment();
         }
         if (wifiFragment != null && !NetworkingUtility.isWifiEnabled())
-            wifiFragment.show(fm, "dialog");
+            wifiFragment.show(fm, WiFiFragment.TAG_WIFI_FRAGMENT);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @OnClick(R.id.addCameraButton)
@@ -167,27 +169,17 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         protected void onPostExecute(Void aVoid) {
+                            final String filePath = MyApplication.appFolderPath +
+                                    File.separator + name + ".jpg";
+                            UploadingListener listener = new DefaultUploadingListener(filePath, MainActivity.this);
                             if (NetworkingUtility.isConnectivityAvailable()) {
-                                final String filePath = MyApplication.appFolderPath +
-                                        File.separator + name + ".jpg";
-                                /*uploadFragment.setFilePath(filePath);
-                                FragmentManager fm = getSupportFragmentManager();
-                                uploadFragment.show(fm, "dialog");
-                                uploadFragment.upload();*/
-                                UploadingListener listener = new DefaultUploadingListener(filePath, MainActivity.this);
+
                                 listener.onStart();
                                 UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
 
                             } else {
-                                AlertDialog errorDialog;
-                                errorDialog = new AlertDialog.Builder(MainActivity.this).create();
-                                errorDialog.setCancelable(true);
-                                errorDialog.setTitle("No internet available");
-                                errorDialog.setMessage("Connect to internet and retry");
-                                errorDialog.show();
+                                listener.onFailure(null);
                             }
-
-
                         }
                     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
                 }
@@ -211,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
     }
 
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
@@ -349,6 +342,4 @@ public class MainActivity extends AppCompatActivity {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         return timestamp.toString().replaceAll(" ", "_");
     }
-
-
 }

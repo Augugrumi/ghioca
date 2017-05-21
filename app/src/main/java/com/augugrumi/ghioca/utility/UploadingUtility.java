@@ -27,7 +27,8 @@ public class UploadingUtility {
     }
 
     public static void uploadToServer(String path, final Context context, final UploadingListener listener) {
-        Log.i("provaupload", "5");
+        Log.i("provaupload", "5 path:" + path);
+        listener.onStart();
         Filepicker.uploadLocalFile(Uri.parse(path), context, new FilepickerCallback() {
             @Override
             public void onFileUploadSuccess(final FPFile fpFile) {
@@ -38,11 +39,13 @@ public class UploadingUtility {
 
             @Override
             public void onFileUploadError(Throwable error) {
+                Log.i("provaupload", "8 " + error.toString());
                 listener.onFailure(error);
             }
 
             @Override
             public void onFileUploadProgress(Uri uri, float progress) {
+                Log.i("provaupload", "--progress" + progress);
                 listener.onProgressUpdate(Math.round(progress));
             }
         });

@@ -1,11 +1,13 @@
 package com.augugrumi.ghioca.listener.defaultimplementation;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.Intent;
 
+import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+
+import com.augugrumi.ghioca.ErrorDialogFragment;
 import com.augugrumi.ghioca.ResultActivity;
+import com.augugrumi.ghioca.UploadingDialogFragment;
 import com.augugrumi.ghioca.listener.UploadingListener;
 
 /**
@@ -20,31 +22,41 @@ public class DefaultUploadingListener implements UploadingListener {
     public static String URL_INTENT_EXTRA = "url";
     public static String FILE_PATH_INTENT_EXTRA = "path";
 
-    private ProgressDialog uploadProgressDialog;
     private String filePath;
-    private Activity activity;
+    private FragmentActivity activity;
+    private static UploadingDialogFragment uploadFragment;
+    private static ErrorDialogFragment errorDialogFragment;
 
-    public DefaultUploadingListener(String filePath, Activity activity) {
+    public DefaultUploadingListener(String filePath, FragmentActivity activity) {
         this.filePath = filePath;
         this.activity = activity;
-        uploadProgressDialog = new ProgressDialog(activity);
-        uploadProgressDialog.setCancelable(false);
-        uploadProgressDialog.setTitle("Uploading the image");
+
     }
 
     @Override
     public void onStart() {
-        uploadProgressDialog.show();
+        FragmentManager fm = activity.getSupportFragmentManager();
+        uploadFragment = (UploadingDialogFragment) fm
+                .findFragmentByTag(UploadingDialogFragment.TAG_UPLOADING_FRAGMENT);
+        if (uploadFragment == null) {
+            uploadFragment = new UploadingDialogFragment();
+            fm.beginTransaction()
+                    .add(uploadFragment, UploadingDialogFragment.TAG_UPLOADING_FRAGMENT)
+                    .addToBackStack(null)
+                    .show(uploadFragment)
+                    .commit();
+
+        } else
+            uploadFragment.show(fm, UploadingDialogFragment.TAG_UPLOADING_FRAGMENT);
     }
 
     @Override
-    public void onProgressUpdate(int progress) {
-        uploadProgressDialog.setProgress(progress);
-    }
+    public void onProgressUpdate(int progress) {}
 
     @Override
     public void onFinish(String url) {
-        uploadProgressDialog.dismiss();
+        uploadFragment.dismiss();
+
         Intent intent = new Intent(activity, ResultActivity.class);
         intent.putExtra(URL_INTENT_EXTRA, url);
         intent.putExtra(FILE_PATH_INTENT_EXTRA, filePath);
@@ -53,12 +65,19 @@ public class DefaultUploadingListener implements UploadingListener {
 
     @Override
     public void onFailure(Throwable error) {
-        uploadProgressDialog.dismiss();
-        AlertDialog errorDialog;
-        errorDialog = new AlertDialog.Builder(activity).create();
-        errorDialog.setCancelable(true);
-        errorDialog.setTitle("Error");
-        errorDialog.setMessage("An error occur during the uploading please try again");
-        errorDialog.show();
+        FragmentManager fm = activity.getSupportFragmentManager();
+        uploadFragment.setCancelable(true);
+        uploadFragment.dismiss();
+
+        errorDialogFragment = (ErrorDialogFragment) fm
+                .findFragmentByTag(ErrorDialogFragment.TAG_ERROR_FRAGMENT);
+        if (errorDialogFragment == null) {
+            errorDialogFragment = new ErrorDialogFragment();
+            fm.beginTransaction()
+                    .add(errorDialogFragment, ErrorDialogFragment.TAG_ERROR_FRAGMENT)
+                    .show(errorDialogFragment)
+                    .commit();
+        } else
+            errorDialogFragment.show(fm, ErrorDialogFragment.TAG_ERROR_FRAGMENT);
     }
 }
