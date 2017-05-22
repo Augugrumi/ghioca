@@ -39,7 +39,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -50,25 +50,25 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CAMERA_PERMISSIONS = 931;
     private static final int REQUEST_PREVIEW_CODE = 1001;
 
-    @Bind(R.id.settings_view)
+    @BindView(R.id.settings_view)
     CameraSettingsView settingsView;
-    @Bind(R.id.flash_switch_view)
+    @BindView(R.id.flash_switch_view)
     FlashSwitchView flashSwitchView;
-    @Bind(R.id.front_back_camera_switcher)
+    @BindView(R.id.front_back_camera_switcher)
     CameraSwitchView cameraSwitchView;
-    @Bind(R.id.record_button)
+    @BindView(R.id.record_button)
     RecordButton recordButton;
-    @Bind(R.id.pick_file)
+    @BindView(R.id.pick_file)
     ImageButton pickFile;
 
-    @Bind(R.id.record_duration_text)
+    @BindView(R.id.record_duration_text)
     TextView recordDurationText;
-    @Bind(R.id.record_size_mb_text)
+    @BindView(R.id.record_size_mb_text)
     TextView recordSizeText;
 
-    @Bind(R.id.cameraLayout)
+    @BindView(R.id.cameraLayout)
     View cameraLayout;
-    @Bind(R.id.addCameraButton)
+    @BindView(R.id.addCameraButton)
     View addCameraButton;
 
     private DialogFragment wifiFragment;
