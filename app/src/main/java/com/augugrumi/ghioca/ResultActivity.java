@@ -237,12 +237,8 @@ public class ResultActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0)
-            super.onBackPressed();
-        else {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
-        }
     }
 
     public String getDescription() {

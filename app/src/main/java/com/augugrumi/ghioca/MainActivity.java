@@ -16,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.augugrumi.ghioca.listener.UploadingListener;
 import com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener;
@@ -175,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
                                     File.separator + name + ".jpg";
                             UploadingListener listener = new DefaultUploadingListener(filePath, MainActivity.this);
                             if (NetworkingUtility.isConnectivityAvailable()) {
-
                                 listener.onStart();
                                 UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
 
@@ -214,9 +212,14 @@ public class MainActivity extends AppCompatActivity {
                 if (null != selectedImageUri) {
                     final String filePath = ConvertUriToFilePath.getPathFromURI(MainActivity.this,
                             selectedImageUri);
-                        UploadingListener listener = new DefaultUploadingListener(filePath, MainActivity.this);
+                    UploadingListener listener = new DefaultUploadingListener(filePath, MainActivity.this);
+                    if (NetworkingUtility.isConnectivityAvailable()) {
                         listener.onStart();
                         UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
+
+                    } else {
+                        listener.onFailure(null);
+                    }
 
                     }
                 }
@@ -344,4 +347,11 @@ public class MainActivity extends AppCompatActivity {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         return timestamp.toString().replaceAll(" ", "_");
     }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
+
 }

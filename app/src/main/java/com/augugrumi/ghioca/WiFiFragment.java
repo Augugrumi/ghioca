@@ -33,6 +33,7 @@ public class WiFiFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        setCancelable(false);
     }
 
     @Override
