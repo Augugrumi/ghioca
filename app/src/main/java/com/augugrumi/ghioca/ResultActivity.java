@@ -17,14 +17,14 @@ import com.augugrumi.ghioca.listener.ImaggaReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.WatsonReverseImageSearchListener;
 import com.facebook.CallbackManager;
 import com.flaviofaria.kenburnsview.KenBurnsView;
-import com.robertlevonyan.views.chip.Chip;
+//import com.robertlevonyan.views.chip.Chip;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -36,16 +36,16 @@ public class ResultActivity extends AppCompatActivity
 
     // BINDINGS
 
-    @Bind(R.id.mainPhoto)
+    @BindView(R.id.mainPhoto)
     KenBurnsView mainPhoto;
 
-    @Bind(R.id.best_guess)
+    @BindView(R.id.best_guess)
     TextView bestGuess;
 
-    @Bind(R.id.share_fab)
+    @BindView(R.id.share_fab)
     FloatingActionButton share;
 
-    @Bind(R.id.chipList)
+    @BindView(R.id.chipList)
     LinearLayout chipListManager;
 
     // END BINDINGS
@@ -136,12 +136,13 @@ public class ResultActivity extends AppCompatActivity
             }
 
             for (int i = j; i < chipsPerLine + j; i++) {
-
+/*
                 Chip chip = new Chip(this, null);
                 chip.setChipText(results.get(i));
                 chip.setClosable(true);
 
                 line.addView(chip);
+                */
             }
 
             chipListManager.addView(line);

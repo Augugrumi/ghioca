@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -22,7 +22,7 @@ public class ErrorDialogFragment extends DialogFragment {
 
     public static final String TAG_ERROR_FRAGMENT = "errorFragmentTag";
 
-    @Bind(R.id.ok_button)
+    @BindView(R.id.ok_button)
     Button wifiActivationButton;
 
     @Override

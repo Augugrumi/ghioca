@@ -10,7 +10,7 @@ import android.widget.Button;
 
 import com.augugrumi.ghioca.utility.NetworkingUtility;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -24,9 +24,9 @@ public class WiFiFragment extends DialogFragment {
 
     public static final String TAG_WIFI_FRAGMENT = "wifiFragmentTag";
 
-    @Bind(R.id.turn_on_wifi)
+    @BindView(R.id.turn_on_wifi)
     Button wifiActivationButton;
-    @Bind(R.id.cancel)
+    @BindView(R.id.cancel)
     Button cancelButton;
 
     @Override
