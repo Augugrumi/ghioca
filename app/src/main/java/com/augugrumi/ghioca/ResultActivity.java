@@ -2,7 +2,6 @@ package com.augugrumi.ghioca;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
@@ -19,7 +18,6 @@ import com.augugrumi.ghioca.listener.WatsonReverseImageSearchListener;
 import com.facebook.CallbackManager;
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.pchmn.materialchips.ChipView;
-import com.pchmn.materialchips.model.Chip;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -111,6 +109,7 @@ public class ResultActivity extends AppCompatActivity
         results.addAll(newResults);
     }
 
+    @SuppressWarnings("deprecated")
     private void refreshResultView() {
 
         Log.d("ADDINGRESULTS", "View refreshed");
@@ -145,6 +144,7 @@ public class ResultActivity extends AppCompatActivity
                 chip.setDeletable(true);
                 chip.setDeleteIconColor(getResources().getColor(android.R.color.white));
                 chip.setChipBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+                chip.setAvatarIcon(getResources().getDrawable(R.drawable.hashtag));
                 chip.setLabel(results.get(i));
 
                 line.addView(chip);
