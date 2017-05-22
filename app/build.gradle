@@ -52,7 +52,7 @@ dependencies {
     compile 'com.github.Augugrumi:camerafragment:v1.1.0'
 
     //searching image library
-    compile 'com.github.Augugrumi:libris:v2.0.0'
+    compile 'com.github.Augugrumi:libris:v2.0.7-beta'
 
     //loading animations
     compile 'com.wang.avi:library:2.1.3'

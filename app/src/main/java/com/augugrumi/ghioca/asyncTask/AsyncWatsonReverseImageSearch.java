@@ -47,18 +47,13 @@ public class AsyncWatsonReverseImageSearch extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... params) {
         try {
-            URL newUrl = new URL(url);
-            IAbstractIBMImageFactoryReverseSearchProvider factory = ReverseImageSearch.getIBMServices(watsonKey);
-            URLIBMImageSearcher.Builder builder = factory.imageSearchBuildQuery();
-            builder.setImage(newUrl);
-            URLIBMImageSearcher searcher = builder.build();
-            result = searcher.search();
-            /*result = ReverseImageSearch
+
+            result = ReverseImageSearch
                     .getIBMServices(watsonKey)
                     .imageSearchBuildQuery()
-                    .setImage(newUrl)
+                    .setImage(new URL(url))
                     .build()
-                    .search();*/
+                    .search();
             Log.i("WATSON_SEARCH_RESULT", result.toJSONString());
         } catch (Exception exception) {
             e = exception;
