@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:theme="@style/PrimaryFlatButton"
                 android:background="@android:color/white"
-                android:textColor="@android:color/holo_blue_dark"
+                android:textColor="@color/teal"
                 android:id="@+id/ok_button"
                 android:text="@string/ok_label"/>
 

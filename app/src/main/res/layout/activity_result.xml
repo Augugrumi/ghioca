@@ -52,7 +52,7 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="300dp"
                 android:src="@drawable/ic_share"
-                app:backgroundTint="@color/red"
+                app:backgroundTint="@color/teal"
                 app:elevation="15dp"
                 app:fabSize="normal" />
 

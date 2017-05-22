@@ -23,7 +23,7 @@
             style="@style/AVLoadingIndicatorView.Large"
             android:visibility="visible"
             app:indicatorName="BallTrianglePathIndicator"
-            app:indicatorColor="@android:color/holo_blue_dark"
+            app:indicatorColor="@color/teal"
             android:layout_gravity="center"
             android:layout_marginBottom="16dp"/>
 </LinearLayout>

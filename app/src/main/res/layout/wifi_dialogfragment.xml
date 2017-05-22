@@ -41,7 +41,7 @@
                 android:layout_height="37dp"
                 android:theme="@style/PrimaryFlatButton"
                 android:background="@android:color/white"
-                android:textColor="@android:color/holo_blue_dark"
+                android:textColor="@color/teal"
                 android:id="@+id/turn_on_wifi"
                 android:text="@string/ok_label"/>
 
@@ -49,7 +49,7 @@
                 android:layout_height="37dp"
                 android:theme="@style/PrimaryFlatButton"
                 android:background="@android:color/white"
-                android:textColor="@android:color/holo_blue_dark"
+                android:textColor="@color/teal"
                 android:text="@string/cancel_label"
                 android:id="@+id/cancel"
                 android:paddingRight="24dp"

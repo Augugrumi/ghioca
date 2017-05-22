@@ -15,10 +15,6 @@
               android:layout_gravity="center"
               android:layout_margin="8dp"/>
 
-    <View android:background="@android:color/holo_blue_dark"
-          android:layout_width = "match_parent"
-          android:layout_height="1dp"/>
-
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="horizontal"
                 android:columnCount="3"
