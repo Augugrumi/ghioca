@@ -2,6 +2,7 @@ package com.augugrumi.ghioca;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
@@ -142,7 +143,8 @@ public class ResultActivity extends AppCompatActivity
 
                 ChipView chip = new ChipView(this, null);
                 chip.setDeletable(true);
-                chip.setDeleteIconColor(0);
+                chip.setDeleteIconColor(getResources().getColor(android.R.color.white));
+                chip.setChipBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
                 chip.setLabel(results.get(i));
 
                 line.addView(chip);
