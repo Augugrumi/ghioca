@@ -17,7 +17,8 @@ import com.augugrumi.ghioca.listener.ImaggaReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.WatsonReverseImageSearchListener;
 import com.facebook.CallbackManager;
 import com.flaviofaria.kenburnsview.KenBurnsView;
-//import com.robertlevonyan.views.chip.Chip;
+import com.pchmn.materialchips.ChipView;
+import com.pchmn.materialchips.model.Chip;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -136,13 +137,15 @@ public class ResultActivity extends AppCompatActivity
             }
 
             for (int i = j; i < chipsPerLine + j; i++) {
-/*
-                Chip chip = new Chip(this, null);
-                chip.setChipText(results.get(i));
-                chip.setClosable(true);
+
+                // Put Chips
+
+                ChipView chip = new ChipView(this, null);
+                chip.setDeletable(true);
+                chip.setDeleteIconColor(0);
+                chip.setLabel(results.get(i));
 
                 line.addView(chip);
-                */
             }
 
             chipListManager.addView(line);
