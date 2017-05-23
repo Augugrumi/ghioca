@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -61,6 +63,7 @@ public class ResultActivity extends AppCompatActivity
     private WatsonReverseImageSearchListener watsonListener;
     private ImaggaReverseImageSearchListener imaggaListener;
     private volatile ArrayList<String> results;
+    private ArrayList<String> resultsToShare;
     private ArrayList<String> selectedChips;
     private String description;
     private ProgressDialog searchProgressDialog;
@@ -85,6 +88,7 @@ public class ResultActivity extends AppCompatActivity
 
         if(savedInstanceState == null) {
             results = new ArrayList<>();
+            resultsToShare = new ArrayList<>();
             description = "";
             FragmentManager fm = getSupportFragmentManager();
             searchingFragment = (ImageSearchingDialogFragment) fm
@@ -107,6 +111,7 @@ public class ResultActivity extends AppCompatActivity
     private void addResults(ArrayList<String> newResults) {
         Log.d("ADDINGRESULTS", newResults.toString());
         results.addAll(newResults);
+        resultsToShare.addAll(newResults);
     }
 
     @SuppressWarnings("deprecated")
@@ -139,14 +144,45 @@ public class ResultActivity extends AppCompatActivity
             for (int i = j; i < chipsPerLine + j; i++) {
 
                 // Put Chips
+                final String resultToDisplay = results.get(i);
+                final ChipView chip = new ChipView(this, null);
+                //chip.setDeletable(true);
+                //chip.setDeleteIconColor(getResources().getColor(android.R.color.white));
+                if (resultsToShare.contains(resultToDisplay)) {
+                    chip.setChipBackgroundColor(
+                            ResourcesCompat.getColor(getResources(), android.R.color.holo_green_light, null));
+                    chip.setAvatarIcon(
+                            ResourcesCompat.getDrawable(getResources(), R.drawable.tick, null));
+                } else {
+                    chip.setChipBackgroundColor(
+                            ResourcesCompat.getColor(getResources(), R.color.gray, null));
+                    chip.setAvatarIcon(
+                            ResourcesCompat.getDrawable(getResources(), R.drawable.cross, null));
+                }
+                chip.setLabel(resultToDisplay);
+                chip.setOnChipClicked(new View.OnClickListener() {
+                    boolean enabled = resultsToShare.contains(resultToDisplay);
 
-                ChipView chip = new ChipView(this, null);
-                chip.setDeletable(true);
-                chip.setDeleteIconColor(getResources().getColor(android.R.color.white));
-                chip.setChipBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-                chip.setAvatarIcon(getResources().getDrawable(R.drawable.hashtag));
-                chip.setLabel(results.get(i));
+                    @Override
+                    public void onClick(View v) {
+                        if (enabled) {
+                            chip.setChipBackgroundColor(
+                                    ResourcesCompat.getColor(getResources(), R.color.gray, null));
+                            chip.setAvatarIcon(
+                                    ResourcesCompat.getDrawable(getResources(), R.drawable.cross, null));
+                            resultsToShare.remove(resultToDisplay);
 
+                        }
+                        else {
+                            chip.setChipBackgroundColor(
+                                    ResourcesCompat.getColor(getResources(), android.R.color.holo_green_light, null));
+                            chip.setAvatarIcon(
+                                    ResourcesCompat.getDrawable(getResources(), R.drawable.tick, null));
+                            resultsToShare.add(resultToDisplay);
+                        }
+                        enabled = !enabled;
+                    }
+                });
                 line.addView(chip);
             }
 
@@ -252,7 +288,7 @@ public class ResultActivity extends AppCompatActivity
     }
 
     public ArrayList<String> getResults() {
-        return results;
+        return resultsToShare;
     }
 
 
@@ -260,6 +296,7 @@ public class ResultActivity extends AppCompatActivity
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putString("description", description);
         savedInstanceState.putStringArrayList("results", results);
+        savedInstanceState.putStringArrayList("resultsToShare", resultsToShare);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -267,6 +304,7 @@ public class ResultActivity extends AppCompatActivity
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         results = savedInstanceState.getStringArrayList("results");
+        resultsToShare = savedInstanceState.getStringArrayList("resultsToShare");
         description = savedInstanceState.getString("description");
     }
 }

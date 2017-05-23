@@ -44,8 +44,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String FRAGMENT_TAG = "camera";
 
+    private static boolean isStarting = true;
+
+    public static final String FRAGMENT_TAG = "camera";
     private static final int SELECT_PICTURE = 100;
     private static final int REQUEST_CAMERA_PERMISSIONS = 931;
     private static final int REQUEST_PREVIEW_CODE = 1001;
@@ -93,12 +95,15 @@ public class MainActivity extends AppCompatActivity {
         if (permissionsToRequest.isEmpty())
             addCamera();
 
-        FragmentManager fm = getSupportFragmentManager();
-        if(savedInstanceState == null) {
-            wifiFragment = new WiFiFragment();
+        if (isStarting) {
+            FragmentManager fm = getSupportFragmentManager();
+            if (savedInstanceState == null) {
+                wifiFragment = new WiFiFragment();
+            }
+            if (wifiFragment != null && !NetworkingUtility.isWifiEnabled())
+                wifiFragment.show(fm, WiFiFragment.TAG_WIFI_FRAGMENT);
+            isStarting = false;
         }
-        if (wifiFragment != null && !NetworkingUtility.isWifiEnabled())
-            wifiFragment.show(fm, WiFiFragment.TAG_WIFI_FRAGMENT);
     }
 
     @Override
