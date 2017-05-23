@@ -29,10 +29,11 @@ import com.github.florent37.camerafragment.internal.ui.BaseAnncaFragment;
 import com.github.florent37.camerafragment.listeners.CameraFragmentControlsAdapter;
 import com.github.florent37.camerafragment.listeners.CameraFragmentResultAdapter;
 import com.github.florent37.camerafragment.listeners.CameraFragmentStateAdapter;
-import com.github.florent37.camerafragment.widgets.CameraSettingsView;
 import com.github.florent37.camerafragment.widgets.CameraSwitchView;
 import com.github.florent37.camerafragment.widgets.FlashSwitchView;
 import com.github.florent37.camerafragment.widgets.RecordButton;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 
 import java.io.File;
 import java.sql.Timestamp;
@@ -52,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CAMERA_PERMISSIONS = 931;
     private static final int REQUEST_PREVIEW_CODE = 1001;
 
-    @BindView(R.id.settings_view)
-    CameraSettingsView settingsView;
+    //@BindView(R.id.settings_view)
+    //CameraSettingsView settingsView;
     @BindView(R.id.flash_switch_view)
     FlashSwitchView flashSwitchView;
     @BindView(R.id.front_back_camera_switcher)
@@ -104,6 +105,20 @@ public class MainActivity extends AppCompatActivity {
                 wifiFragment.show(fm, WiFiFragment.TAG_WIFI_FRAGMENT);
             isStarting = false;
         }
+
+
+        new DrawerBuilder()
+                .withActivity(this)
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withName("Name").withIdentifier(1).withSelectable(false),
+                        new PrimaryDrawerItem().withName("Name").withIdentifier(2).withSelectable(false),
+                        new PrimaryDrawerItem().withName("Name").withIdentifier(3).withSelectable(false),
+                        new PrimaryDrawerItem().withName("Name").withIdentifier(4).withSelectable(false)
+                        )
+
+                .withSelectedItem(-1)
+                .build();
+
     }
 
     @Override
@@ -192,13 +207,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.settings_view)
+    /*@OnClick(R.id.settings_view)
     public void onSettingsClicked() {
         final CameraFragmentApi cameraFragment = getCameraFragment();
         if (cameraFragment != null) {
             cameraFragment.openSettingDialog();
         }
-    }
+    }*/
 
     @OnClick(R.id.pick_file)
     public void onPickFileClicked() {
@@ -318,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
                 public void lockControls() {
                     cameraSwitchView.setEnabled(false);
                     recordButton.setEnabled(false);
-                    settingsView.setEnabled(false);
+                    //settingsView.setEnabled(false);
                     flashSwitchView.setEnabled(false);
                 }
 
@@ -326,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
                 public void unLockControls() {
                     cameraSwitchView.setEnabled(true);
                     recordButton.setEnabled(true);
-                    settingsView.setEnabled(true);
+                    //settingsView.setEnabled(true);
                     flashSwitchView.setEnabled(true);
                 }
 
