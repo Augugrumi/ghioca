@@ -258,8 +258,13 @@ public class MainActivity extends AppCompatActivity {
                         protected void onPostExecute(Void aVoid) {
                             final String filePath = MyApplication.appFolderPath +
                                     File.separator + name + ".jpg";
+                            Class toStart = null;
+                            if (SharedPreferencesManager.getUserSearchPreference() == SearchType.REVERSE_IMAGE_SEARCH)
+                                toStart = ReverseImageSearchResultActivity.class;
+                            else if (SharedPreferencesManager.getUserSearchPreference() == SearchType.OCR_SEARCH)
+                                toStart = OCRResultActivity.class;
                             UploadingListener listener =
-                                    new DefaultUploadingListener(filePath, MainActivity.this, ReverseImageSearchResultActivity.class);
+                                    new DefaultUploadingListener(filePath, MainActivity.this, toStart);
                             if (NetworkingUtility.isConnectivityAvailable()) {
                                 listener.onStart();
                                 UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);

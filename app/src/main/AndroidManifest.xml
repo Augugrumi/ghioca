@@ -43,6 +43,8 @@
 
         <activity android:name="com.augugrumi.ghioca.ReverseImageSearchResultActivity"/>
 
+        <activity android:name="com.augugrumi.ghioca.OCRResultActivity"/>
+
         <receiver android:name="com.augugrumi.ghioca.utility.NetworkingUtility">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
