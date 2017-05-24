@@ -123,8 +123,8 @@ public class ShareFragment extends DialogFragment {
     }
 
     private String shareContent() {
-        ArrayList<String> results = ((ResultActivity)getActivity()).getResults();
-        String description = ((ResultActivity)getActivity()).getDescription();
+        ArrayList<String> results = ((ReverseImageSearchResultActivity)getActivity()).getResults();
+        String description = ((ReverseImageSearchResultActivity)getActivity()).getDescription();
 
         StringBuilder toShare = new StringBuilder(description);
         toShare.append("\n");

@@ -33,7 +33,7 @@ import butterknife.OnClick;
 import static com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener.FILE_PATH_INTENT_EXTRA;
 import static com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener.URL_INTENT_EXTRA;
 
-public class ResultActivity extends AppCompatActivity
+public class ReverseImageSearchResultActivity extends AppCompatActivity
         implements ImageSearchingDialogFragment.ImageSearchingStatusCallback {
 
     // BINDINGS
@@ -73,7 +73,7 @@ public class ResultActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_result);
+        setContentView(R.layout.activity_image_search_result);
         ButterKnife.bind(this);
         callbackManager = CallbackManager.Factory.create();
 

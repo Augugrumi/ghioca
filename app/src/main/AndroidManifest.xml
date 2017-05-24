@@ -41,7 +41,7 @@
                 android:screenOrientation="portrait"
                 android:theme="@style/MaterialDrawerTheme"/>
 
-        <activity android:name="com.augugrumi.ghioca.ResultActivity"/>
+        <activity android:name="com.augugrumi.ghioca.ReverseImageSearchResultActivity"/>
 
         <receiver android:name="com.augugrumi.ghioca.utility.NetworkingUtility">
             <intent-filter>

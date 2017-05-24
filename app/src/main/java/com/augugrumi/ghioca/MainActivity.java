@@ -22,6 +22,7 @@ import com.augugrumi.ghioca.listener.UploadingListener;
 import com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener;
 import com.augugrumi.ghioca.utility.ConvertUriToFilePath;
 import com.augugrumi.ghioca.utility.NetworkingUtility;
+import com.augugrumi.ghioca.utility.SearchType;
 import com.augugrumi.ghioca.utility.SharedPreferencesManager;
 import com.augugrumi.ghioca.utility.UploadingUtility;
 import com.github.florent37.camerafragment.CameraFragment;
@@ -122,8 +123,8 @@ public class MainActivity extends AppCompatActivity {
                         new PrimaryDrawerItem().withName("Photo size").withIcon(R.drawable.ic_photo_size)
                                 .withIdentifier(1).withSelectable(false),
                         new SwitchDrawerItem().withName("Remember to turn on wifi").withIcon(R.drawable.ic_wifi)
-                                .withIdentifier(2).withSwitchEnabled(true).withSelectable(false)
-                                .withCheckable(true).withChecked(SharedPreferencesManager.getUserWiFiPreference())
+                                .withIdentifier(2).withSwitchEnabled(true).withSelectable(false).withSetSelected(false)
+                                .withCheckable(false).withChecked(SharedPreferencesManager.getUserWiFiPreference())
                                 .withOnCheckedChangeListener(new OnCheckedChangeListener() {
                             @Override
                             public void onCheckedChanged(IDrawerItem drawerItem, CompoundButton buttonView, boolean isChecked) {
@@ -131,7 +132,16 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }),
                         new PrimaryDrawerItem().withName("Change image search").withIcon(R.drawable.ic_search)
-                                .withIdentifier(3).withSelectable(false),
+                                .withIdentifier(3).withSelectable(false).withSubItems(
+                                    new PrimaryDrawerItem().withSelectable(true).withName("Reverse image search")
+                                        .withIdentifier(SearchType.REVERSE_IMAGE_SEARCH.ordinal() + 13)
+                                        .withSetSelected(SharedPreferencesManager.getUserSearchPreference().ordinal()
+                                            == SearchType.REVERSE_IMAGE_SEARCH.ordinal() + 13),
+                                    new PrimaryDrawerItem().withSelectable(true).withName("Character recognition")
+                                        .withIdentifier(SearchType.OCR_SEARCH.ordinal() + 13)
+                                        .withSetSelected(SharedPreferencesManager.getUserSearchPreference().ordinal()
+                                            == SearchType.OCR_SEARCH.ordinal()  + 13)
+                        ),
                         new PrimaryDrawerItem().withName("Credits").withIcon(R.drawable.ic_credits)
                                 .withIdentifier(4).withSelectable(false)
                         )
@@ -140,23 +150,39 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         switch ((int)drawerItem.getIdentifier()){
                             case 1:
+                                menu.closeDrawer();
                                 final CameraFragmentApi cameraFragment = getCameraFragment();
                                 if (cameraFragment != null) {
                                     cameraFragment.openSettingDialog();
                                 }
                                 break;
-                            case 2:
-                                break;
-                            case 3: // TODO create dialog in order to ask user the kind of search that he wants to perform
+                            case 2: break; // ok
+                            case 3:
+                                List<IDrawerItem> subItems = ((PrimaryDrawerItem) drawerItem).getSubItems();
+                                int toSelect = 0;
+                                if (SharedPreferencesManager.getUserSearchPreference() == SearchType.REVERSE_IMAGE_SEARCH)
+                                    toSelect = SearchType.REVERSE_IMAGE_SEARCH.ordinal() + 13;
+                                else if (SharedPreferencesManager.getUserSearchPreference() == SearchType.OCR_SEARCH)
+                                    toSelect = SearchType.OCR_SEARCH.ordinal() + 13;
+                                for (IDrawerItem item : subItems)
+                                    if (item.getIdentifier() == toSelect)
+                                        item.withSetSelected(true);
                                 break;
                             case 4: // TODO create credits activity
+                                menu.closeDrawer();
                                 break;
+                            default:
+                                if ((int)drawerItem.getIdentifier() == SearchType.REVERSE_IMAGE_SEARCH.ordinal() + 13)
+                                    SharedPreferencesManager.setUserSearchPreference(SearchType.REVERSE_IMAGE_SEARCH);
+                                else if ((int)drawerItem.getIdentifier() == SearchType.OCR_SEARCH.ordinal() + 13)
+                                    SharedPreferencesManager.setUserSearchPreference(SearchType.OCR_SEARCH);
                         }
                         return false;
                     }
                 })
                 .withTranslucentStatusBar(true)
                 .withSelectedItem(-1)
+                .withCloseOnClick(false)
                 .build();
 
     }
@@ -232,7 +258,8 @@ public class MainActivity extends AppCompatActivity {
                         protected void onPostExecute(Void aVoid) {
                             final String filePath = MyApplication.appFolderPath +
                                     File.separator + name + ".jpg";
-                            UploadingListener listener = new DefaultUploadingListener(filePath, MainActivity.this);
+                            UploadingListener listener =
+                                    new DefaultUploadingListener(filePath, MainActivity.this, ReverseImageSearchResultActivity.class);
                             if (NetworkingUtility.isConnectivityAvailable()) {
                                 listener.onStart();
                                 UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
@@ -272,7 +299,8 @@ public class MainActivity extends AppCompatActivity {
                 if (null != selectedImageUri) {
                     final String filePath = ConvertUriToFilePath.getPathFromURI(MainActivity.this,
                             selectedImageUri);
-                    UploadingListener listener = new DefaultUploadingListener(filePath, MainActivity.this);
+                    UploadingListener listener =
+                            new DefaultUploadingListener(filePath, MainActivity.this, ReverseImageSearchResultActivity.class);
                     if (NetworkingUtility.isConnectivityAvailable()) {
                         listener.onStart();
                         UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);

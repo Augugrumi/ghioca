@@ -46,6 +46,8 @@ public class SharedPreferencesManager {
 
         int choice = sharedPref.getInt(SEARCH_PREFERENCE, 0);
 
+        Log.i("SHARED_PREFERENCES_MAN", "choice:" + choice + " " + SearchType.values()[choice]);
+
         return SearchType.values()[choice];
     }
 
@@ -53,7 +55,7 @@ public class SharedPreferencesManager {
         Context context = MyApplication.getAppContext();
         SharedPreferences sharedPref = context.getSharedPreferences(
                 SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
-
+        Log.i("SHARED_PREFERENCES_MAN", "choice:" + choice.ordinal() + " " + choice);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt(SEARCH_PREFERENCE, choice.ordinal());
         editor.apply();
