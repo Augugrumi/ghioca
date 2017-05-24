@@ -39,9 +39,9 @@
         <activity
                 android:name="com.augugrumi.ghioca.MainActivity"
                 android:screenOrientation="portrait"
-                android:theme="@style/ThemeFullscreen"/>
-        <activity android:name="com.augugrumi.ghioca.ResultActivity">
-        </activity>
+                android:theme="@style/MaterialDrawerTheme"/>
+
+        <activity android:name="com.augugrumi.ghioca.ResultActivity"/>
 
         <receiver android:name="com.augugrumi.ghioca.utility.NetworkingUtility">
             <intent-filter>

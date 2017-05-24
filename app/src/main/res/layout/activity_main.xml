@@ -47,6 +47,7 @@
             <android.support.v7.widget.AppCompatImageButton
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:id="@+id/menu_button"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dp"

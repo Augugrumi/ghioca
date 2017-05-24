@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import com.augugrumi.ghioca.listener.UploadingListener;
 import com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener;
 import com.augugrumi.ghioca.utility.ConvertUriToFilePath;
 import com.augugrumi.ghioca.utility.NetworkingUtility;
+import com.augugrumi.ghioca.utility.SharedPreferencesManager;
 import com.augugrumi.ghioca.utility.UploadingUtility;
 import com.github.florent37.camerafragment.CameraFragment;
 import com.github.florent37.camerafragment.CameraFragmentApi;
@@ -32,8 +34,12 @@ import com.github.florent37.camerafragment.listeners.CameraFragmentStateAdapter;
 import com.github.florent37.camerafragment.widgets.CameraSwitchView;
 import com.github.florent37.camerafragment.widgets.FlashSwitchView;
 import com.github.florent37.camerafragment.widgets.RecordButton;
+import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import java.io.File;
 import java.sql.Timestamp;
@@ -63,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
     RecordButton recordButton;
     @BindView(R.id.pick_file)
     ImageButton pickFile;
+    @BindView(R.id.menu_button)
+    ImageButton buttonMenu;
 
     @BindView(R.id.record_duration_text)
     TextView recordDurationText;
@@ -75,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
     View addCameraButton;
 
     private DialogFragment wifiFragment;
+    private Drawer menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         if (permissionsToRequest.isEmpty())
             addCamera();
 
-        if (isStarting) {
+        if (isStarting && SharedPreferencesManager.getUserWiFiPreference()) {
             FragmentManager fm = getSupportFragmentManager();
             if (savedInstanceState == null) {
                 wifiFragment = new WiFiFragment();
@@ -106,16 +115,47 @@ public class MainActivity extends AppCompatActivity {
             isStarting = false;
         }
 
-
-        new DrawerBuilder()
+        // TODO retrieve from shared preferences user selection
+        menu = new DrawerBuilder()
                 .withActivity(this)
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName("Name").withIdentifier(1).withSelectable(false),
-                        new PrimaryDrawerItem().withName("Name").withIdentifier(2).withSelectable(false),
-                        new PrimaryDrawerItem().withName("Name").withIdentifier(3).withSelectable(false),
-                        new PrimaryDrawerItem().withName("Name").withIdentifier(4).withSelectable(false)
+                        new PrimaryDrawerItem().withName("Photo size").withIcon(R.drawable.ic_photo_size)
+                                .withIdentifier(1).withSelectable(false),
+                        new SwitchDrawerItem().withName("Remember to turn on wifi").withIcon(R.drawable.ic_wifi)
+                                .withIdentifier(2).withSwitchEnabled(true).withSelectable(false)
+                                .withCheckable(true).withChecked(SharedPreferencesManager.getUserWiFiPreference())
+                                .withOnCheckedChangeListener(new OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(IDrawerItem drawerItem, CompoundButton buttonView, boolean isChecked) {
+                                SharedPreferencesManager.setUserWiFiPreference(isChecked);
+                            }
+                        }),
+                        new PrimaryDrawerItem().withName("Change image search").withIcon(R.drawable.ic_search)
+                                .withIdentifier(3).withSelectable(false),
+                        new PrimaryDrawerItem().withName("Credits").withIcon(R.drawable.ic_credits)
+                                .withIdentifier(4).withSelectable(false)
                         )
-
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        switch ((int)drawerItem.getIdentifier()){
+                            case 1:
+                                final CameraFragmentApi cameraFragment = getCameraFragment();
+                                if (cameraFragment != null) {
+                                    cameraFragment.openSettingDialog();
+                                }
+                                break;
+                            case 2:
+                                break;
+                            case 3: // TODO create dialog in order to ask user the kind of search that he wants to perform
+                                break;
+                            case 4: // TODO create credits activity
+                                break;
+                        }
+                        return false;
+                    }
+                })
+                .withTranslucentStatusBar(true)
                 .withSelectedItem(-1)
                 .build();
 
@@ -314,11 +354,14 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void shouldRotateControls(int degrees) {
-                    ViewCompat.setRotation(cameraSwitchView, degrees);
-                    ViewCompat.setRotation(flashSwitchView, degrees);
-                    ViewCompat.setRotation(recordDurationText, degrees);
-                    ViewCompat.setRotation(recordSizeText, degrees);
-                    ViewCompat.setRotation(pickFile, degrees);
+                    if ((degrees>80 && degrees <100) || (degrees>170 && degrees <190) ||
+                            (degrees>260 && degrees <280) || (degrees > 350 || degrees < 10)) {
+                        ViewCompat.setRotation(cameraSwitchView, degrees);
+                        ViewCompat.setRotation(flashSwitchView, degrees);
+                        ViewCompat.setRotation(recordDurationText, degrees);
+                        ViewCompat.setRotation(recordSizeText, degrees);
+                        ViewCompat.setRotation(pickFile, degrees);
+                    }
                 }
 
 
@@ -373,5 +416,8 @@ public class MainActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
-
+    @OnClick(R.id.menu_button)
+    public void showMenu() {
+        menu.openDrawer();
+    }
 }
