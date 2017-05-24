@@ -49,7 +49,7 @@ dependencies {
     compile 'com.github.championswimmer:Android-SocialButtons:1.0'
 
     // modified CameraFragment library -> original: compile 'com.github.florent37:camerafragment:1.0.5'
-    compile 'com.github.Augugrumi:camerafragment:v1.1.0'
+    compile 'com.github.Augugrumi:camerafragment:v1.+'
 
     //searching image library
     compile 'com.github.Augugrumi:libris:v2.0.7-beta'
