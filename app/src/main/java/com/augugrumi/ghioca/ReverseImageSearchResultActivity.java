@@ -190,7 +190,7 @@ public class ReverseImageSearchResultActivity extends AppCompatActivity
 
             line.bringToFront();
         }
-
+        bestGuess.setText("..."+description+"!");
     }
 
     private void cleanDuplicates() {

@@ -240,7 +240,7 @@ public class ImageSearchingDialogFragment extends DialogFragment {
             };
 
             SearchingUtility.searchImageWithGoogle(url, googleListener);
-            //SearchingUtility.searchImageWithAzure(url, azureListener);
+            SearchingUtility.searchImageWithAzure(url, azureListener);
             SearchingUtility.searchImageWithWatson(url, watsonListener);
             SearchingUtility.searchImageWithImagga(url, imaggaListener);
         } else
