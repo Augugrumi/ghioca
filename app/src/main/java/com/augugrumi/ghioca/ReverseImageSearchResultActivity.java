@@ -103,6 +103,7 @@ public class ReverseImageSearchResultActivity extends AppCompatActivity
             }
         } else {
             onRestoreInstanceState(savedInstanceState);
+            setDescription(description);
             refreshResultView();
         }
 
