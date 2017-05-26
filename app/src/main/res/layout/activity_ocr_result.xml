@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    >
+
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:fitsSystemWindows="true"
+        tools:context="com.example.davide.testproject.MainScrolling">
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <com.github.florent37.arclayout.ArcLayout
+                android:id="@+id/photoPresentation"
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:elevation="10dp"
+                app:arc_cropDirection="cropOutside"
+                app:arc_height="50dp"
+                app:arc_position="bottom">
+
+                <com.flaviofaria.kenburnsview.KenBurnsView
+                    android:id="@+id/mainPhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ghiocalogo" />
+
+            </com.github.florent37.arclayout.ArcLayout>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/share_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="300dp"
+                android:src="@drawable/ic_share"
+                app:backgroundTint="@color/teal"
+                app:elevation="15dp"
+                app:fabSize="normal" />
+
+            <LinearLayout
+                android:id="@+id/textContent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/photoPresentation"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+
+                <TextView
+                    android:id="@+id/text_title"
+                    android:textColor="@android:color/primary_text_light"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/whatISee"
+                    android:textAllCaps="false"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/text_result"
+                    android:textColor="@android:color/primary_text_light"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="@string/thisIs"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <fragment class="com.augugrumi.ghioca.ShareFragment"
+                  android:id="@+id/share_dialogfragment"
+                  android:layout_weight="1"
+                  android:layout_width="0dp"
+                  android:layout_height="match_parent" />
+    </android.support.design.widget.CoordinatorLayout>
+
+
+</ScrollView>

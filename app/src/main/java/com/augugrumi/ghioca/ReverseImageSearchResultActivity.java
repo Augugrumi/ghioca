@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,35 +19,35 @@ import com.augugrumi.ghioca.listener.ImaggaReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.WatsonReverseImageSearchListener;
 import com.facebook.CallbackManager;
 import com.flaviofaria.kenburnsview.KenBurnsView;
-import com.robertlevonyan.views.chip.Chip;
+import com.pchmn.materialchips.ChipView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener.FILE_PATH_INTENT_EXTRA;
 import static com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener.URL_INTENT_EXTRA;
 
-public class ResultActivity extends AppCompatActivity
+public class ReverseImageSearchResultActivity extends AppCompatActivity
         implements ImageSearchingDialogFragment.ImageSearchingStatusCallback {
 
     // BINDINGS
 
-    @Bind(R.id.mainPhoto)
+    @BindView(R.id.mainPhoto)
     KenBurnsView mainPhoto;
 
-    @Bind(R.id.best_guess)
+    @BindView(R.id.best_guess)
     TextView bestGuess;
 
-    @Bind(R.id.share_fab)
+    @BindView(R.id.share_fab)
     FloatingActionButton share;
 
-    @Bind(R.id.chipList)
+    @BindView(R.id.chipList)
     LinearLayout chipListManager;
 
     // END BINDINGS
@@ -61,6 +63,7 @@ public class ResultActivity extends AppCompatActivity
     private WatsonReverseImageSearchListener watsonListener;
     private ImaggaReverseImageSearchListener imaggaListener;
     private volatile ArrayList<String> results;
+    private ArrayList<String> resultsToShare;
     private ArrayList<String> selectedChips;
     private String description;
     private ProgressDialog searchProgressDialog;
@@ -70,7 +73,7 @@ public class ResultActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_result);
+        setContentView(R.layout.activity_image_search_result);
         ButterKnife.bind(this);
         callbackManager = CallbackManager.Factory.create();
 
@@ -85,6 +88,7 @@ public class ResultActivity extends AppCompatActivity
 
         if(savedInstanceState == null) {
             results = new ArrayList<>();
+            resultsToShare = new ArrayList<>();
             description = "";
             FragmentManager fm = getSupportFragmentManager();
             searchingFragment = (ImageSearchingDialogFragment) fm
@@ -107,8 +111,10 @@ public class ResultActivity extends AppCompatActivity
     private void addResults(ArrayList<String> newResults) {
         Log.d("ADDINGRESULTS", newResults.toString());
         results.addAll(newResults);
+        resultsToShare.addAll(newResults);
     }
 
+    @SuppressWarnings("deprecated")
     private void refreshResultView() {
 
         Log.d("ADDINGRESULTS", "View refreshed");
@@ -137,10 +143,46 @@ public class ResultActivity extends AppCompatActivity
 
             for (int i = j; i < chipsPerLine + j; i++) {
 
-                Chip chip = new Chip(this, null);
-                chip.setChipText(results.get(i));
-                chip.setClosable(true);
+                // Put Chips
+                final String resultToDisplay = results.get(i);
+                final ChipView chip = new ChipView(this, null);
+                //chip.setDeletable(true);
+                //chip.setDeleteIconColor(getResources().getColor(android.R.color.white));
+                if (resultsToShare.contains(resultToDisplay)) {
+                    chip.setChipBackgroundColor(
+                            ResourcesCompat.getColor(getResources(), android.R.color.holo_green_light, null));
+                    chip.setAvatarIcon(
+                            ResourcesCompat.getDrawable(getResources(), R.drawable.tick, null));
+                } else {
+                    chip.setChipBackgroundColor(
+                            ResourcesCompat.getColor(getResources(), R.color.gray, null));
+                    chip.setAvatarIcon(
+                            ResourcesCompat.getDrawable(getResources(), R.drawable.cross, null));
+                }
+                chip.setLabel(resultToDisplay);
+                chip.setOnChipClicked(new View.OnClickListener() {
+                    boolean enabled = resultsToShare.contains(resultToDisplay);
 
+                    @Override
+                    public void onClick(View v) {
+                        if (enabled) {
+                            chip.setChipBackgroundColor(
+                                    ResourcesCompat.getColor(getResources(), R.color.gray, null));
+                            chip.setAvatarIcon(
+                                    ResourcesCompat.getDrawable(getResources(), R.drawable.cross, null));
+                            resultsToShare.remove(resultToDisplay);
+
+                        }
+                        else {
+                            chip.setChipBackgroundColor(
+                                    ResourcesCompat.getColor(getResources(), android.R.color.holo_green_light, null));
+                            chip.setAvatarIcon(
+                                    ResourcesCompat.getDrawable(getResources(), R.drawable.tick, null));
+                            resultsToShare.add(resultToDisplay);
+                        }
+                        enabled = !enabled;
+                    }
+                });
                 line.addView(chip);
             }
 
@@ -148,7 +190,7 @@ public class ResultActivity extends AppCompatActivity
 
             line.bringToFront();
         }
-
+        bestGuess.setText("..."+description+"!");
     }
 
     private void cleanDuplicates() {
@@ -237,12 +279,8 @@ public class ResultActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0)
-            super.onBackPressed();
-        else {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
-        }
     }
 
     public String getDescription() {
@@ -250,7 +288,7 @@ public class ResultActivity extends AppCompatActivity
     }
 
     public ArrayList<String> getResults() {
-        return results;
+        return resultsToShare;
     }
 
 
@@ -258,6 +296,7 @@ public class ResultActivity extends AppCompatActivity
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putString("description", description);
         savedInstanceState.putStringArrayList("results", results);
+        savedInstanceState.putStringArrayList("resultsToShare", resultsToShare);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -265,6 +304,7 @@ public class ResultActivity extends AppCompatActivity
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         results = savedInstanceState.getStringArrayList("results");
+        resultsToShare = savedInstanceState.getStringArrayList("resultsToShare");
         description = savedInstanceState.getString("description");
     }
 }

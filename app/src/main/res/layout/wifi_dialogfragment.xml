@@ -2,33 +2,59 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_width="250dp"
+              android:minWidth="280dp"
+              android:layout_height="match_parent"
+              android:background="@color/white">
 
     <TextView android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:text="Turn on Wi-Fi?"
-              android:textStyle="bold"/>
+              android:textSize="24sp"
+              android:textStyle="bold"
+              android:textColor="@android:color/primary_text_light_nodisable"
+              android:paddingTop="24dp"
+              android:paddingLeft="24dp"
+              android:paddingRight="24dp"
+              android:paddingBottom="0dp"/>
 
     <TextView android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:textColor="@android:color/secondary_text_light_nodisable"
+              android:textSize="15sp"
               android:text=
                       "This app need to upload your photo to recognize object, if you want to save data turn on wifi"
-              android:id="@+id/textView2"/>
+              android:id="@+id/textView2"
+              android:paddingTop="5dp"
+              android:paddingLeft="24dp"
+              android:paddingRight="24dp"
+              android:paddingBottom="5dp"/>
+
     <LinearLayout android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:orientation="horizontal"
-                  android:layout_gravity="right">
-        <Button android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                  android:layout_gravity="right"
+
+                  android:paddingBottom="10dp">
+
+        <Button android:layout_width="50dp"
+                android:layout_height="37dp"
+                android:theme="@style/PrimaryFlatButton"
+                android:background="@android:color/white"
+                android:textColor="@color/teal"
                 android:id="@+id/turn_on_wifi"
                 android:text="@string/ok_label"/>
 
-        <Button android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+        <Button android:layout_width="77dp"
+                android:layout_height="37dp"
+                android:theme="@style/PrimaryFlatButton"
+                android:background="@android:color/white"
+                android:textColor="@color/teal"
                 android:text="@string/cancel_label"
                 android:id="@+id/cancel"
+                android:paddingRight="24dp"
                 android:layout_alignEnd="@+id/turn_on_wifi"/>
+
     </LinearLayout>
 
 </LinearLayout>

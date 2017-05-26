@@ -5,12 +5,10 @@ import android.util.Log;
 
 import com.augugrumi.ghioca.MyApplication;
 import com.augugrumi.ghioca.R;
-import com.augugrumi.ghioca.listener.WatsonReverseImageSearchListener;
+import com.augugrumi.ghioca.listener.WatsonOCRListener;
 
-import it.polpetta.libris.image.ReverseImageSearch;
-import it.polpetta.libris.image.ibm.contract.IAbstractIBMImageFactoryReverseSearchProvider;
-import it.polpetta.libris.image.ibm.contract.IIBMImageSearchResult;
-import it.polpetta.libris.image.ibm.visualRecognition.URLIBMImageSearcher;
+import it.polpetta.libris.opticalCharacterRecognition.OpticalCharacterRecognitionSearch;
+import it.polpetta.libris.opticalCharacterRecognition.ibm.contract.IIBMOcrResult;
 
 import java.net.URL;
 
@@ -20,18 +18,18 @@ import java.net.URL;
  * @since 0.01
  */
 
-public class AsyncWatsonReverseImageSearch extends AsyncTask<Void, Void, Void> {
+public class AsyncWatsonOCR extends AsyncTask<Void, Void, Void> {
 
     private static String watsonKey =
             MyApplication.getAppContext().getString(R.string.WATSON_KEY);
 
-    private WatsonReverseImageSearchListener listener;
-    private IIBMImageSearchResult result;
+    private WatsonOCRListener listener;
+    private IIBMOcrResult result;
     private boolean error;
     private String url;
     private Exception e;
 
-    public AsyncWatsonReverseImageSearch(String url, WatsonReverseImageSearchListener listener) {
+    public AsyncWatsonOCR(String url, WatsonOCRListener listener) {
         this.listener = listener;
         this.url = url;
         error = false;
@@ -47,14 +45,13 @@ public class AsyncWatsonReverseImageSearch extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... params) {
         try {
-
-            result = ReverseImageSearch
+            result = OpticalCharacterRecognitionSearch
                     .getIBMServices(watsonKey)
                     .imageSearchBuildQuery()
                     .setImage(new URL(url))
                     .build()
                     .search();
-            Log.i("WATSON_SEARCH_RESULT", result.toJSONString());
+            Log.i("WATSON_OCR_RESULT", result.toJSONString());
         } catch (Exception exception) {
             e = exception;
             e.printStackTrace();

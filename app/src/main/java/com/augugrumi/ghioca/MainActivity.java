@@ -14,14 +14,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.augugrumi.ghioca.listener.UploadingListener;
 import com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener;
 import com.augugrumi.ghioca.utility.ConvertUriToFilePath;
 import com.augugrumi.ghioca.utility.NetworkingUtility;
+import com.augugrumi.ghioca.utility.SearchType;
+import com.augugrumi.ghioca.utility.SharedPreferencesManager;
 import com.augugrumi.ghioca.utility.UploadingUtility;
 import com.github.florent37.camerafragment.CameraFragment;
 import com.github.florent37.camerafragment.CameraFragmentApi;
@@ -30,53 +34,70 @@ import com.github.florent37.camerafragment.internal.ui.BaseAnncaFragment;
 import com.github.florent37.camerafragment.listeners.CameraFragmentControlsAdapter;
 import com.github.florent37.camerafragment.listeners.CameraFragmentResultAdapter;
 import com.github.florent37.camerafragment.listeners.CameraFragmentStateAdapter;
-import com.github.florent37.camerafragment.widgets.CameraSettingsView;
 import com.github.florent37.camerafragment.widgets.CameraSwitchView;
 import com.github.florent37.camerafragment.widgets.FlashSwitchView;
 import com.github.florent37.camerafragment.widgets.RecordButton;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+
+import junit.framework.Assert;
 
 import java.io.File;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String FRAGMENT_TAG = "camera";
 
+    private static boolean isStarting = true;
+
+    public static final String FRAGMENT_TAG = "camera";
     private static final int SELECT_PICTURE = 100;
     private static final int REQUEST_CAMERA_PERMISSIONS = 931;
     private static final int REQUEST_PREVIEW_CODE = 1001;
 
-    @Bind(R.id.settings_view)
-    CameraSettingsView settingsView;
-    @Bind(R.id.flash_switch_view)
+    //@BindView(R.id.settings_view)
+    //CameraSettingsView settingsView;
+    @BindView(R.id.flash_switch_view)
     FlashSwitchView flashSwitchView;
-    @Bind(R.id.front_back_camera_switcher)
+    @BindView(R.id.front_back_camera_switcher)
     CameraSwitchView cameraSwitchView;
-    @Bind(R.id.record_button)
+    @BindView(R.id.record_button)
     RecordButton recordButton;
-    @Bind(R.id.pick_file)
+    @BindView(R.id.pick_file)
     ImageButton pickFile;
+    @BindView(R.id.menu_button)
+    ImageButton buttonMenu;
 
-    @Bind(R.id.record_duration_text)
+    @BindView(R.id.record_duration_text)
     TextView recordDurationText;
-    @Bind(R.id.record_size_mb_text)
+    @BindView(R.id.record_size_mb_text)
     TextView recordSizeText;
 
-    @Bind(R.id.cameraLayout)
+    @BindView(R.id.cameraLayout)
     View cameraLayout;
-    @Bind(R.id.addCameraButton)
+    @BindView(R.id.addCameraButton)
     View addCameraButton;
 
     private DialogFragment wifiFragment;
+    private Drawer menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Remove title bar
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        //Remove notification bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
@@ -94,12 +115,85 @@ public class MainActivity extends AppCompatActivity {
         if (permissionsToRequest.isEmpty())
             addCamera();
 
-        FragmentManager fm = getSupportFragmentManager();
-        if(savedInstanceState == null) {
-            wifiFragment = new WiFiFragment();
+        if (isStarting && SharedPreferencesManager.getUserWiFiPreference()) {
+            FragmentManager fm = getSupportFragmentManager();
+            if (savedInstanceState == null) {
+                wifiFragment = new WiFiFragment();
+            }
+            if (wifiFragment != null && !NetworkingUtility.isWifiEnabled())
+                wifiFragment.show(fm, WiFiFragment.TAG_WIFI_FRAGMENT);
+            isStarting = false;
         }
-        if (wifiFragment != null && !NetworkingUtility.isWifiEnabled())
-            wifiFragment.show(fm, WiFiFragment.TAG_WIFI_FRAGMENT);
+
+        // TODO retrieve from shared preferences user selection
+        menu = new DrawerBuilder()
+                .withActivity(this)
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withName("Photo size").withIcon(R.drawable.ic_photo_size)
+                                .withIdentifier(1).withSelectable(false),
+                        new SwitchDrawerItem().withName("Remember to turn on wifi").withIcon(R.drawable.ic_wifi)
+                                .withIdentifier(2).withSwitchEnabled(true).withSelectable(false).withSetSelected(false)
+                                .withCheckable(false).withChecked(SharedPreferencesManager.getUserWiFiPreference())
+                                .withOnCheckedChangeListener(new OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(IDrawerItem drawerItem, CompoundButton buttonView, boolean isChecked) {
+                                SharedPreferencesManager.setUserWiFiPreference(isChecked);
+                            }
+                        }),
+                        new PrimaryDrawerItem().withName("Change image search").withIcon(R.drawable.ic_search)
+                                .withIdentifier(3).withSelectable(false).withSubItems(
+                                    new PrimaryDrawerItem().withSelectable(true).withName("Reverse image search")
+                                        .withIdentifier(SearchType.REVERSE_IMAGE_SEARCH.ordinal() + 13)
+                                        .withSetSelected(SharedPreferencesManager.getUserSearchPreference().ordinal()
+                                            == SearchType.REVERSE_IMAGE_SEARCH.ordinal() + 13),
+                                    new PrimaryDrawerItem().withSelectable(true).withName("Character recognition")
+                                        .withIdentifier(SearchType.OCR_SEARCH.ordinal() + 13)
+                                        .withSetSelected(SharedPreferencesManager.getUserSearchPreference().ordinal()
+                                            == SearchType.OCR_SEARCH.ordinal()  + 13)
+                        ),
+                        new PrimaryDrawerItem().withName("Credits").withIcon(R.drawable.ic_credits)
+                                .withIdentifier(4).withSelectable(false)
+                        )
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        switch ((int)drawerItem.getIdentifier()){
+                            case 1:
+                                menu.closeDrawer();
+                                final CameraFragmentApi cameraFragment = getCameraFragment();
+                                if (cameraFragment != null) {
+                                    cameraFragment.openSettingDialog();
+                                }
+                                break;
+                            case 2: break; // ok
+                            case 3:
+                                List<IDrawerItem> subItems = ((PrimaryDrawerItem) drawerItem).getSubItems();
+                                int toSelect = 0;
+                                if (SharedPreferencesManager.getUserSearchPreference() == SearchType.REVERSE_IMAGE_SEARCH)
+                                    toSelect = SearchType.REVERSE_IMAGE_SEARCH.ordinal() + 13;
+                                else if (SharedPreferencesManager.getUserSearchPreference() == SearchType.OCR_SEARCH)
+                                    toSelect = SearchType.OCR_SEARCH.ordinal() + 13;
+                                for (IDrawerItem item : subItems)
+                                    if (item.getIdentifier() == toSelect)
+                                        item.withSetSelected(true);
+                                break;
+                            case 4: // TODO create credits activity
+                                menu.closeDrawer();
+                                break;
+                            default:
+                                if ((int)drawerItem.getIdentifier() == SearchType.REVERSE_IMAGE_SEARCH.ordinal() + 13)
+                                    SharedPreferencesManager.setUserSearchPreference(SearchType.REVERSE_IMAGE_SEARCH);
+                                else if ((int)drawerItem.getIdentifier() == SearchType.OCR_SEARCH.ordinal() + 13)
+                                    SharedPreferencesManager.setUserSearchPreference(SearchType.OCR_SEARCH);
+                        }
+                        return false;
+                    }
+                })
+                .withTranslucentStatusBar(true)
+                .withSelectedItem(-1)
+                .withCloseOnClick(false)
+                .build();
+
     }
 
     @Override
@@ -173,9 +267,14 @@ public class MainActivity extends AppCompatActivity {
                         protected void onPostExecute(Void aVoid) {
                             final String filePath = MyApplication.appFolderPath +
                                     File.separator + name + ".jpg";
-                            UploadingListener listener = new DefaultUploadingListener(filePath, MainActivity.this);
+                            Class toStart = null;
+                            if (SharedPreferencesManager.getUserSearchPreference() == SearchType.REVERSE_IMAGE_SEARCH)
+                                toStart = ReverseImageSearchResultActivity.class;
+                            else if (SharedPreferencesManager.getUserSearchPreference() == SearchType.OCR_SEARCH)
+                                toStart = OCRResultActivity.class;
+                            UploadingListener listener =
+                                    new DefaultUploadingListener(filePath, MainActivity.this, toStart);
                             if (NetworkingUtility.isConnectivityAvailable()) {
-
                                 listener.onStart();
                                 UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
 
@@ -189,13 +288,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.settings_view)
+    /*@OnClick(R.id.settings_view)
     public void onSettingsClicked() {
         final CameraFragmentApi cameraFragment = getCameraFragment();
         if (cameraFragment != null) {
             cameraFragment.openSettingDialog();
         }
-    }
+    }*/
 
     @OnClick(R.id.pick_file)
     public void onPickFileClicked() {
@@ -214,9 +313,15 @@ public class MainActivity extends AppCompatActivity {
                 if (null != selectedImageUri) {
                     final String filePath = ConvertUriToFilePath.getPathFromURI(MainActivity.this,
                             selectedImageUri);
-                        UploadingListener listener = new DefaultUploadingListener(filePath, MainActivity.this);
+                    UploadingListener listener =
+                            new DefaultUploadingListener(filePath, MainActivity.this, ReverseImageSearchResultActivity.class);
+                    if (NetworkingUtility.isConnectivityAvailable()) {
                         listener.onStart();
                         UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
+
+                    } else {
+                        listener.onFailure(null);
+                    }
 
                     }
                 }
@@ -291,11 +396,14 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void shouldRotateControls(int degrees) {
-                    ViewCompat.setRotation(cameraSwitchView, degrees);
-                    ViewCompat.setRotation(flashSwitchView, degrees);
-                    ViewCompat.setRotation(recordDurationText, degrees);
-                    ViewCompat.setRotation(recordSizeText, degrees);
-                    ViewCompat.setRotation(pickFile, degrees);
+                    if ((degrees>80 && degrees <100) || (degrees>170 && degrees <190) ||
+                            (degrees>260 && degrees <280) || (degrees > 350 || degrees < 10)) {
+                        ViewCompat.setRotation(cameraSwitchView, degrees);
+                        ViewCompat.setRotation(flashSwitchView, degrees);
+                        ViewCompat.setRotation(recordDurationText, degrees);
+                        ViewCompat.setRotation(recordSizeText, degrees);
+                        ViewCompat.setRotation(pickFile, degrees);
+                    }
                 }
 
 
@@ -310,7 +418,7 @@ public class MainActivity extends AppCompatActivity {
                 public void lockControls() {
                     cameraSwitchView.setEnabled(false);
                     recordButton.setEnabled(false);
-                    settingsView.setEnabled(false);
+                    //settingsView.setEnabled(false);
                     flashSwitchView.setEnabled(false);
                 }
 
@@ -318,7 +426,7 @@ public class MainActivity extends AppCompatActivity {
                 public void unLockControls() {
                     cameraSwitchView.setEnabled(true);
                     recordButton.setEnabled(true);
-                    settingsView.setEnabled(true);
+                    //settingsView.setEnabled(true);
                     flashSwitchView.setEnabled(true);
                 }
 
@@ -343,5 +451,15 @@ public class MainActivity extends AppCompatActivity {
     private String photoName() {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         return timestamp.toString().replaceAll(" ", "_");
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
+    @OnClick(R.id.menu_button)
+    public void showMenu() {
+        menu.openDrawer();
     }
 }

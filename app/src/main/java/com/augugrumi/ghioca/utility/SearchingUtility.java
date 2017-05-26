@@ -5,10 +5,12 @@ import android.os.AsyncTask;
 import com.augugrumi.ghioca.asyncTask.AsyncAzureReverseImageSearch;
 import com.augugrumi.ghioca.asyncTask.AsyncGoogleReverseImageSearch;
 import com.augugrumi.ghioca.asyncTask.AsyncImaggaReverseImageSearch;
+import com.augugrumi.ghioca.asyncTask.AsyncWatsonOCR;
 import com.augugrumi.ghioca.asyncTask.AsyncWatsonReverseImageSearch;
 import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.GoogleReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.ImaggaReverseImageSearchListener;
+import com.augugrumi.ghioca.listener.WatsonOCRListener;
 import com.augugrumi.ghioca.listener.WatsonReverseImageSearchListener;
 
 /**
@@ -38,5 +40,9 @@ public class SearchingUtility {
 
     public static void searchImageWithImagga(final String url, final ImaggaReverseImageSearchListener listener){
         new AsyncImaggaReverseImageSearch(url, listener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);;
+    }
+
+    public static void searchOCRWithWatson(final String url, final WatsonOCRListener listener){
+        new AsyncWatsonOCR(url, listener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);;
     }
 }

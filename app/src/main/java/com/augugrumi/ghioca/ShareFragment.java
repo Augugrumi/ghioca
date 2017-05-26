@@ -28,7 +28,7 @@ import org.apache.commons.lang3.text.WordUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import in.championswimmer.libsocialbuttons.fabs.FABDropbox;
@@ -48,23 +48,23 @@ import in.championswimmer.libsocialbuttons.fabs.FABWhatsapp;
  */
 
 public class ShareFragment extends DialogFragment {
-    @Bind(R.id.fab_facebook)
+    @BindView(R.id.fab_facebook)
     FABFacebook fabFacebook;
-    @Bind(R.id.fab_twitter)
+    @BindView(R.id.fab_twitter)
     FABTwitter fabTwitter;
-    @Bind(R.id.fab_instagram)
+    @BindView(R.id.fab_instagram)
     FABInstagram fabInstagram;
-    @Bind(R.id.fab_whatsapp)
+    @BindView(R.id.fab_whatsapp)
     FABWhatsapp fabWhatsapp;
-    @Bind(R.id.fab_tumblr)
+    @BindView(R.id.fab_tumblr)
     FABTumblr fabTumblr;
-    @Bind(R.id.fab_googleplus)
+    @BindView(R.id.fab_googleplus)
     FABGoogleplus fabGooglePlus;
-    @Bind(R.id.fab_dropbox)
+    @BindView(R.id.fab_dropbox)
     FABDropbox fabDropbox;
-    @Bind(R.id.fab_linkedin)
+    @BindView(R.id.fab_linkedin)
     FABLinkedin fabLinkedin;
-    @Bind(R.id.fab_other)
+    @BindView(R.id.fab_other)
     FloatingActionButton fabOther;
 
     private String path;
@@ -123,8 +123,8 @@ public class ShareFragment extends DialogFragment {
     }
 
     private String shareContent() {
-        ArrayList<String> results = ((ResultActivity)getActivity()).getResults();
-        String description = ((ResultActivity)getActivity()).getDescription();
+        ArrayList<String> results = ((ReverseImageSearchResultActivity)getActivity()).getResults();
+        String description = ((ReverseImageSearchResultActivity)getActivity()).getDescription();
 
         StringBuilder toShare = new StringBuilder(description);
         toShare.append("\n");
