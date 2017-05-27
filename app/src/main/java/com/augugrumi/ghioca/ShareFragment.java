@@ -119,7 +119,7 @@ public class ShareFragment extends DialogFragment {
 
         share.putExtra(Intent.EXTRA_TEXT, toShare);
         share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
-        startActivity(Intent.createChooser(share, "Share Image"));
+        startActivity(Intent.createChooser(share, getString(R.string.share_image)));
     }
 
     private String shareContent() {
@@ -143,11 +143,11 @@ public class ShareFragment extends DialogFragment {
         android.content.ClipboardManager clipboard =
                 (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         android.content.ClipData clip =
-                android.content.ClipData.newPlainText("Copied Text", toCopy);
+                android.content.ClipData.newPlainText(getString(R.string.copied_text), toCopy);
         clipboard.setPrimaryClip(clip);
 
         Toast.makeText(this.getActivity(),
-                "Hastags and description copied to the clipboard", Toast.LENGTH_LONG).show();
+                R.string.copied_text_info, Toast.LENGTH_LONG).show();
     }
 
     @OnClick(R.id.fab_facebook)
@@ -257,7 +257,7 @@ public class ShareFragment extends DialogFragment {
 
             waIntent.putExtra(Intent.EXTRA_TEXT, toShare);
             waIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
-            startActivity(Intent.createChooser(waIntent, "Share Image"));
+            startActivity(Intent.createChooser(waIntent, getString(R.string.share_image)));
 
         } else {
             redirectToGooglePlay(packageName);
