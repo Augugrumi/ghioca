@@ -25,6 +25,7 @@ import javax.net.ssl.HttpsURLConnection;
  * @since 0.01
  */
 
+// TODO think how to set language for OCR
 public class  AsyncFreeOcrSpaceOCR extends AsyncTask<Void, Void, Void> {
     private static final String ENDPOINT = "https://api.ocr.space/parse/image";
     private static final String METHOD = "POST";
@@ -83,7 +84,7 @@ public class  AsyncFreeOcrSpaceOCR extends AsyncTask<Void, Void, Void> {
         postDataParams.put(API_KEY_ATTRIBUTE, freeOcrKey);
         postDataParams.put(IS_OVERLAYED_ATTRIBUTE, false);
         postDataParams.put(URL_ATTRIBUTE, url);
-
+        postDataParams.put("language", "ita");
 
         // Send post request
         con.setDoOutput(true);

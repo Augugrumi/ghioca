@@ -1,5 +1,7 @@
 package com.augugrumi.ghioca.asyncTask.asynkTaskResult;
 
+import android.util.Log;
+
 import it.polpetta.libris.opticalCharacterRecognition.contract.IOcrSearchResult;
 
 import org.json.JSONArray;
@@ -24,6 +26,7 @@ public class FreeOcrSpaceOCRResult implements IOcrSearchResult {
 
     private void decodeJSON(String toDecode) {
         try {
+            Log.i("OCR_SPACE", toDecode);
             JSONObject toDecodeJSON = new JSONObject(toDecode);
             JSONArray parsedResults = toDecodeJSON.getJSONArray("ParsedResults");
             JSONObject res;
