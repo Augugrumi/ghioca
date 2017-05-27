@@ -9,12 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.augugrumi.ghioca.listener.WatsonOCRListener;
+import com.augugrumi.ghioca.asyncTask.asynkTaskResult.FreeOcrSpaceOCRResult;
+import com.augugrumi.ghioca.listener.FreeOcrSpaceOCRListener;
 import com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener;
 import com.augugrumi.ghioca.utility.NetworkingUtility;
 import com.augugrumi.ghioca.utility.SearchingUtility;
-
-import it.polpetta.libris.opticalCharacterRecognition.ibm.contract.IIBMOcrResult;
 
 import java.util.ArrayList;
 
@@ -58,7 +57,8 @@ public class OCRDialogFragment extends DialogFragment {
     private int numberOfSuccesses = 0;
     private int numberOfFailures = 0;
     private OcrStatusCallback callback;
-    private WatsonOCRListener watsonListener;
+    //private WatsonOCRListener watsonListener;
+    private FreeOcrSpaceOCRListener listener;
     private ArrayList<String> text;
     private String language;
     private String url;
@@ -110,7 +110,31 @@ public class OCRDialogFragment extends DialogFragment {
         if (NetworkingUtility.isConnectivityAvailable()) {
             url = getActivity().getIntent().getStringExtra(DefaultUploadingListener.URL_INTENT_EXTRA);
 
-            watsonListener = new WatsonOCRListener() {
+            listener = new FreeOcrSpaceOCRListener() {
+                @Override
+                public void onSuccess(FreeOcrSpaceOCRResult result) {
+                    if (result != null) {
+                        text = result.getBestGuess();
+                        language = "unk";
+                        Log.i("SUCCESS", "FREEOCR " + result);
+                    }
+                    onSearcherSuccess();
+                }
+
+                @Override
+                public void onStart() {
+                    numberOfActiveSearchers++;
+                    Log.i("START", "FREEOCR");
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    onSearcherFailure();
+                    Log.i("FAILURE", "FREEOCR");
+                }
+            };
+            SearchingUtility.searchOCRWithFreeOcrSpace(url, listener);
+            /*watsonListener = new WatsonOCRListener() {
                 @Override
                 public void onSuccess(IIBMOcrResult result) {
                     if (result != null) {
@@ -134,7 +158,8 @@ public class OCRDialogFragment extends DialogFragment {
                 }
             };
 
-            SearchingUtility.searchOCRWithWatson(url, watsonListener);
+            SearchingUtility.searchOCRWithWatson(url, watsonListener);*/
+
         } else
             callback.onError();
     }

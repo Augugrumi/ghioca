@@ -44,8 +44,6 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
-import junit.framework.Assert;
-
 import java.io.File;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -313,8 +311,13 @@ public class MainActivity extends AppCompatActivity {
                 if (null != selectedImageUri) {
                     final String filePath = ConvertUriToFilePath.getPathFromURI(MainActivity.this,
                             selectedImageUri);
+                    Class toStart = null;
+                    if (SharedPreferencesManager.getUserSearchPreference() == SearchType.REVERSE_IMAGE_SEARCH)
+                        toStart = ReverseImageSearchResultActivity.class;
+                    else if (SharedPreferencesManager.getUserSearchPreference() == SearchType.OCR_SEARCH)
+                        toStart = OCRResultActivity.class;
                     UploadingListener listener =
-                            new DefaultUploadingListener(filePath, MainActivity.this, ReverseImageSearchResultActivity.class);
+                            new DefaultUploadingListener(filePath, MainActivity.this, toStart);
                     if (NetworkingUtility.isConnectivityAvailable()) {
                         listener.onStart();
                         UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);

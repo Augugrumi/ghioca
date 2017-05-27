@@ -1,6 +1,6 @@
 package com.augugrumi.ghioca.listener;
 
-import it.polpetta.libris.opticalCharacterRecognition.ibm.contract.IIBMOcrResult;
+import com.augugrumi.ghioca.asyncTask.asynkTaskResult.FreeOcrSpaceOCRResult;
 
 /**
  * @author Marco Zanella
@@ -8,6 +8,6 @@ import it.polpetta.libris.opticalCharacterRecognition.ibm.contract.IIBMOcrResult
  * @since 0.01
  */
 
-public interface WatsonOCRListener extends SearchingListener {
-    void onSuccess(IIBMOcrResult result);
+public interface FreeOcrSpaceOCRListener extends SearchingListener {
+    void onSuccess(FreeOcrSpaceOCRResult result);
 }
