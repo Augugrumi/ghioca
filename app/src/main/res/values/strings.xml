@@ -1,7 +1,22 @@
 <resources>
     <string name="app_name">GhiO-CA</string>
     <string name="facebook_app_id">1418629758198644</string>
-    <string name="whatISee">This seems to be...</string>
+    <string name="whatISee">This seems to be…</string>
     <string name="chipTitle">Suggested hashtags</string>
-    <string name="thisIs">... a beautiful image!</string>
+    <string name="thisIs">… a beautiful image!</string>
+    <string name="add_camera">Add camera</string>
+    <string name="searching_image">Searching the image…</string>
+    <string name="uploading_image">Uploading the image…</string>
+    <string name="wifi_alert">This app need to upload your photo to recognize object, if you want to save data turn on wifi</string>
+    <string name="wifi_alert_title">Turn on Wi-Fi?</string>
+    <string name="share_image">Share Image</string>
+    <string name="copied_text">Copied Text</string>
+    <string name="copied_text_info">Hastags and description copied to the clipboard</string>
+    <string name="photo_size">Photo size</string>
+    <string name="wifi_reminder">Remember to turn on wifi</string>
+    <string name="change_camera_type">Change image search</string>
+    <string name="ris">Reverse image search</string>
+    <string name="ocr">Character recognition</string>
+    <string name="credits">Credits</string>
+    <string name="select_picture">Select Picture</string>
 </resources>

@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("image/*");
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_picture)), SELECT_PICTURE);
     }
 
     @Override
@@ -390,9 +390,9 @@ public class MainActivity extends AppCompatActivity {
         menu = new DrawerBuilder()
                 .withActivity(this)
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName("Photo size").withIcon(R.drawable.ic_photo_size)
+                        new PrimaryDrawerItem().withName(R.string.photo_size).withIcon(R.drawable.ic_photo_size)
                                 .withIdentifier(1).withSelectable(false),
-                        new SwitchDrawerItem().withName("Remember to turn on wifi").withIcon(R.drawable.ic_wifi)
+                        new SwitchDrawerItem().withName(R.string.wifi_reminder).withIcon(R.drawable.ic_wifi)
                                 .withIdentifier(2).withSwitchEnabled(true).withSelectable(false).withSetSelected(false)
                                 .withCheckable(false).withChecked(SharedPreferencesManager.getUserWiFiPreference())
                                 .withOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -401,18 +401,18 @@ public class MainActivity extends AppCompatActivity {
                                         SharedPreferencesManager.setUserWiFiPreference(isChecked);
                                     }
                                 }),
-                        new PrimaryDrawerItem().withName("Change image search").withIcon(R.drawable.ic_search)
+                        new PrimaryDrawerItem().withName(R.string.change_camera_type).withIcon(R.drawable.ic_search)
                                 .withIdentifier(3).withSelectable(false).withSubItems(
-                                new SecondaryDrawerItem().withSelectable(true).withName("Reverse image search")
+                                new SecondaryDrawerItem().withSelectable(true).withName(R.string.ris)
                                         .withIdentifier(SearchType.REVERSE_IMAGE_SEARCH.ordinal() + 13)
                                         .withSetSelected(SharedPreferencesManager.getUserSearchPreference().ordinal()
                                                 == SearchType.REVERSE_IMAGE_SEARCH.ordinal() + 13),
-                                new SecondaryDrawerItem().withSelectable(true).withName("Character recognition")
+                                new SecondaryDrawerItem().withSelectable(true).withName(R.string.ocr)
                                         .withIdentifier(SearchType.OCR_SEARCH.ordinal() + 13)
                                         .withSetSelected(SharedPreferencesManager.getUserSearchPreference().ordinal()
                                                 == SearchType.OCR_SEARCH.ordinal()  + 13)
                         ),
-                        new PrimaryDrawerItem().withName("Credits").withIcon(R.drawable.ic_credits)
+                        new PrimaryDrawerItem().withName(R.string.credits).withIcon(R.drawable.ic_credits)
                                 .withIdentifier(4).withSelectable(false)
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {

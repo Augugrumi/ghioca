@@ -9,7 +9,7 @@
 
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:text="Searching the image..."
+              android:text="@string/searching_image"
               android:textStyle="bold"
               android:textSize="24sp"
               android:textColor="@android:color/primary_text_light_nodisable"
