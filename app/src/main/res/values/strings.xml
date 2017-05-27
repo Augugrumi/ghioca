@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">GhiO-CA</string>
-    <string name="facebook_app_id">1418629758198644</string>
+    <string name="app_name" translatable="false">GhiO-CA</string>
+    <string name="facebook_app_id" translatable="false">1418629758198644</string>
     <string name="whatISee">This seems to be…</string>
     <string name="chipTitle">Suggested hashtags</string>
     <string name="thisIs">… a beautiful image!</string>
@@ -19,4 +19,5 @@
     <string name="ocr">Character recognition</string>
     <string name="credits">Credits</string>
     <string name="select_picture">Select Picture</string>
+    <string name="share">Share...</string>
 </resources>
