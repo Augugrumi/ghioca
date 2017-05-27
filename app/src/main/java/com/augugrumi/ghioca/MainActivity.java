@@ -24,6 +24,7 @@ import com.augugrumi.ghioca.listener.UploadingListener;
 import com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener;
 import com.augugrumi.ghioca.utility.ConvertUriToFilePath;
 import com.augugrumi.ghioca.utility.NetworkingUtility;
+import com.augugrumi.ghioca.utility.SavingUtility;
 import com.augugrumi.ghioca.utility.SearchType;
 import com.augugrumi.ghioca.utility.SharedPreferencesManager;
 import com.augugrumi.ghioca.utility.UploadingUtility;
@@ -180,16 +181,17 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         protected Void doInBackground(Void... params) {
                             boolean b = false;
-                            File f;
+                            File f = new File("");
                             while (!b) {
                                 try {
-                                    Thread.sleep(1000);
+                                    Thread.sleep(700);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
                                 f = new File(MyApplication.appFolderPath, name + ".jpg");
                                 b = f.exists();
                             }
+                            SavingUtility.mediaScannerCall(MainActivity.this, f);
                             return null;
                         }
 
@@ -296,8 +298,10 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void shouldRotateControls(int degrees) {
-                    if ((degrees>80 && degrees <100) || (degrees>170 && degrees <190) ||
-                            (degrees>260 && degrees <280) || (degrees > 350 || degrees < 10)) {
+                    if (((degrees>88 && degrees <92) || (degrees>178 && degrees <182) ||
+                        (degrees>268 && degrees <272) || (degrees > 358 || degrees < 2)) &&
+                        degrees % 2 == 0 ) {
+
                         ViewCompat.setRotation(cameraSwitchView, degrees);
                         ViewCompat.setRotation(flashSwitchView, degrees);
                         ViewCompat.setRotation(recordDurationText, degrees);
@@ -373,6 +377,8 @@ public class MainActivity extends AppCompatActivity {
                 new DefaultUploadingListener(filePath, MainActivity.this, toStart);
         if (NetworkingUtility.isConnectivityAvailable()) {
             listener.onStart();
+            if (SharedPreferencesManager.getUserSearchPreference() == SearchType.OCR_SEARCH)
+                SavingUtility.compressFileIfNeeded(filePath);
             UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
 
         } else {
