@@ -10,10 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.augugrumi.ghioca.asyncTask.asynkTaskResult.FreeOcrSpaceOCRResult;
+import com.augugrumi.ghioca.listener.AzureOcrSearchListener;
 import com.augugrumi.ghioca.listener.FreeOcrSpaceOCRListener;
 import com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener;
 import com.augugrumi.ghioca.utility.NetworkingUtility;
+import com.augugrumi.ghioca.utility.SavingUtility;
 import com.augugrumi.ghioca.utility.SearchingUtility;
+
+import it.polpetta.libris.opticalCharacterRecognition.azure.contract.IAzureOcrResult;
 
 import java.util.ArrayList;
 
@@ -58,10 +62,12 @@ public class OCRDialogFragment extends DialogFragment {
     private int numberOfFailures = 0;
     private OcrStatusCallback callback;
     //private WatsonOCRListener watsonListener;
-    private FreeOcrSpaceOCRListener listener;
+    private AzureOcrSearchListener azureListener;
+    private FreeOcrSpaceOCRListener freeListener;
     private ArrayList<String> text;
     private String language;
     private String url;
+    private String filePath;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -109,31 +115,58 @@ public class OCRDialogFragment extends DialogFragment {
         callback.onPreExecute();
         if (NetworkingUtility.isConnectivityAvailable()) {
             url = getActivity().getIntent().getStringExtra(DefaultUploadingListener.URL_INTENT_EXTRA);
-
-            listener = new FreeOcrSpaceOCRListener() {
-                @Override
-                public void onSuccess(FreeOcrSpaceOCRResult result) {
-                    if (result != null) {
-                        text = result.getBestGuess();
-                        language = "unk";
-                        Log.i("SUCCESS", "FREEOCR " + result);
+            filePath = getActivity().getIntent().getStringExtra(DefaultUploadingListener.FILE_PATH_INTENT_EXTRA);
+            if (!SavingUtility.isFileBiggerThan1MB(filePath)) {
+                freeListener = new FreeOcrSpaceOCRListener() {
+                    @Override
+                    public void onSuccess(FreeOcrSpaceOCRResult result) {
+                        if (result != null) {
+                            text = result.getBestGuess();
+                            language = "unk";
+                            Log.i("SUCCESS", "FREEOCR " + result);
+                        }
+                        onSearcherSuccess();
                     }
-                    onSearcherSuccess();
-                }
 
-                @Override
-                public void onStart() {
-                    numberOfActiveSearchers++;
-                    Log.i("START", "FREEOCR");
-                }
+                    @Override
+                    public void onStart() {
+                        numberOfActiveSearchers++;
+                        Log.i("START", "FREEOCR");
+                    }
 
-                @Override
-                public void onFailure(Exception e) {
-                    onSearcherFailure();
-                    Log.i("FAILURE", "FREEOCR");
-                }
-            };
-            SearchingUtility.searchOCRWithFreeOcrSpace(url, listener);
+                    @Override
+                    public void onFailure(Exception e) {
+                        onSearcherFailure();
+                        Log.i("FAILURE", "FREEOCR");
+                    }
+                };
+                SearchingUtility.searchOCRWithFreeOcrSpace(url, freeListener);
+            } else {
+                azureListener = new AzureOcrSearchListener() {
+                    @Override
+                    public void onSuccess(IAzureOcrResult result) {
+                        if (result != null) {
+                            text = result.getBestGuess();
+                            language = result.getLanguage();
+                            Log.i("SUCCESS", "FREEOCR " + result);
+                        }
+                        onSearcherSuccess();
+                    }
+
+                    @Override
+                    public void onStart() {
+                        numberOfActiveSearchers++;
+                        Log.i("START", "FREEOCR");
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        onSearcherFailure();
+                        Log.i("FAILURE", "FREEOCR");
+                    }
+                };
+                SearchingUtility.searchOCRWithAzure(url, azureListener);
+            }
             /*watsonListener = new WatsonOCRListener() {
                 @Override
                 public void onSuccess(IIBMOcrResult result) {

@@ -377,8 +377,6 @@ public class MainActivity extends AppCompatActivity {
                 new DefaultUploadingListener(filePath, MainActivity.this, toStart);
         if (NetworkingUtility.isConnectivityAvailable()) {
             listener.onStart();
-            if (SharedPreferencesManager.getUserSearchPreference() == SearchType.OCR_SEARCH)
-                SavingUtility.compressFileIfNeeded(filePath);
             UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
 
         } else {

@@ -119,4 +119,14 @@ public class SavingUtility {
             }
         }
     }
+
+    public static boolean isFileBiggerThan1MB(String filePath) {
+        File f = new File(filePath);
+
+        Bitmap bitmap;
+        bitmap = BitmapFactory.decodeFile(filePath);
+        int MAX_IMAGE_SIZE = 1000 * 1024;
+        int streamLength = (int)f.length();
+        return streamLength >= MAX_IMAGE_SIZE;
+    }
 }
