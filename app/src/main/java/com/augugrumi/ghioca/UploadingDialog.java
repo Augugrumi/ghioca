@@ -22,4 +22,8 @@ public class UploadingDialog extends Dialog {
         setContentView(R.layout.uploading_dialogfragment);
         setCancelable(false);
     }
+
+    public void close() {
+        this.dismiss();
+    }
 }
