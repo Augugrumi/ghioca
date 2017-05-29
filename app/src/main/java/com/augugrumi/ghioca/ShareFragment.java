@@ -28,12 +28,9 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import in.championswimmer.libsocialbuttons.fabs.FABDropbox;
 import in.championswimmer.libsocialbuttons.fabs.FABFacebook;
-import in.championswimmer.libsocialbuttons.fabs.FABGoogleplus;
 import in.championswimmer.libsocialbuttons.fabs.FABInstagram;
 import in.championswimmer.libsocialbuttons.fabs.FABLinkedin;
-import in.championswimmer.libsocialbuttons.fabs.FABTumblr;
 import in.championswimmer.libsocialbuttons.fabs.FABTwitter;
 import in.championswimmer.libsocialbuttons.fabs.FABWhatsapp;
 
@@ -53,12 +50,12 @@ public abstract class ShareFragment extends DialogFragment {
     FABInstagram fabInstagram;
     @BindView(R.id.fab_whatsapp)
     FABWhatsapp fabWhatsapp;
-    @BindView(R.id.fab_tumblr)
-    FABTumblr fabTumblr;
-    @BindView(R.id.fab_googleplus)
-    FABGoogleplus fabGooglePlus;
-    @BindView(R.id.fab_dropbox)
-    FABDropbox fabDropbox;
+    //@BindView(R.id.fab_tumblr)
+    //FABTumblr fabTumblr;
+    //@BindView(R.id.fab_googleplus)
+    //FABGoogleplus fabGooglePlus;
+    //@BindView(R.id.fab_dropbox)
+    //FABDropbox fabDropbox;
     @BindView(R.id.fab_linkedin)
     FABLinkedin fabLinkedin;
     @BindView(R.id.fab_other)
@@ -261,7 +258,7 @@ public abstract class ShareFragment extends DialogFragment {
         }
     }
 
-    @OnClick(R.id.fab_tumblr)
+    /*@OnClick(R.id.fab_tumblr)
     public void tumblrShare(){
 
     }
@@ -269,16 +266,38 @@ public abstract class ShareFragment extends DialogFragment {
     @OnClick(R.id.fab_googleplus)
     public void googlePlusShare(){
 
+        Uri selectedImage = Uri.parse("file://" + path);
+
+        Intent shareIntent = new PlusShare.Builder(this.getContext())
+                .setType("image/*")
+                .setStream(selectedImage)
+                .setText(shareContent())
+                .getIntent();
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_image)));
     }
 
     @OnClick(R.id.fab_dropbox)
     public void dropboxShare(){
 
-    }
+    }*/
 
     @OnClick(R.id.fab_linkedin)
     public void linkedinShare(){
+        String packageName = "com.linkedin.android";
+        PackageManager pm = this.getActivity().getPackageManager();
+        if(AppInstallationChecker.isPackageInstalled(packageName,getContext().getPackageManager())){
+            Intent waIntent = new Intent(Intent.ACTION_SEND);
+            waIntent.setType("image/*");
+            waIntent.setPackage(packageName);
 
+            String toShare = shareContent();
+
+            waIntent.putExtra(Intent.EXTRA_TEXT, toShare);
+            waIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
+            startActivity(Intent.createChooser(waIntent, getString(R.string.share_image)));
+        } else {
+            redirectToGooglePlay(packageName);
+        }
     }
 
     private void redirectToGooglePlay(String appPackageName){
