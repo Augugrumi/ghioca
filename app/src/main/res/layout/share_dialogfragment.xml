@@ -12,7 +12,7 @@
 
     <TextView android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="Share..."
+              android:text="@string/share"
               android:textStyle="bold"
               android:textSize="24sp"
               android:textColor="@android:color/primary_text_light_nodisable"
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"/>
 
-        <in.championswimmer.libsocialbuttons.fabs.FABTumblr
+        <!--<in.championswimmer.libsocialbuttons.fabs.FABTumblr
                 android:id="@+id/fab_tumblr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
                 android:id="@+id/fab_dropbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"/>
+                android:layout_margin="8dp"/>-->
 
         <in.championswimmer.libsocialbuttons.fabs.FABLinkedin
                 android:id="@+id/fab_linkedin"

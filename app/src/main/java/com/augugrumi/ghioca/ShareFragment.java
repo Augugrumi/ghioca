@@ -23,20 +23,14 @@ import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
 import com.robertsimoes.shareable.Shareable;
 
-import org.apache.commons.lang3.text.WordUtils;
-
 import java.io.IOException;
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import in.championswimmer.libsocialbuttons.fabs.FABDropbox;
 import in.championswimmer.libsocialbuttons.fabs.FABFacebook;
-import in.championswimmer.libsocialbuttons.fabs.FABGoogleplus;
 import in.championswimmer.libsocialbuttons.fabs.FABInstagram;
 import in.championswimmer.libsocialbuttons.fabs.FABLinkedin;
-import in.championswimmer.libsocialbuttons.fabs.FABTumblr;
 import in.championswimmer.libsocialbuttons.fabs.FABTwitter;
 import in.championswimmer.libsocialbuttons.fabs.FABWhatsapp;
 
@@ -47,7 +41,7 @@ import in.championswimmer.libsocialbuttons.fabs.FABWhatsapp;
  * @since 0.01
  */
 
-public class ShareFragment extends DialogFragment {
+public abstract class ShareFragment extends DialogFragment {
     @BindView(R.id.fab_facebook)
     FABFacebook fabFacebook;
     @BindView(R.id.fab_twitter)
@@ -56,12 +50,12 @@ public class ShareFragment extends DialogFragment {
     FABInstagram fabInstagram;
     @BindView(R.id.fab_whatsapp)
     FABWhatsapp fabWhatsapp;
-    @BindView(R.id.fab_tumblr)
-    FABTumblr fabTumblr;
-    @BindView(R.id.fab_googleplus)
-    FABGoogleplus fabGooglePlus;
-    @BindView(R.id.fab_dropbox)
-    FABDropbox fabDropbox;
+    //@BindView(R.id.fab_tumblr)
+    //FABTumblr fabTumblr;
+    //@BindView(R.id.fab_googleplus)
+    //FABGoogleplus fabGooglePlus;
+    //@BindView(R.id.fab_dropbox)
+    //FABDropbox fabDropbox;
     @BindView(R.id.fab_linkedin)
     FABLinkedin fabLinkedin;
     @BindView(R.id.fab_other)
@@ -119,10 +113,10 @@ public class ShareFragment extends DialogFragment {
 
         share.putExtra(Intent.EXTRA_TEXT, toShare);
         share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
-        startActivity(Intent.createChooser(share, "Share Image"));
+        startActivity(Intent.createChooser(share, getString(R.string.share_image)));
     }
 
-    private String shareContent() {
+    protected abstract String shareContent();/* {
         ArrayList<String> results = ((ReverseImageSearchResultActivity)getActivity()).getResults();
         String description = ((ReverseImageSearchResultActivity)getActivity()).getDescription();
 
@@ -137,17 +131,17 @@ public class ShareFragment extends DialogFragment {
         toShare.append("#GhioCa");
 
         return toShare.toString();
-    }
+    }*/
 
     private void copyToClipboard(String toCopy) {
         android.content.ClipboardManager clipboard =
                 (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         android.content.ClipData clip =
-                android.content.ClipData.newPlainText("Copied Text", toCopy);
+                android.content.ClipData.newPlainText(getString(R.string.copied_text), toCopy);
         clipboard.setPrimaryClip(clip);
 
         Toast.makeText(this.getActivity(),
-                "Hastags and description copied to the clipboard", Toast.LENGTH_LONG).show();
+                R.string.copied_text_info, Toast.LENGTH_LONG).show();
     }
 
     @OnClick(R.id.fab_facebook)
@@ -257,14 +251,14 @@ public class ShareFragment extends DialogFragment {
 
             waIntent.putExtra(Intent.EXTRA_TEXT, toShare);
             waIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
-            startActivity(Intent.createChooser(waIntent, "Share Image"));
+            startActivity(Intent.createChooser(waIntent, getString(R.string.share_image)));
 
         } else {
             redirectToGooglePlay(packageName);
         }
     }
 
-    @OnClick(R.id.fab_tumblr)
+    /*@OnClick(R.id.fab_tumblr)
     public void tumblrShare(){
 
     }
@@ -272,16 +266,38 @@ public class ShareFragment extends DialogFragment {
     @OnClick(R.id.fab_googleplus)
     public void googlePlusShare(){
 
+        Uri selectedImage = Uri.parse("file://" + path);
+
+        Intent shareIntent = new PlusShare.Builder(this.getContext())
+                .setType("image/*")
+                .setStream(selectedImage)
+                .setText(shareContent())
+                .getIntent();
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_image)));
     }
 
     @OnClick(R.id.fab_dropbox)
     public void dropboxShare(){
 
-    }
+    }*/
 
     @OnClick(R.id.fab_linkedin)
     public void linkedinShare(){
+        String packageName = "com.linkedin.android";
+        PackageManager pm = this.getActivity().getPackageManager();
+        if(AppInstallationChecker.isPackageInstalled(packageName,getContext().getPackageManager())){
+            Intent waIntent = new Intent(Intent.ACTION_SEND);
+            waIntent.setType("image/*");
+            waIntent.setPackage(packageName);
 
+            String toShare = shareContent();
+
+            waIntent.putExtra(Intent.EXTRA_TEXT, toShare);
+            waIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
+            startActivity(Intent.createChooser(waIntent, getString(R.string.share_image)));
+        } else {
+            redirectToGooglePlay(packageName);
+        }
     }
 
     private void redirectToGooglePlay(String appPackageName){

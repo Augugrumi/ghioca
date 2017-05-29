@@ -24,6 +24,7 @@ import com.augugrumi.ghioca.listener.UploadingListener;
 import com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener;
 import com.augugrumi.ghioca.utility.ConvertUriToFilePath;
 import com.augugrumi.ghioca.utility.NetworkingUtility;
+import com.augugrumi.ghioca.utility.SavingUtility;
 import com.augugrumi.ghioca.utility.SearchType;
 import com.augugrumi.ghioca.utility.SharedPreferencesManager;
 import com.augugrumi.ghioca.utility.UploadingUtility;
@@ -41,10 +42,9 @@ import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-
-import junit.framework.Assert;
 
 import java.io.File;
 import java.sql.Timestamp;
@@ -64,8 +64,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CAMERA_PERMISSIONS = 931;
     private static final int REQUEST_PREVIEW_CODE = 1001;
 
-    //@BindView(R.id.settings_view)
-    //CameraSettingsView settingsView;
     @BindView(R.id.flash_switch_view)
     FlashSwitchView flashSwitchView;
     @BindView(R.id.front_back_camera_switcher)
@@ -125,74 +123,7 @@ public class MainActivity extends AppCompatActivity {
             isStarting = false;
         }
 
-        // TODO retrieve from shared preferences user selection
-        menu = new DrawerBuilder()
-                .withActivity(this)
-                .addDrawerItems(
-                        new PrimaryDrawerItem().withName("Photo size").withIcon(R.drawable.ic_photo_size)
-                                .withIdentifier(1).withSelectable(false),
-                        new SwitchDrawerItem().withName("Remember to turn on wifi").withIcon(R.drawable.ic_wifi)
-                                .withIdentifier(2).withSwitchEnabled(true).withSelectable(false).withSetSelected(false)
-                                .withCheckable(false).withChecked(SharedPreferencesManager.getUserWiFiPreference())
-                                .withOnCheckedChangeListener(new OnCheckedChangeListener() {
-                            @Override
-                            public void onCheckedChanged(IDrawerItem drawerItem, CompoundButton buttonView, boolean isChecked) {
-                                SharedPreferencesManager.setUserWiFiPreference(isChecked);
-                            }
-                        }),
-                        new PrimaryDrawerItem().withName("Change image search").withIcon(R.drawable.ic_search)
-                                .withIdentifier(3).withSelectable(false).withSubItems(
-                                    new PrimaryDrawerItem().withSelectable(true).withName("Reverse image search")
-                                        .withIdentifier(SearchType.REVERSE_IMAGE_SEARCH.ordinal() + 13)
-                                        .withSetSelected(SharedPreferencesManager.getUserSearchPreference().ordinal()
-                                            == SearchType.REVERSE_IMAGE_SEARCH.ordinal() + 13),
-                                    new PrimaryDrawerItem().withSelectable(true).withName("Character recognition")
-                                        .withIdentifier(SearchType.OCR_SEARCH.ordinal() + 13)
-                                        .withSetSelected(SharedPreferencesManager.getUserSearchPreference().ordinal()
-                                            == SearchType.OCR_SEARCH.ordinal()  + 13)
-                        ),
-                        new PrimaryDrawerItem().withName("Credits").withIcon(R.drawable.ic_credits)
-                                .withIdentifier(4).withSelectable(false)
-                        )
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        switch ((int)drawerItem.getIdentifier()){
-                            case 1:
-                                menu.closeDrawer();
-                                final CameraFragmentApi cameraFragment = getCameraFragment();
-                                if (cameraFragment != null) {
-                                    cameraFragment.openSettingDialog();
-                                }
-                                break;
-                            case 2: break; // ok
-                            case 3:
-                                List<IDrawerItem> subItems = ((PrimaryDrawerItem) drawerItem).getSubItems();
-                                int toSelect = 0;
-                                if (SharedPreferencesManager.getUserSearchPreference() == SearchType.REVERSE_IMAGE_SEARCH)
-                                    toSelect = SearchType.REVERSE_IMAGE_SEARCH.ordinal() + 13;
-                                else if (SharedPreferencesManager.getUserSearchPreference() == SearchType.OCR_SEARCH)
-                                    toSelect = SearchType.OCR_SEARCH.ordinal() + 13;
-                                for (IDrawerItem item : subItems)
-                                    if (item.getIdentifier() == toSelect)
-                                        item.withSetSelected(true);
-                                break;
-                            case 4: // TODO create credits activity
-                                menu.closeDrawer();
-                                break;
-                            default:
-                                if ((int)drawerItem.getIdentifier() == SearchType.REVERSE_IMAGE_SEARCH.ordinal() + 13)
-                                    SharedPreferencesManager.setUserSearchPreference(SearchType.REVERSE_IMAGE_SEARCH);
-                                else if ((int)drawerItem.getIdentifier() == SearchType.OCR_SEARCH.ordinal() + 13)
-                                    SharedPreferencesManager.setUserSearchPreference(SearchType.OCR_SEARCH);
-                        }
-                        return false;
-                    }
-                })
-                .withTranslucentStatusBar(true)
-                .withSelectedItem(-1)
-                .withCloseOnClick(false)
-                .build();
+        setUpDrawerMenu();
 
     }
 
@@ -250,16 +181,17 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         protected Void doInBackground(Void... params) {
                             boolean b = false;
-                            File f;
+                            File f = new File("");
                             while (!b) {
                                 try {
-                                    Thread.sleep(1000);
+                                    Thread.sleep(700);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
                                 f = new File(MyApplication.appFolderPath, name + ".jpg");
                                 b = f.exists();
                             }
+                            SavingUtility.mediaScannerCall(MainActivity.this, f);
                             return null;
                         }
 
@@ -267,20 +199,7 @@ public class MainActivity extends AppCompatActivity {
                         protected void onPostExecute(Void aVoid) {
                             final String filePath = MyApplication.appFolderPath +
                                     File.separator + name + ".jpg";
-                            Class toStart = null;
-                            if (SharedPreferencesManager.getUserSearchPreference() == SearchType.REVERSE_IMAGE_SEARCH)
-                                toStart = ReverseImageSearchResultActivity.class;
-                            else if (SharedPreferencesManager.getUserSearchPreference() == SearchType.OCR_SEARCH)
-                                toStart = OCRResultActivity.class;
-                            UploadingListener listener =
-                                    new DefaultUploadingListener(filePath, MainActivity.this, toStart);
-                            if (NetworkingUtility.isConnectivityAvailable()) {
-                                listener.onStart();
-                                UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
-
-                            } else {
-                                listener.onFailure(null);
-                            }
+                            setUpUpload(filePath);
                         }
                     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
                 }
@@ -288,20 +207,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*@OnClick(R.id.settings_view)
-    public void onSettingsClicked() {
-        final CameraFragmentApi cameraFragment = getCameraFragment();
-        if (cameraFragment != null) {
-            cameraFragment.openSettingDialog();
-        }
-    }*/
-
     @OnClick(R.id.pick_file)
     public void onPickFileClicked() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("image/*");
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_picture)), SELECT_PICTURE);
     }
 
     @Override
@@ -313,21 +224,12 @@ public class MainActivity extends AppCompatActivity {
                 if (null != selectedImageUri) {
                     final String filePath = ConvertUriToFilePath.getPathFromURI(MainActivity.this,
                             selectedImageUri);
-                    UploadingListener listener =
-                            new DefaultUploadingListener(filePath, MainActivity.this, ReverseImageSearchResultActivity.class);
-                    if (NetworkingUtility.isConnectivityAvailable()) {
-                        listener.onStart();
-                        UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
-
-                    } else {
-                        listener.onFailure(null);
-                    }
-
-                    }
+                    setUpUpload(filePath);
                 }
-
             }
+
         }
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -396,8 +298,10 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void shouldRotateControls(int degrees) {
-                    if ((degrees>80 && degrees <100) || (degrees>170 && degrees <190) ||
-                            (degrees>260 && degrees <280) || (degrees > 350 || degrees < 10)) {
+                    if (((degrees>88 && degrees <92) || (degrees>178 && degrees <182) ||
+                        (degrees>268 && degrees <272) || (degrees > 358 || degrees < 2)) &&
+                        degrees % 2 == 0 ) {
+
                         ViewCompat.setRotation(cameraSwitchView, degrees);
                         ViewCompat.setRotation(flashSwitchView, degrees);
                         ViewCompat.setRotation(recordDurationText, degrees);
@@ -461,5 +365,96 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.menu_button)
     public void showMenu() {
         menu.openDrawer();
+    }
+
+    private void setUpUpload(String filePath) {
+        Class toStart = null;
+        if (SharedPreferencesManager.getUserSearchPreference() == SearchType.REVERSE_IMAGE_SEARCH)
+            toStart = ReverseImageSearchResultActivity.class;
+        else if (SharedPreferencesManager.getUserSearchPreference() == SearchType.OCR_SEARCH)
+            toStart = OCRResultActivity.class;
+        UploadingListener listener =
+                new DefaultUploadingListener(filePath, MainActivity.this, toStart);
+        if (NetworkingUtility.isConnectivityAvailable()) {
+            listener.onStart();
+            UploadingUtility.uploadToServer("file://" + filePath, MainActivity.this, listener);
+
+        } else {
+            listener.onFailure(null);
+        }
+    }
+
+    private void setUpDrawerMenu() {
+        menu = new DrawerBuilder()
+                .withActivity(this)
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withName(R.string.photo_size).withIcon(R.drawable.ic_photo_size)
+                                .withIdentifier(1).withSelectable(false),
+                        new SwitchDrawerItem().withName(R.string.wifi_reminder).withIcon(R.drawable.ic_wifi)
+                                .withIdentifier(2).withSwitchEnabled(true).withSelectable(false).withSetSelected(false)
+                                .withCheckable(false).withChecked(SharedPreferencesManager.getUserWiFiPreference())
+                                .withOnCheckedChangeListener(new OnCheckedChangeListener() {
+                                    @Override
+                                    public void onCheckedChanged(IDrawerItem drawerItem, CompoundButton buttonView, boolean isChecked) {
+                                        SharedPreferencesManager.setUserWiFiPreference(isChecked);
+                                    }
+                                }),
+                        new PrimaryDrawerItem().withName(R.string.change_camera_type).withIcon(R.drawable.ic_search)
+                                .withIdentifier(3).withSelectable(false).withSubItems(
+                                new SecondaryDrawerItem().withSelectable(true).withName(R.string.ris)
+                                        .withIdentifier(SearchType.REVERSE_IMAGE_SEARCH.ordinal() + 13)
+                                        .withSetSelected(SharedPreferencesManager.getUserSearchPreference().ordinal()
+                                                == SearchType.REVERSE_IMAGE_SEARCH.ordinal() + 13),
+                                new SecondaryDrawerItem().withSelectable(true).withName(R.string.ocr)
+                                        .withIdentifier(SearchType.OCR_SEARCH.ordinal() + 13)
+                                        .withSetSelected(SharedPreferencesManager.getUserSearchPreference().ordinal()
+                                                == SearchType.OCR_SEARCH.ordinal()  + 13)
+                        ),
+                        new PrimaryDrawerItem().withName(R.string.credits).withIcon(R.drawable.ic_credits)
+                                .withIdentifier(4).withSelectable(false)
+                )
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        switch ((int)drawerItem.getIdentifier()){
+                            case 1:
+                                menu.closeDrawer();
+                                final CameraFragmentApi cameraFragment = getCameraFragment();
+                                if (cameraFragment != null) {
+                                    cameraFragment.openSettingDialog();
+                                }
+                                break;
+                            case 2: break; // ok
+                            case 3:
+                                List<IDrawerItem> subItems = ((PrimaryDrawerItem) drawerItem).getSubItems();
+                                int toSelect = 0;
+                                if (SharedPreferencesManager.getUserSearchPreference() == SearchType.REVERSE_IMAGE_SEARCH)
+                                    toSelect = SearchType.REVERSE_IMAGE_SEARCH.ordinal() + 13;
+                                else if (SharedPreferencesManager.getUserSearchPreference() == SearchType.OCR_SEARCH)
+                                    toSelect = SearchType.OCR_SEARCH.ordinal() + 13;
+                                for (IDrawerItem item : subItems) {
+                                    item.withSetSelected(false);
+                                    if (item.getIdentifier() == toSelect)
+                                        item.withSetSelected(true);
+                                    menu.updateItem(item);
+                                }
+
+                                break;
+                            case 4: // TODO create credits activity
+                                menu.closeDrawer();
+                                break;
+                            default:
+                                if ((int)drawerItem.getIdentifier() == SearchType.REVERSE_IMAGE_SEARCH.ordinal() + 13)
+                                    SharedPreferencesManager.setUserSearchPreference(SearchType.REVERSE_IMAGE_SEARCH);
+                                else if ((int)drawerItem.getIdentifier() == SearchType.OCR_SEARCH.ordinal() + 13)
+                                    SharedPreferencesManager.setUserSearchPreference(SearchType.OCR_SEARCH);
+                        }
+                        return false;
+                    }
+                })
+                .withTranslucentStatusBar(true)
+                .withSelectedItem(-1)
+                .withCloseOnClick(false)
+                .build();
     }
 }

@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
             tools:visibility="gone"
-            android:text="Add camera" />
+            android:text="@string/add_camera" />
 
     <RelativeLayout
             android:id="@+id/cameraLayout"

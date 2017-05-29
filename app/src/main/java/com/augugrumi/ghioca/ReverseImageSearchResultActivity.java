@@ -84,12 +84,12 @@ public class ReverseImageSearchResultActivity extends AppCompatActivity
 
         // END OF INITIALIZATIONS
 
-        shareFragment = new ShareFragment();
+        shareFragment = new ShareFragmentImageRecognition();
 
         if(savedInstanceState == null) {
             results = new ArrayList<>();
             resultsToShare = new ArrayList<>();
-            description = "";
+            description = getResources().getString(R.string.thisIs);
             FragmentManager fm = getSupportFragmentManager();
             searchingFragment = (ImageSearchingDialogFragment) fm
                     .findFragmentByTag(ImageSearchingDialogFragment.TAG_IMAGE_SEARCHING_FRAGMENT);
@@ -103,6 +103,7 @@ public class ReverseImageSearchResultActivity extends AppCompatActivity
             }
         } else {
             onRestoreInstanceState(savedInstanceState);
+            setDescription(description);
             refreshResultView();
         }
 
@@ -190,7 +191,7 @@ public class ReverseImageSearchResultActivity extends AppCompatActivity
 
             line.bringToFront();
         }
-        bestGuess.setText("..."+description+"!");
+        setDescription(description);
     }
 
     private void cleanDuplicates() {
@@ -204,17 +205,20 @@ public class ReverseImageSearchResultActivity extends AppCompatActivity
     }
 
     private void setDescription(String newDescription) {
-        StringBuilder stringBuilder = new StringBuilder()
-                .append("...")
-                .append(newDescription)
-                .append("!");
 
-        bestGuess.setText(stringBuilder.toString());
+        if (newDescription != null) {
+            StringBuilder stringBuilder = new StringBuilder()
+                    .append("…")
+                    .append(newDescription)
+                    .append("!");
 
-        String capitalizedNewDescription= newDescription.substring(0, 1)
-                .toUpperCase() + newDescription.substring(1);
+            bestGuess.setText(stringBuilder.toString());
 
-        description = capitalizedNewDescription;
+            description = newDescription;
+        } else {
+            // Recursive call!
+            setDescription(getResources().getString(R.string.thisIs));
+        }
     }
 
     //TODO beautify the fragment
@@ -284,7 +288,8 @@ public class ReverseImageSearchResultActivity extends AppCompatActivity
     }
 
     public String getDescription() {
-        return description;
+
+        return (description.substring(0, 1).toUpperCase() + description.substring(1));
     }
 
     public ArrayList<String> getResults() {

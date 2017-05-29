@@ -66,7 +66,7 @@ public class OCRResultActivity extends AppCompatActivity
 
         // END OF INITIALIZATIONS
 
-        shareFragment = new ShareFragment();
+        shareFragment = new ShareFragmentOcr();
 
         if(savedInstanceState == null) {
             text = new ArrayList<>();

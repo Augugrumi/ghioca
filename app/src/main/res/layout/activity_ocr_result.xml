@@ -89,7 +89,7 @@
 
         </RelativeLayout>
 
-        <fragment class="com.augugrumi.ghioca.ShareFragment"
+        <fragment class="com.augugrumi.ghioca.ShareFragmentOcr"
                   android:id="@+id/share_dialogfragment"
                   android:layout_weight="1"
                   android:layout_width="0dp"
