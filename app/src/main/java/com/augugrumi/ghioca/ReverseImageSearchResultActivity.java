@@ -84,7 +84,7 @@ public class ReverseImageSearchResultActivity extends AppCompatActivity
 
         // END OF INITIALIZATIONS
 
-        shareFragment = new ShareFragment();
+        shareFragment = new ShareFragmentImageRecognition();
 
         if(savedInstanceState == null) {
             results = new ArrayList<>();

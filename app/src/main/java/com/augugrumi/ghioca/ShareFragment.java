@@ -23,10 +23,7 @@ import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
 import com.robertsimoes.shareable.Shareable;
 
-import org.apache.commons.lang3.text.WordUtils;
-
 import java.io.IOException;
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,7 +44,7 @@ import in.championswimmer.libsocialbuttons.fabs.FABWhatsapp;
  * @since 0.01
  */
 
-public class ShareFragment extends DialogFragment {
+public abstract class ShareFragment extends DialogFragment {
     @BindView(R.id.fab_facebook)
     FABFacebook fabFacebook;
     @BindView(R.id.fab_twitter)
@@ -122,7 +119,7 @@ public class ShareFragment extends DialogFragment {
         startActivity(Intent.createChooser(share, getString(R.string.share_image)));
     }
 
-    private String shareContent() {
+    protected abstract String shareContent();/* {
         ArrayList<String> results = ((ReverseImageSearchResultActivity)getActivity()).getResults();
         String description = ((ReverseImageSearchResultActivity)getActivity()).getDescription();
 
@@ -137,7 +134,7 @@ public class ShareFragment extends DialogFragment {
         toShare.append("#GhioCa");
 
         return toShare.toString();
-    }
+    }*/
 
     private void copyToClipboard(String toCopy) {
         android.content.ClipboardManager clipboard =
