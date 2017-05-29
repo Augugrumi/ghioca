@@ -450,7 +450,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String photoName() {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        return timestamp.toString().replaceAll(" ", "_");
+        return timestamp.toString().replaceAll(" ", "_").replaceAll(":","_");
     }
 
     @Override
