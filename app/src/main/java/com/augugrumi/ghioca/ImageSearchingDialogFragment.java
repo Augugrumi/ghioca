@@ -12,17 +12,21 @@ import android.view.ViewGroup;
 import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.GoogleReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.ImaggaReverseImageSearchListener;
+import com.augugrumi.ghioca.listener.TranslateListener;
 import com.augugrumi.ghioca.listener.WatsonReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener;
 import com.augugrumi.ghioca.utility.NetworkingUtility;
 import com.augugrumi.ghioca.utility.SearchingUtility;
+import com.augugrumi.ghioca.utility.TranslateUtility;
 
+import it.augugrumi.libtranslate.conctract.Language;
 import it.polpetta.libris.image.azure.contract.IAzureImageSearchResult;
 import it.polpetta.libris.image.contract.IImageSearchResult;
 import it.polpetta.libris.image.google.contract.IGoogleImageSearchResult;
 import it.polpetta.libris.image.ibm.contract.IIBMImageSearchResult;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.ButterKnife;
 
@@ -42,11 +46,14 @@ public class ImageSearchingDialogFragment extends DialogFragment {
         void onError();
     }
 
+    // IMAGE SEARCHING
+
     private void onSearcherSuccess() {
         numberOfActiveSearchers--;
         numberOfSuccesses++;
-        if (numberOfActiveSearchers == 0)
-            callback.onPostExecute(description, results);
+        if (numberOfActiveSearchers == 0) {
+            translate();
+        }
     }
 
     private void onSearcherFailure() {
@@ -54,10 +61,24 @@ public class ImageSearchingDialogFragment extends DialogFragment {
         numberOfFailures++;
         if (numberOfActiveSearchers == 0 && numberOfSuccesses == 0)
             callback.onError();
-        else if (numberOfActiveSearchers == 0)
-            callback.onPostExecute(description, results);
+        else if (numberOfActiveSearchers == 0) {
+            translate();
+        }
     }
 
+    // END IMAGE SEARCHING
+
+    // TEXT TRANSLATION
+
+    private void onTranslateSuccess() {
+        callback.onPostExecute(description, results);
+    }
+
+    private void onTranslateFailure() {
+        callback.onError();
+    }
+
+    // END TEXT TRANSLATION
 
     private static final int NUMBER_OF_SEARCHERS = 4;
     private int numberOfActiveSearchers = 0;
@@ -112,6 +133,36 @@ public class ImageSearchingDialogFragment extends DialogFragment {
     public void onDetach() {
         super.onDetach();
         callback = null;
+    }
+
+    private void translate() {
+
+        TranslateListener yandexListener = new TranslateListener() {
+            @Override
+            public void onSuccess(String result) {
+
+                description = result;
+
+                onTranslateSuccess();
+            }
+
+            @Override
+            public void onStart() {
+
+                Log.i("START", "YANDEX");
+
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                onTranslateFailure();
+                Log.i("FAILURE", "YANDEX");
+            }
+        };
+
+        // FIXME the translation should be related to the phone language, with Locale.getDefault().getDisplayLanguage()
+
+        TranslateUtility.translateWithYandex(description, Language.it, yandexListener);
     }
 
 
@@ -240,7 +291,7 @@ public class ImageSearchingDialogFragment extends DialogFragment {
             };
 
             SearchingUtility.searchImageWithGoogle(url, googleListener);
-            //SearchingUtility.searchImageWithAzure(url, azureListener);
+            SearchingUtility.searchImageWithAzure(url, azureListener);
             SearchingUtility.searchImageWithWatson(url, watsonListener);
             SearchingUtility.searchImageWithImagga(url, imaggaListener);
         } else
