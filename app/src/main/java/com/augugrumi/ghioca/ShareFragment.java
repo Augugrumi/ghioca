@@ -14,6 +14,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.augugrumi.ghioca.utility.AppInstallationChecker;
@@ -46,7 +47,7 @@ public abstract class ShareFragment extends DialogFragment {
     @BindView(R.id.fab_twitter)
     FABTwitter fabTwitter;
     @BindView(R.id.fab_instagram)
-    FloatingActionButton fabInstagram;
+    ImageButton fabInstagram;
     @BindView(R.id.fab_whatsapp)
     FABWhatsapp fabWhatsapp;
     //@BindView(R.id.fab_tumblr)
@@ -75,6 +76,9 @@ public abstract class ShareFragment extends DialogFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.share_dialogfragment, container, false);
         ButterKnife.bind(this, view);
+
+        fabInstagram.setPadding(0,0,0,0);
+
         path = getActivity().getIntent().getStringExtra("path");
         //TODO try with a mock url
         url = getActivity().getIntent().getStringExtra("url");

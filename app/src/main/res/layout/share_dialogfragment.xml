@@ -45,15 +45,25 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"/>
         -->
-        <android.support.design.widget.FloatingActionButton
+        <!--<android.support.design.widget.FloatingActionButton
                 android:id="@+id/fab_instagram"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:background="@mipmap/instagram_logo"
                 android:scaleType="fitCenter"
-                android:padding="0dp"
-                android:layout_margin="8dp"/>
+                android:layout_margin="8dp"/>-->
 
+        <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/fab_instagram"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@null"
+                android:src="@drawable/instagram_logo"
+                android:scaleType="fitCenter"
+                android:layout_margin="8dp"
+        />
+
+        <!--android:src="@drawable/logo_instagram"-->
         <in.championswimmer.libsocialbuttons.fabs.FABWhatsapp
                 android:id="@+id/fab_whatsapp"
                 android:layout_width="wrap_content"

@@ -1,15 +1,9 @@
 package com.augugrumi.ghioca.asyncTask;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.augugrumi.ghioca.MyApplication;
 import com.augugrumi.ghioca.R;
-import com.augugrumi.ghioca.listener.TranslateListener;
-
-import it.augugrumi.libtranslate.Translate;
-import it.augugrumi.libtranslate.conctract.Language;
-import it.augugrumi.libtranslate.util.TranslateKeyStore;
 
 /**
  * @author Marco Zanella
@@ -17,11 +11,11 @@ import it.augugrumi.libtranslate.util.TranslateKeyStore;
  * @since 0.01
  */
 
-public class AsyncTranslate extends AsyncTask<Void, Void, Void> {
+public abstract class AsyncTranslate extends AsyncTask<Void, Void, Void> {
     private static String yandexKey =
             MyApplication.getAppContext().getString(R.string.YANDEX_KEY);
 
-    private TranslateListener listener;
+   /* private TranslateListener listener;
     private String result;
     private boolean error;
     private String text;
@@ -71,5 +65,5 @@ public class AsyncTranslate extends AsyncTask<Void, Void, Void> {
             listener.onFailure(e);
         else
             listener.onSuccess(result);
-    }
+    }*/
 }

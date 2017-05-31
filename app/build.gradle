@@ -18,9 +18,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    configurations.all {
-        resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
-    }
 }
 
 repositories {
@@ -63,7 +60,5 @@ dependencies {
     compile('com.mikepenz:materialdrawer:5.9.1@aar') {
         transitive = true
     }
-    compile files('libs/libtranslate-0.1.0.jar')
-
     compile 'com.google.android.gms:play-services:10.2.6'
 }
