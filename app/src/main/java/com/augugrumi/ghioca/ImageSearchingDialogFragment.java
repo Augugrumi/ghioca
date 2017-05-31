@@ -26,7 +26,6 @@ import it.polpetta.libris.image.google.contract.IGoogleImageSearchResult;
 import it.polpetta.libris.image.ibm.contract.IIBMImageSearchResult;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import butterknife.ButterKnife;
 
@@ -140,7 +139,7 @@ public class ImageSearchingDialogFragment extends DialogFragment {
         TranslateListener yandexListener = new TranslateListener() {
             @Override
             public void onSuccess(String result) {
-
+                Log.i("ONSUCCESS", "YANDEX");
                 description = result;
 
                 onTranslateSuccess();

@@ -15,13 +15,13 @@
  */
 package com.augugrumi.ghioca.translation.detect;
 
-import java.net.URL;
-import java.net.URLEncoder;
-
 import com.augugrumi.ghioca.translation.ApiKeys;
 import com.augugrumi.ghioca.translation.YandexTranslatorAPI;
 import com.augugrumi.ghioca.translation.language.Language;
 import com.augugrumi.ghioca.translation.translate.Translate;
+
+import java.net.URL;
+import java.net.URLEncoder;
 
 /**
  * Provides an interface to the Yandex Translator Detect service method
@@ -29,8 +29,10 @@ import com.augugrumi.ghioca.translation.translate.Translate;
 public final class Detect extends YandexTranslatorAPI {
     private static final String SERVICE_URL = "https://translate.yandex.net/api/v1.5/tr.json/detect?";
     private static final String DETECTION_LABEL = "lang";
-    
-    // prevent instantiation
+    static {
+        Translate.setKey(ApiKeys.YANDEX_API_KEY);
+    }
+        // prevent instantiation
     private Detect(){};
 
     /**
@@ -54,18 +56,5 @@ public final class Detect extends YandexTranslatorAPI {
         if(byteLength>10240) { // TODO What is the maximum text length allowable for Yandex?
             throw new RuntimeException("TEXT_TOO_LARGE - Yandex Translator (Detect) can handle up to 10,240 bytes per request");
         }
-        validateServiceState();
     }
-    
-    public static void main(String[] args) {
-      try {
-        Translate.setKey(ApiKeys.YANDEX_API_KEY);
-        Language translation = Detect.execute("The quick brown fox jumps over the lazy dog.");
-        System.out.println("Detected: " + translation.toString());
-      } catch (Exception e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-    }
-
 }

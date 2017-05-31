@@ -6,10 +6,11 @@ import android.util.Log;
 import com.augugrumi.ghioca.MyApplication;
 import com.augugrumi.ghioca.R;
 import com.augugrumi.ghioca.listener.TranslateListener;
+import com.augugrumi.ghioca.translation.detect.Detect;
 
-import it.augugrumi.libtranslate.Translate;
 import it.augugrumi.libtranslate.conctract.Language;
-import it.augugrumi.libtranslate.util.TranslateKeyStore;
+
+import java.util.Locale;
 
 /**
  * @author Marco Zanella
@@ -46,12 +47,10 @@ public class AsyncTranslate extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... params) {
         try {
-            TranslateKeyStore.getIstance().saveYandexKey(yandexKey);
-            result = Translate.getYandexQueryBuilder().to(translateTo)
-                    .withText(text)
-                    .build()
-                    .runQuery()
-                    .getTranslation();
+            com.augugrumi.ghioca.translation.language.Language lang = Detect.
+                    execute(text);
+            result = com.augugrumi.ghioca.translation.translate.Translate.execute(text, lang,
+                    com.augugrumi.ghioca.translation.language.Language.fromString(Locale.getDefault().getDisplayLanguage()));
             Log.i("TRANSLATE_RESULT", result);
         } catch (Exception exception) {
             e = exception;

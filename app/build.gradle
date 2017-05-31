@@ -63,7 +63,7 @@ dependencies {
     compile('com.mikepenz:materialdrawer:5.9.1@aar') {
         transitive = true
     }
-    compile files('libs/libtranslate-0.1.0.jar')
+    //compile files('libs/libtranslate-0.1.0.jar')
 
     compile 'com.google.android.gms:play-services:10.2.6'
 }

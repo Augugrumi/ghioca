@@ -15,11 +15,10 @@
  */
 package com.augugrumi.ghioca.translation;
 
-import com.google.gson.JsonElement;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONStringer;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -78,6 +77,7 @@ public abstract class YandexTranslatorAPI {
     try {
       final int responseCode = uc.getResponseCode();
       final String result = inputStreamToString(uc.getInputStream());
+      Log.i("RESULT_YANDEX", result);
       if(responseCode!=200) {
         throw new Exception("Error from Yandex API: " + result);
       }
@@ -148,12 +148,7 @@ public abstract class YandexTranslatorAPI {
     for (int i = 0; i < jsonArr.length(); i++) {
 
       final String res = jsonArr.getString(i);
-
-      if (res.equals(propertyName)) {
-        values[i] = res;
-      } else {
-        values[i] = "";
-      }
+      values[i] = res;
     }
 
     return values;
@@ -184,13 +179,6 @@ public abstract class YandexTranslatorAPI {
       throw new Exception("[yandex-translator-api] Error reading translation stream.", ex);
     }
     return outputBuilder.toString();
-  }
-
-  //Check if ready to make request, if not, throw a RuntimeException
-  protected static void validateServiceState() throws Exception {
-    if(apiKey==null||apiKey.length()<27) {
-      throw new RuntimeException("INVALID_API_KEY - Please set the API Key with your Yandex API Key");
-    }
   }
 
 }
