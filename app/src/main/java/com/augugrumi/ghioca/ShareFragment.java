@@ -29,7 +29,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import in.championswimmer.libsocialbuttons.fabs.FABFacebook;
-import in.championswimmer.libsocialbuttons.fabs.FABInstagram;
 import in.championswimmer.libsocialbuttons.fabs.FABLinkedin;
 import in.championswimmer.libsocialbuttons.fabs.FABTwitter;
 import in.championswimmer.libsocialbuttons.fabs.FABWhatsapp;
@@ -47,7 +46,7 @@ public abstract class ShareFragment extends DialogFragment {
     @BindView(R.id.fab_twitter)
     FABTwitter fabTwitter;
     @BindView(R.id.fab_instagram)
-    FABInstagram fabInstagram;
+    FloatingActionButton fabInstagram;
     @BindView(R.id.fab_whatsapp)
     FABWhatsapp fabWhatsapp;
     //@BindView(R.id.fab_tumblr)

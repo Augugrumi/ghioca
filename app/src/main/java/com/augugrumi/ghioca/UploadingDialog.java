@@ -23,7 +23,4 @@ public class UploadingDialog extends Dialog {
         setCancelable(false);
     }
 
-    public void close() {
-        this.dismiss();
-    }
 }

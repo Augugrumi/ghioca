@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,13 @@ public class SplashActivity extends AppCompatActivity {
                 permissionsToRequest.add(permission);
             }
         }
+
+        try {
+            File filename = new File(MyApplication.appFolderPath + "/ghioca.log");
+            filename.createNewFile();
+            String cmd = "logcat -d -f" + filename.getAbsolutePath();
+            Runtime.getRuntime().exec(cmd);
+        } catch (Exception e) {}
 
         if (!permissionsToRequest.isEmpty()) {
             ActivityCompat.requestPermissions(this, permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);

@@ -57,9 +57,10 @@ public class DefaultUploadingListener implements UploadingListener {
 
     @Override
     public void onFailure(Throwable error) {
-        if (uploadFragment != null)
+        if (uploadFragment != null) {
             uploadFragment.dismiss();
-
+            //activity.removeDialog(uploadFragment.id);
+        }
         errorDialogFragment = new UploadingErrorDialog(activity);
         errorDialogFragment.show();
     }
