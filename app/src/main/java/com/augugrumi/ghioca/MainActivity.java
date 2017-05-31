@@ -31,6 +31,7 @@ import com.augugrumi.ghioca.utility.UploadingUtility;
 import com.github.florent37.camerafragment.CameraFragment;
 import com.github.florent37.camerafragment.CameraFragmentApi;
 import com.github.florent37.camerafragment.configuration.Configuration;
+import com.github.florent37.camerafragment.internal.manager.impl.Camera1Manager;
 import com.github.florent37.camerafragment.internal.ui.BaseAnncaFragment;
 import com.github.florent37.camerafragment.listeners.CameraFragmentControlsAdapter;
 import com.github.florent37.camerafragment.listeners.CameraFragmentResultAdapter;
@@ -54,6 +55,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.github.florent37.camerafragment.internal.utils.CameraHelper.hasCamera2;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -200,6 +203,9 @@ public class MainActivity extends AppCompatActivity {
                             final String filePath = MyApplication.appFolderPath +
                                     File.separator + name + ".jpg";
                             setUpUpload(filePath);
+                            if (!hasCamera2(MainActivity.this) && Camera1Manager.getCameraInstance() != null) {
+                                Camera1Manager.getCameraInstance().startPreview();
+                            }
                         }
                     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
                 }
