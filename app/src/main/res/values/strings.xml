@@ -23,4 +23,6 @@
     <string name="select_picture">Select Picture</string>
     <string name="share">Share...</string>
     <string name="title_activity_credits">CreditsActivity</string>
+    <string name="augugrumi_team" translatable="false">Augugrumi team</string>
+    <string name="find_proj">You can find us on</string>
 </resources>
