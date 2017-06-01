@@ -22,9 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         <TextView
-                android:text="Davide Polonio
-Federico Tavella
-Marco Zanella"
+                android:text="@string/creators"
                 android:textAlignment="center"
                 android:textColor="@color/primary_text"
                 android:textSize="25sp"
