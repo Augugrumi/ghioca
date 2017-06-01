@@ -1,11 +1,13 @@
 package com.augugrumi.ghioca.utility;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
 import com.augugrumi.ghioca.MyApplication;
 import com.augugrumi.ghioca.R;
+import com.augugrumi.ghioca.UploadingDialog;
 import com.augugrumi.ghioca.listener.UploadingListener;
 
 import io.filepicker.Filepicker;
@@ -29,6 +31,9 @@ public class UploadingUtility {
 
     public static void uploadToServer(String path, final Context context, final UploadingListener listener) {
         Log.i("provaupload", "5 path:" + path);
+        final ProgressDialog uploadFragment;
+        uploadFragment = new UploadingDialog(context);
+        uploadFragment.show();
         listener.onStart();
         Filepicker.uploadLocalFile(Uri.parse(path), context, new FilepickerCallback() {
             @Override
@@ -41,12 +46,14 @@ public class UploadingUtility {
             @Override
             public void onFileUploadError(Throwable error) {
                 Log.i("provaupload", "8 " + error.toString());
+                uploadFragment.dismiss();
                 listener.onFailure(error);
             }
 
             @Override
             public void onFileUploadProgress(Uri uri, float progress) {
                 Log.i("provaupload", "--progress" + progress);
+                uploadFragment.dismiss();
                 listener.onProgressUpdate(Math.round(progress));
             }
         });

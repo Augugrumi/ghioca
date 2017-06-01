@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 
-import com.augugrumi.ghioca.UploadingDialog;
 import com.augugrumi.ghioca.UploadingErrorDialog;
 import com.augugrumi.ghioca.listener.UploadingListener;
 
@@ -23,7 +22,6 @@ public class DefaultUploadingListener implements UploadingListener {
 
     private String filePath;
     private Activity activity;
-    private Dialog uploadFragment;
     private Dialog errorDialogFragment;
     private Class toStart;
 
@@ -34,21 +32,14 @@ public class DefaultUploadingListener implements UploadingListener {
     }
 
     @Override
-    public void onStart() {
-        uploadFragment = new UploadingDialog(activity);
-        uploadFragment.show();
-    }
+    public void onStart() {}
 
     @Override
     public void onProgressUpdate(int progress) {
-        if (!uploadFragment.isShowing())
-            uploadFragment.show();
     }
 
     @Override
     public void onFinish(String url) {
-        uploadFragment.dismiss();
-
         Intent intent = new Intent(activity, toStart);
         intent.putExtra(URL_INTENT_EXTRA, url);
         intent.putExtra(FILE_PATH_INTENT_EXTRA, filePath);
@@ -57,10 +48,6 @@ public class DefaultUploadingListener implements UploadingListener {
 
     @Override
     public void onFailure(Throwable error) {
-        if (uploadFragment != null) {
-            uploadFragment.dismiss();
-            //activity.removeDialog(uploadFragment.id);
-        }
         errorDialogFragment = new UploadingErrorDialog(activity);
         errorDialogFragment.show();
     }
