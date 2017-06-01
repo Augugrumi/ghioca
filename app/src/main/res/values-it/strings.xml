@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="whatISee">Questa cosa sembra essere&#8230;</string>
+    <string name="chipTitle">Hashtag suggeriti</string>
+    <string name="thisIs">una foto bellissima</string>
+    <string name="add_camera">Aggiungi camera</string>
+    <string name="searching_image">Cerco l\'immagine&#8230;</string>
+    <string name="uploading_image">Carico l\'immagine&#8230;</string>
+    <string name="wifi_alert">Questa applicazione necessita di caricare le tue foto online per riconoscere gli oggetti, se vuoi risparmiare dati mobili accendi il Wifi</string>
+    <string name="wifi_alert_title">Accendere il Wi-Fi?</string>
+    <string name="share_image">Condividi immagine</string>
+    <string name="copied_text">Testo copiato</string>
+    <string name="copied_text_info">Hastag e descrizione copiata nella clipboard</string>
+    <string name="photo_size">Grandezza della foto</string>
+    <string name="wifi_reminder">Accendi automaticamente il WiFi</string>
+    <string name="change_camera_type">Cambia tipo di ricerca immagine</string>
+    <string name="ris">Ricerca inversa dell\'immagine</string>
+    <string name="ocr">Riconoscimento caratteri</string>
+    <string name="credits">Crediti</string>
+    <string name="select_picture">Seleziona immagine</string>
+    <string name="share">Condividi&#8230;</string>
+    <string name="error">Errore</string>
+    <string name="error_sub">Si è verificcato un problema</string>
+    <string name="find_proj">Puoi trovare il progetto su</string>
+</resources>

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.augugrumi.zanna.ghioca">
+          package="com.augugrumi.ghioca">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.FLASHLIGHT"/>
@@ -10,23 +12,49 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
-            android:name="com.augugrumi.ghioca.MyApplication"
+            android:name=".MyApplication"
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <meta-data
+                android:name="com.facebook.sdk.ApplicationId"
+                android:value="@string/facebook_app_id"/>
+
+        <provider
+                android:name="com.facebook.FacebookContentProvider"
+                android:authorities="com.facebook.app.FacebookContentProvider1418629758198644"
+                android:exported="true"/>
+
         <activity
-                android:name="com.augugrumi.ghioca.MainActivity"
-                android:screenOrientation="portrait"
-                android:theme="@style/ThemeFullscreen">
+                android:name=".SplashActivity"
+                android:label="@string/app_name"
+                android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.augugrumi.ghioca.ResultActivity">
+        <activity
+                android:name=".MainActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/MaterialDrawerTheme"/>
+        <activity android:name=".ReverseImageSearchResultActivity"/>
+        <activity android:name=".OCRResultActivity"/>
+
+        <receiver android:name=".utility.NetworkingUtility">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.net.conn.WIFI_STATE_CHANGED"/>
+            </intent-filter>
+        </receiver>
+
+        <activity
+                android:name=".CreditsActivity"
+                android:label="@string/title_activity_credits"
+                android:theme="@style/AppTheme">
         </activity>
     </application>
 
