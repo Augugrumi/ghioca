@@ -446,7 +446,9 @@ public class MainActivity extends AppCompatActivity {
                                 }
 
                                 break;
-                            case 4: // TODO create credits activity
+                            case 4:
+                                Intent intent = new Intent(MainActivity.this, CreditsActivity.class);
+                                startActivity(intent);
                                 menu.closeDrawer();
                                 break;
                             default:

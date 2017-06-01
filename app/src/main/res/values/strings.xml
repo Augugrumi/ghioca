@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name" translatable="false">GhiO-CA</string>
+    <string name="creators" translatable="false">Davide Polonio\nFederico Tavella\nMarco Zanella</string>
     <string name="facebook_app_id" translatable="false">1418629758198644</string>
     <string name="whatISee">This seems to be&#8230;</string>
     <string name="chipTitle">Suggested hashtags</string>
@@ -22,4 +23,7 @@
     <string name="share">Share&#8230;</string>
     <string name="error">Error</string>
     <string name="error_sub">Some error occurred</string>
+    <string name="title_activity_credits">CreditsActivity</string>
+    <string name="augugrumi_team" translatable="false">Augugrumi team</string>
+    <string name="find_proj">You can find us on</string>
 </resources>
