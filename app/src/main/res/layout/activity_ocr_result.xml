@@ -76,6 +76,38 @@
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/traslate_ocr_layout"
+                    android:rowCount="1"
+                    android:columnCount="3"
+                    >
+
+                    <TextView
+                        android:id="@+id/translate_text"
+                        android:textColor="@android:color/primary_text_light"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="0"
+                        android:layout_row="1"
+                        android:padding="2dp"
+                        android:text="@string/translate_in"
+                        android:textSize="14sp"
+                        />
+
+
+                    <Spinner
+                        android:id="@+id/spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_row="1"
+                        />
+
+
+                </GridLayout>
+
                 <TextView
                     android:id="@+id/text_result"
                     android:textColor="@android:color/primary_text_light"
