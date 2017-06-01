@@ -39,7 +39,6 @@ public class AsyncTranslate extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-
         listener.onStart();
     }
 
@@ -49,8 +48,10 @@ public class AsyncTranslate extends AsyncTask<Void, Void, Void> {
         try {
             com.augugrumi.ghioca.translation.language.Language lang = Detect.
                     execute(text);
+            Log.e("TRANSLATE_RESULT lang", lang + "");
+            Log.e("TRANSLATE_RESULT solang", Locale.getDefault().getLanguage() + "");
             result = com.augugrumi.ghioca.translation.translate.Translate.execute(text, lang,
-                    com.augugrumi.ghioca.translation.language.Language.fromString(Locale.getDefault().getDisplayLanguage()));
+                    com.augugrumi.ghioca.translation.language.Language.fromString(Locale.getDefault().getLanguage()));
             Log.i("TRANSLATE_RESULT", result);
         } catch (Exception exception) {
             e = exception;
