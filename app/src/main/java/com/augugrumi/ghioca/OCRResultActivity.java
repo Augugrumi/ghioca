@@ -7,6 +7,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatSpinner;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.augugrumi.ghioca.listener.WatsonOCRListener;
@@ -15,6 +19,10 @@ import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +45,8 @@ public class OCRResultActivity extends AppCompatActivity
     @BindView(R.id.share_fab)
     FloatingActionButton share;
 
+    @BindView(R.id.spinner)
+    AppCompatSpinner languagesSpinner;
     // END BINDINGS
 
 
@@ -87,6 +97,40 @@ public class OCRResultActivity extends AppCompatActivity
             refreshResultView();
         }
 
+        Locale[] locales = Locale.getAvailableLocales();
+        Set<String> localcountries=new HashSet<>();
+        for(Locale l:locales) {
+            localcountries.add(l.getDisplayLanguage().toString());
+        }
+        final ArrayList<String> languages= new ArrayList<>();
+        languages.addAll(localcountries);
+        Collections.sort(languages);
+
+        ArrayAdapter<String> adapter  = new ArrayAdapter<String>(
+                this,R.layout.spinner_item, languages);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        languagesSpinner.setAdapter(adapter);
+        // FIXME select english as default
+        languagesSpinner.setSelection(
+                adapter.getPosition(Locale.getDefault().getDisplayCountry(new Locale("en")))
+        );
+        languagesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                languagesSpinner.setSelection(position);
+            }
+
+            private int stringToPosition(String lang) {
+                for (int i = 0; i < languages.size(); i++)
+                    if (languages.get(i).equals(lang))
+                        return i;
+                return 0;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     private void refreshResultView() {
