@@ -159,7 +159,6 @@ public class ImageSearchingDialogFragment extends DialogFragment {
             }
         };
 
-        // FIXME the translation should be related to the phone language, with Locale.getDefault().getDisplayLanguage()
         TranslateUtility.translateWithYandex(description,
             com.augugrumi.ghioca.translation.language.Language.fromString(Locale.getDefault().getLanguage()),
             yandexListener);
