@@ -84,22 +84,25 @@
                     android:columnCount="3"
                     >
 
-                   <!-- <TextView
+                    <TextView
                         android:id="@+id/translate_text"
                         android:textColor="@android:color/primary_text_light"
-                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_column="0"
-                        android:layout_row="1"
+                        android:layout_row="0"
                         android:padding="2dp"
                         android:text="@string/translate_in"
                         android:textSize="14sp"
-                        />-->
+                        />
 
                     <android.support.v7.widget.AppCompatSpinner
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/spinner"/>
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_row="0"
+                        android:id="@+id/spinner"
+                        />
 
                 </GridLayout>
 
