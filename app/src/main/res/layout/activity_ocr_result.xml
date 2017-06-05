@@ -77,42 +77,39 @@
                     android:textStyle="bold" />
 
                 <GridLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
                     android:id="@+id/traslate_ocr_layout"
-                    android:rowCount="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:columnCount="3"
-                    >
+                    android:rowCount="1">
 
                     <TextView
                         android:id="@+id/translate_text"
-                        android:textColor="@android:color/primary_text_light"
                         android:layout_height="wrap_content"
                         android:layout_column="0"
                         android:layout_row="0"
                         android:padding="2dp"
                         android:text="@string/translate_in"
-                        android:textSize="14sp"
-                        />
+                        android:textColor="@android:color/primary_text_light"
+                        android:textSize="14sp" />
 
                     <android.support.v7.widget.AppCompatSpinner
 
+                        android:id="@+id/spinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_column="1"
-                        android:layout_row="0"
-                        android:id="@+id/spinner"
-                        />
+                        android:layout_row="0" />
 
                 </GridLayout>
 
                 <TextView
                     android:id="@+id/text_result"
-                    android:textColor="@android:color/primary_text_light"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
                     android:text="@string/thisIs"
+                    android:textColor="@android:color/primary_text_light"
                     android:textSize="14sp" />
 
             </LinearLayout>
