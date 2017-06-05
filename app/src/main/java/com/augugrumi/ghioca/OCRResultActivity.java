@@ -100,7 +100,7 @@ public class OCRResultActivity extends AppCompatActivity
         Locale[] locales = Locale.getAvailableLocales();
         Set<String> localcountries=new HashSet<>();
         for(Locale l:locales) {
-            localcountries.add(l.getDisplayLanguage().toString());
+            localcountries.add(l.getDisplayLanguage());
         }
         final ArrayList<String> languages= new ArrayList<>();
         languages.addAll(localcountries);
