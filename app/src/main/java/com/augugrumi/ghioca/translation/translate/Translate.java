@@ -19,6 +19,7 @@ import com.augugrumi.ghioca.MyApplication;
 import com.augugrumi.ghioca.R;
 import com.augugrumi.ghioca.translation.YandexTranslatorAPI;
 import com.augugrumi.ghioca.translation.language.Language;
+import android.util.Log;
 
 import java.net.URL;
 import java.net.URLEncoder;
@@ -44,7 +45,20 @@ public final class Translate extends YandexTranslatorAPI {
    * @throws Exception on error.
    */
   public static String execute(final String text, final Language from, final Language to) throws Exception {
-    validateServiceState(text); 
+    validateServiceState(text);
+
+    if (to == null) {
+
+      // if from is null, error message. This save us a NPE
+      // FIXME please change me :(
+      return "Cannot translate in this language, sorry";
+    }
+
+    /*
+    boolean print = to == null;
+    Log.i("ISNULL", "Result: " + print);
+    */
+
     final String params = 
         PARAM_API_KEY + URLEncoder.encode(MyApplication.getAppContext().getString(R.string.YANDEX_KEY),ENCODING)
         + PARAM_LANG_PAIR + URLEncoder.encode(from.toString(),ENCODING) + URLEncoder.encode("-",ENCODING) + URLEncoder.encode(to.toString(),ENCODING) 
