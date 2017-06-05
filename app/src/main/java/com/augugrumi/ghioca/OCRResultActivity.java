@@ -8,20 +8,27 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.augugrumi.ghioca.listener.TranslateListener;
 import com.augugrumi.ghioca.listener.WatsonOCRListener;
+import com.augugrumi.ghioca.translation.language.Language;
+import com.augugrumi.ghioca.utility.TranslateUtility;
 import com.facebook.CallbackManager;
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import butterknife.BindView;
@@ -58,6 +65,7 @@ public class OCRResultActivity extends AppCompatActivity
     private WatsonOCRListener watsonListener;
     private ArrayList<String> text;
     private String language;
+    private SparseArray<String> alreadyTranslatedText;
     private ProgressDialog searchProgressDialog;
     CallbackManager callbackManager;
     DialogFragment newFragment;
@@ -80,6 +88,7 @@ public class OCRResultActivity extends AppCompatActivity
 
         if(savedInstanceState == null) {
             text = new ArrayList<>();
+            alreadyTranslatedText = new SparseArray<String>();
             language = "";
             FragmentManager fm = getSupportFragmentManager();
             searchingFragment = (OCRDialogFragment) fm
@@ -105,6 +114,7 @@ public class OCRResultActivity extends AppCompatActivity
         final ArrayList<String> languages= new ArrayList<>();
         languages.addAll(localcountries);
         Collections.sort(languages);
+        languages.add(0, "select the language!");
 
         ArrayAdapter<String> adapter  = new ArrayAdapter<String>(
                 this,R.layout.spinner_item, languages);
@@ -116,7 +126,48 @@ public class OCRResultActivity extends AppCompatActivity
         );
         languagesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+
+                if (position != 0) {
+                    if (alreadyTranslatedText.get(position) == null) {
+                        // Translation
+                        TranslateListener yandexListener = new TranslateListener() {
+                            @Override
+                            public void onSuccess(String result) {
+                                Log.i("ONSUCCESS", "YANDEX2");
+                                //description = result;
+
+                                alreadyTranslatedText.append(position, result);
+                                updateView(result);
+                            }
+
+                            @Override
+                            public void onStart() {
+
+                                Log.i("START", "YANDEX2");
+
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+
+                                // don't do nothing? Boh
+                                refreshResultView();
+                                Log.i("FAILURE", "YANDEX2");
+                            }
+                        };
+
+                        Log.i("INFO_TRANSLATION", languages.get(position));
+
+                        TranslateUtility.translateWithYandex(text.toString(),
+                                Language.fromString(languages.get(position)),
+                                yandexListener);
+                    } else {
+
+                        updateView(alreadyTranslatedText.get(position));
+                    }
+                }
+
                 languagesSpinner.setSelection(position);
             }
 
@@ -131,6 +182,12 @@ public class OCRResultActivity extends AppCompatActivity
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
+
+    private void updateView(String newText) {
+
+        textView.setText(newText);
+
     }
 
     private void refreshResultView() {
