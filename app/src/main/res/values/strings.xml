@@ -27,4 +27,5 @@
     <string name="augugrumi_team" translatable="false">Augugrumi team</string>
     <string name="find_proj">You can find us on</string>
     <string name="translate_in">Translate in…</string>
+    <string name="select_language">select the language!</string>
 </resources>

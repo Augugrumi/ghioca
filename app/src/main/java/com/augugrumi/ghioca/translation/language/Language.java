@@ -15,6 +15,8 @@
  */
 package com.augugrumi.ghioca.translation.language;
 
+import java.util.ArrayList;
+
 /**
  * Language - an enum of language codes supported by the Yandex API
  */
@@ -85,4 +87,46 @@ public enum Language {
     return language;
   }
 
+  private static final ArrayList<String> languages = new ArrayList<>();
+
+  static {
+      languages.add("sq");
+      languages.add("hy");
+      languages.add("az");
+      languages.add("be");
+      languages.add("bg");
+      languages.add("ca");
+      languages.add("hr");
+      languages.add("cs");
+      languages.add("da");
+      languages.add("nl");
+      languages.add("en");
+      languages.add("et");
+      languages.add("fi");
+      languages.add("fr");
+      languages.add("de");
+      languages.add("ka");
+      languages.add("el");
+      languages.add("hu");
+      languages.add("it");
+      languages.add("lv");
+      languages.add("lt");
+      languages.add("mk");
+      languages.add("no");
+      languages.add("pl");
+      languages.add("pt");
+      languages.add("ro");
+      languages.add("ru");
+      languages.add("sr");
+      languages.add("sk");
+      languages.add("sl");
+      languages.add("es");
+      languages.add("sv");
+      languages.add("tr");
+      languages.add("uk");
+  }
+
+  public static ArrayList<String> getAllSupportedLangagesCode() {
+      return languages;
+  }
 }

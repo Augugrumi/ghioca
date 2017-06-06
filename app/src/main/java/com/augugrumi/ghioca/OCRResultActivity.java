@@ -26,9 +26,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -105,24 +103,18 @@ public class OCRResultActivity extends AppCompatActivity
             refreshResultView();
         }
 
-        Locale[] locales = Locale.getAvailableLocales();
-        Set<String> localcountries=new HashSet<>();
-        for(Locale l:locales) {
-            localcountries.add(l.getDisplayLanguage());
+        ArrayList<String> supportedLanguages = Language.getAllSupportedLangagesCode();
+        final ArrayList<String> languages = new ArrayList<>();
+        for (String langCode : supportedLanguages) {
+            languages.add(new Locale(langCode).getDisplayLanguage(Locale.getDefault()));
         }
-        final ArrayList<String> languages= new ArrayList<>();
-        languages.addAll(localcountries);
         Collections.sort(languages);
-        languages.add(0, "select the language!");
+        languages.add(0, getResources().getString(R.string.select_language));
 
-        ArrayAdapter<String> adapter  = new ArrayAdapter<String>(
+        final ArrayAdapter<String> adapter  = new ArrayAdapter<String>(
                 this,R.layout.spinner_item, languages);
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         languagesSpinner.setAdapter(adapter);
-        // FIXME select english as default
-        languagesSpinner.setSelection(
-                adapter.getPosition(Locale.getDefault().getDisplayCountry(new Locale("en")))
-        );
         languagesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             private HashMap<String, String> languagesMap = null;
@@ -130,21 +122,21 @@ public class OCRResultActivity extends AppCompatActivity
             private void initMaps() {
                 if(languagesMap == null) {
                     languagesMap = new HashMap<String, String>();
-                    Locale[] locales = Locale.getAvailableLocales();
-                    String display;
-                    String code;
-                    for (Locale l : locales) {
-                        display = l.getDisplayLanguage();
-                        code = l.getLanguage();
-                        if (languagesMap.get(display) == null)
-                            languagesMap.put(display, code);
+                    ArrayList<String> supportedLanguages = Language.getAllSupportedLangagesCode();
+                    for (String langCode : supportedLanguages) {
+                        languagesMap.put(new Locale(langCode).getDisplayLanguage(Locale.getDefault()),
+                                langCode);
+                        Log.i("PROVA_LANG", new Locale(langCode).getDisplayLanguage(Locale.getDefault()));
                     }
+                    /*languages.remove(0);
+                    adapter.notifyDataSetChanged();*/
                 }
             }
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
                 initMaps();
+                boolean removed = false;
                 if (position != 0) {
                     if (alreadyTranslatedText.get(position) == null) {
                         // Translation
@@ -153,16 +145,13 @@ public class OCRResultActivity extends AppCompatActivity
                             public void onSuccess(String result) {
                                 Log.i("ONSUCCESS", "YANDEX2");
                                 //description = result;
-
                                 alreadyTranslatedText.append(position, result);
                                 updateView(result);
                             }
 
                             @Override
                             public void onStart() {
-
                                 Log.i("START", "YANDEX2");
-
                             }
 
                             @Override
@@ -174,21 +163,24 @@ public class OCRResultActivity extends AppCompatActivity
                             }
                         };
 
-                        Log.i("INFO_TRANSLATION", languagesMap.get(languages.get(position)));
-
-                        String l = languagesMap.get(languages.get(position));
-                        if (l == null)
-                            l = "something";
                         TranslateUtility.translateWithYandex(text.toString(),
-                                Language.fromString(l),
+                                Language.fromString(languagesMap.get(languages.get(position))),
                                 yandexListener);
                     } else {
-
                         updateView(alreadyTranslatedText.get(position));
+                    }
+
+                    if (languages.get(0).equals(getResources().getString(R.string.select_language))) {
+                        languages.remove(0);
+                        adapter.notifyDataSetChanged();
+                        removed = true;
                     }
                 }
 
-                languagesSpinner.setSelection(position);
+                if (removed)
+                    languagesSpinner.setSelection(position-1);
+                else
+                    languagesSpinner.setSelection(position);
             }
 
             private int stringToPosition(String lang) {
