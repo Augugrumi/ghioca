@@ -158,6 +158,7 @@ public class OCRResultActivity extends AppCompatActivity
                         };
 
                         Log.i("INFO_TRANSLATION", languages.get(position));
+                        Log.i("INFO_TRANSLATION", Language.fromString(languages.get(position)).toString());
 
                         TranslateUtility.translateWithYandex(text.toString(),
                                 Language.fromString(languages.get(position)),
