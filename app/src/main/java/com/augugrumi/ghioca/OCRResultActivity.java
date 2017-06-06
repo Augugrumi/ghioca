@@ -28,7 +28,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 import butterknife.BindView;
@@ -125,9 +124,27 @@ public class OCRResultActivity extends AppCompatActivity
                 adapter.getPosition(Locale.getDefault().getDisplayCountry(new Locale("en")))
         );
         languagesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            private HashMap<String, String> languagesMap = null;
+
+            private void initMaps() {
+                if(languagesMap == null) {
+                    languagesMap = new HashMap<String, String>();
+                    Locale[] locales = Locale.getAvailableLocales();
+                    String display;
+                    String code;
+                    for (Locale l : locales) {
+                        display = l.getDisplayLanguage();
+                        code = l.getLanguage();
+                        if (languagesMap.get(display) == null)
+                            languagesMap.put(display, code);
+                    }
+                }
+            }
+
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-
+                initMaps();
                 if (position != 0) {
                     if (alreadyTranslatedText.get(position) == null) {
                         // Translation
@@ -157,11 +174,13 @@ public class OCRResultActivity extends AppCompatActivity
                             }
                         };
 
-                        Log.i("INFO_TRANSLATION", languages.get(position));
-                        Log.i("INFO_TRANSLATION", Language.fromString(languages.get(position)).toString());
+                        Log.i("INFO_TRANSLATION", languagesMap.get(languages.get(position)));
 
+                        String l = languagesMap.get(languages.get(position));
+                        if (l == null)
+                            l = "something";
                         TranslateUtility.translateWithYandex(text.toString(),
-                                Language.fromString(languages.get(position)),
+                                Language.fromString(l),
                                 yandexListener);
                     } else {
 
