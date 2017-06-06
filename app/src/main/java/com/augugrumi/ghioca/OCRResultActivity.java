@@ -137,7 +137,8 @@ public class OCRResultActivity extends AppCompatActivity
             public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
                 initMaps();
                 boolean removed = false;
-                if (position != 0) {
+                if (position != 0 ||
+                        (position == 0 && !languages.get(0).equals(getResources().getString(R.string.select_language)))) {
                     if (alreadyTranslatedText.get(position) == null) {
                         // Translation
                         TranslateListener yandexListener = new TranslateListener() {
