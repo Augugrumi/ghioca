@@ -15,6 +15,7 @@ import com.augugrumi.ghioca.listener.ImaggaReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.TranslateListener;
 import com.augugrumi.ghioca.listener.WatsonReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener;
+import com.augugrumi.ghioca.utility.MyPermissionChecker;
 import com.augugrumi.ghioca.utility.NetworkingUtility;
 import com.augugrumi.ghioca.utility.SearchingUtility;
 import com.augugrumi.ghioca.utility.TranslateUtility;
@@ -113,6 +114,7 @@ public class ImageSearchingDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MyPermissionChecker.checkPermissions(getActivity());
         setRetainInstance(true);
         results = new ArrayList<>();
         description = "";

@@ -13,6 +13,7 @@ import com.augugrumi.ghioca.asyncTask.asynkTaskResult.FreeOcrSpaceOCRResult;
 import com.augugrumi.ghioca.listener.AzureOcrSearchListener;
 import com.augugrumi.ghioca.listener.FreeOcrSpaceOCRListener;
 import com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener;
+import com.augugrumi.ghioca.utility.MyPermissionChecker;
 import com.augugrumi.ghioca.utility.NetworkingUtility;
 import com.augugrumi.ghioca.utility.SavingUtility;
 import com.augugrumi.ghioca.utility.SearchingUtility;
@@ -90,6 +91,7 @@ public class OCRDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MyPermissionChecker.checkPermissions(getActivity());
         setRetainInstance(true);
         text = new ArrayList<>();
         language = "";
