@@ -60,4 +60,36 @@ public class SharedPreferencesManager {
         editor.putInt(SEARCH_PREFERENCE, choice.ordinal());
         editor.apply();
     }
+
+    public static final int TESTER_MAX_PHOTO_NUMBER = 15;
+    public static final String PHOTOS = "testerPhotosMaxNumber";
+
+    public static void decrementPhotoNumber() {
+        Context context = MyApplication.getAppContext();
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
+        Log.i("SHARED_PREFERENCES_MAN", "remaining--");
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(PHOTOS, getRemainingPhotoNumber() - 1);
+        editor.apply();
+    }
+
+    public static int getRemainingPhotoNumber() {
+        Context context = MyApplication.getAppContext();
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
+
+        int remaining = sharedPref.getInt(PHOTOS, -100);
+
+        if (remaining == -100) {
+            remaining = TESTER_MAX_PHOTO_NUMBER;
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt(PHOTOS, TESTER_MAX_PHOTO_NUMBER);
+            editor.apply();
+        }
+
+        Log.i("SHARED_PREFERENCES_MAN", "remaining:" + remaining);
+
+        return remaining;
+    }
 }
