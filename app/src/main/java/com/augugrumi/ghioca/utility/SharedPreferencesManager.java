@@ -65,7 +65,7 @@ public class SharedPreferencesManager {
     /**
      * TESTER THINGS
      */
-    public static final int TESTER_MAX_PHOTO_NUMBER = 15;
+    public static final int TESTER_MAX_PHOTO_NUMBER = 7;
     public static final String PHOTOS = "testerPhotosMaxNumber";
 
     public static void decrementPhotoNumber() {

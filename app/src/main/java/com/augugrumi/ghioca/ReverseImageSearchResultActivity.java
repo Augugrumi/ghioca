@@ -18,6 +18,7 @@ import com.augugrumi.ghioca.listener.AzureReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.GoogleReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.ImaggaReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.WatsonReverseImageSearchListener;
+import com.augugrumi.ghioca.utility.SharedPreferencesManager;
 import com.facebook.CallbackManager;
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.pchmn.materialchips.ChipView;
@@ -321,8 +322,13 @@ public class ReverseImageSearchResultActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        if (SharedPreferencesManager.getRemainingPhotoNumber()<=0) {
+            Intent i = new Intent(this, SplashActivity.class);
+            startActivity(i);
+        } else {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+        }
     }
 
     public String getDescription() {

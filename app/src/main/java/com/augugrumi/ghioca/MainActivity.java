@@ -95,11 +95,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (SharedPreferencesManager.getRemainingPhotoNumber()<=0) {
-            Intent i = new Intent(this, SplashActivity.class);
-            startActivity(i);
-        }
-
         //Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
