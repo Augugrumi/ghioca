@@ -127,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setUpDrawerMenu();
-
     }
 
     @Override
@@ -149,7 +148,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         if (!permissionsToRequest.isEmpty()) {
-            ActivityCompat.requestPermissions(this, permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
+            ActivityCompat.requestPermissions(this,
+                    permissionsToRequest.toArray(new String[permissionsToRequest.size()]),
+                    REQUEST_CAMERA_PERMISSIONS);
         } else addCamera();
     }
 
@@ -240,13 +241,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults.length != 0) {
-            try{
-                addCamera();
-            } catch (SecurityException e){
-                e.printStackTrace();
+        final String[] p = {
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE};
+
+        final List<String> permissionsToRequest = new ArrayList<>();
+        for (String permission : p) {
+            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(permission);
             }
         }
+        if (permissionsToRequest.isEmpty())
+            addCamera();
     }
 
     @RequiresPermission(Manifest.permission.CAMERA)

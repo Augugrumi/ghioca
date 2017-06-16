@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.augugrumi.ghioca.utility.MyPermissionChecker;
 import com.augugrumi.ghioca.utility.NetworkingUtility;
 
 import butterknife.BindView;
@@ -33,7 +32,7 @@ public class WiFiFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MyPermissionChecker.checkPermissions(getActivity());
+        //MyPermissionChecker.checkPermissions(getActivity());
         setRetainInstance(true);
         setCancelable(false);
     }
