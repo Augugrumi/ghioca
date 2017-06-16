@@ -26,7 +26,9 @@ import it.polpetta.libris.image.google.contract.IGoogleImageSearchResult;
 import it.polpetta.libris.image.ibm.contract.IIBMImageSearchResult;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 
@@ -42,7 +44,7 @@ public class ImageSearchingDialogFragment extends DialogFragment {
 
     public static interface ImageSearchingStatusCallback {
         void onPreExecute();
-        void onPostExecute(String description, ArrayList<String> tags);
+        void onPostExecute(String description, ArrayList<String> tags, Map<String, ArrayList<String>> map);
         void onError();
     }
 
@@ -71,7 +73,7 @@ public class ImageSearchingDialogFragment extends DialogFragment {
     // TEXT TRANSLATION
 
     private void onTranslateSuccess() {
-        callback.onPostExecute(description, results);
+        callback.onPostExecute(description, results, searcherResult);
     }
 
     private void onTranslateFailure() {
@@ -92,6 +94,7 @@ public class ImageSearchingDialogFragment extends DialogFragment {
     private ArrayList<String> results;
     private String description;
     private String url;
+    private Map<String, ArrayList<String>> searcherResult;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -117,6 +120,7 @@ public class ImageSearchingDialogFragment extends DialogFragment {
         MyPermissionChecker.checkPermissions(getActivity());
         setRetainInstance(true);
         results = new ArrayList<>();
+        searcherResult = new HashMap<>();
         description = "";
 
     }
@@ -169,6 +173,7 @@ public class ImageSearchingDialogFragment extends DialogFragment {
 
     public void search() {
         callback.onPreExecute();
+
         if (NetworkingUtility.isConnectivityAvailable()) {
             url = getActivity().getIntent().getStringExtra(DefaultUploadingListener.URL_INTENT_EXTRA);
             googleListener = new GoogleReverseImageSearchListener() {
@@ -179,8 +184,12 @@ public class ImageSearchingDialogFragment extends DialogFragment {
                         if (res != null)
                             if (!results.contains(res))
                                 results.add(res);
+                        ArrayList<String> forTest = new ArrayList<>();
+                        forTest.add(res);
+                        searcherResult.put("GOOGLE", forTest);
                     }
                     onSearcherSuccess();
+                    searcherResult.put("GOOGLE", new ArrayList<String>());
                     Log.i("SUCCESS", "GOOGLE");
                 }
 
@@ -209,7 +218,11 @@ public class ImageSearchingDialogFragment extends DialogFragment {
                             for (String tag : tags)
                                 if (!results.contains(tag))
                                     results.add(tag);
+                        ArrayList<String> forTest = new ArrayList<>();
+                        forTest.add(res);
+                        forTest.addAll(tags);
                         description = result.getDescription();
+                        searcherResult.put("AZURE", forTest);
                     }
                     onSearcherSuccess();
                     Log.i("SUCCESS", "AZURE");
@@ -241,7 +254,11 @@ public class ImageSearchingDialogFragment extends DialogFragment {
                             for (String tag : tags)
                                 if (!results.contains(tag))
                                     results.add(tag);
-
+                        ArrayList<String> forTest = new ArrayList<>();
+                        forTest.add(res);
+                        forTest.addAll(tags);
+                        forTest.add(description);
+                        searcherResult.put("WATSON", forTest);
                     }
                     onSearcherSuccess();
                     Log.i("SUCCESS", "WATSON");
@@ -273,6 +290,11 @@ public class ImageSearchingDialogFragment extends DialogFragment {
                             for (String tag : tags)
                                 if (!results.contains(tag))
                                     results.add(tag);
+                        ArrayList<String> forTest = new ArrayList<>();
+                        forTest.add(res);
+                        forTest.addAll(tags);
+                        forTest.add(description);
+                        searcherResult.put("IMAGGA", forTest);
                     }
                     onSearcherSuccess();
                     Log.i("SUCCESS", "IMAGGA");

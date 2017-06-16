@@ -2,6 +2,7 @@ package com.augugrumi.ghioca;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
@@ -23,7 +24,9 @@ import com.pchmn.materialchips.ChipView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import butterknife.BindView;
@@ -67,6 +70,7 @@ public class ReverseImageSearchResultActivity extends AppCompatActivity
     private ArrayList<String> selectedChips;
     private String description;
     private ProgressDialog searchProgressDialog;
+    private Map<String, ArrayList<String>> map;
     CallbackManager callbackManager;
     DialogFragment newFragment;
 
@@ -81,7 +85,7 @@ public class ReverseImageSearchResultActivity extends AppCompatActivity
         url = getIntent().getExtras().getString(URL_INTENT_EXTRA);
         path = getIntent().getStringExtra(FILE_PATH_INTENT_EXTRA);
         Picasso.with(this).load("file://" + path).into(mainPhoto);
-
+        map = new HashMap<>();
         // END OF INITIALIZATIONS
 
         shareFragment = new ShareFragmentImageRecognition();
@@ -224,7 +228,41 @@ public class ReverseImageSearchResultActivity extends AppCompatActivity
     //TODO beautify the fragment
     @OnClick(R.id.share_fab)
     public void share() {
-        shareFragment.show(getSupportFragmentManager(), "dialog");
+        //shareFragment.show(getSupportFragmentManager(), "dialog");
+        //Intent gmailIntent = new Intent();
+        Intent gmailIntent = new Intent(Intent.ACTION_SEND);
+        gmailIntent.setType("image/*");
+        gmailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"augugrumi@gmail.com"});
+        gmailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "TEST GhiO-Ca");
+
+        StringBuilder toShare = new StringBuilder();
+
+        toShare.append(description)
+                .append("\n")
+                .append("$SELECTED:");
+
+        for (String s: resultsToShare) {
+            toShare.append(s);
+            toShare.append(",");
+        }
+
+        toShare.append("\n")
+               .append("$RESULTS:")
+                .append("\n");
+
+        for (String s: map.keySet()) {
+            toShare.append("$")
+                   .append(s)
+                   .append(":");
+            for (String t: map.get(s)) {
+                toShare.append(t);
+                toShare.append(",");
+            }
+            toShare.append("\n");
+        }
+        gmailIntent.putExtra(Intent.EXTRA_TEXT, toShare.toString());
+        gmailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
+        startActivity(Intent.createChooser(gmailIntent, getString(R.string.share_image)));
     }
 
     @Override
@@ -237,7 +275,7 @@ public class ReverseImageSearchResultActivity extends AppCompatActivity
     public void onPreExecute() {}
 
     @Override
-    public void onPostExecute(String description, final ArrayList<String> tags) {
+    public void onPostExecute(String description, ArrayList<String> tags, Map<String, ArrayList<String>> map) {
         FragmentManager fm = getSupportFragmentManager();
         searchingFragment = (ImageSearchingDialogFragment) fm
                 .findFragmentByTag(ImageSearchingDialogFragment.TAG_IMAGE_SEARCHING_FRAGMENT);
@@ -253,7 +291,7 @@ public class ReverseImageSearchResultActivity extends AppCompatActivity
 
         addResults(tags);
         refreshResultView();
-
+        this.map = map;
     }
 
     @Override
@@ -302,6 +340,10 @@ public class ReverseImageSearchResultActivity extends AppCompatActivity
         savedInstanceState.putString("description", description);
         savedInstanceState.putStringArrayList("results", results);
         savedInstanceState.putStringArrayList("resultsToShare", resultsToShare);
+        savedInstanceState.putStringArrayList("GOOGLE", map.get("GOOGLE"));
+        savedInstanceState.putStringArrayList("AZURE", map.get("AZURE"));
+        savedInstanceState.putStringArrayList("IMMAGA", map.get("IMAGGA"));
+        savedInstanceState.putStringArrayList("WATSON", map.get("WATSON"));
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -311,5 +353,10 @@ public class ReverseImageSearchResultActivity extends AppCompatActivity
         results = savedInstanceState.getStringArrayList("results");
         resultsToShare = savedInstanceState.getStringArrayList("resultsToShare");
         description = savedInstanceState.getString("description");
+        map = new HashMap<>();
+        map.put("GOOGLE", savedInstanceState.getStringArrayList("GOOGLE"));
+        map.put("AZURE", savedInstanceState.getStringArrayList("AZURE"));
+        map.put("IMAGGA", savedInstanceState.getStringArrayList("IMAGGA"));
+        map.put("WATSON", savedInstanceState.getStringArrayList("WATSON"));
     }
 }

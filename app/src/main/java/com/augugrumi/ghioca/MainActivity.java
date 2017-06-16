@@ -94,6 +94,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (SharedPreferencesManager.getRemainingPhotoNumber()<=0) {
+            Intent i = new Intent(this, SplashActivity.class);
+            startActivity(i);
+        }
+
         //Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -204,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
                             final String filePath = MyApplication.appFolderPath +
                                     File.separator + name + ".jpg";
                             setUpUpload(filePath);
+                            SharedPreferencesManager.decrementPhotoNumber();
                             if (!hasCamera2(MainActivity.this) && Camera1Manager.getCameraInstance() != null) {
                                 Camera1Manager.getCameraInstance().startPreview();
                             }

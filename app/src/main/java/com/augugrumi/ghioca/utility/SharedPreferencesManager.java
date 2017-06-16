@@ -61,6 +61,10 @@ public class SharedPreferencesManager {
         editor.apply();
     }
 
+
+    /**
+     * TESTER THINGS
+     */
     public static final int TESTER_MAX_PHOTO_NUMBER = 15;
     public static final String PHOTOS = "testerPhotosMaxNumber";
 

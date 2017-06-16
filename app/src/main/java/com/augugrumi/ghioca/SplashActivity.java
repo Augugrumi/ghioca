@@ -13,6 +13,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
+
+import com.augugrumi.ghioca.utility.SharedPreferencesManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,31 +30,37 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final String[] permissions = {
-                Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE};
-
-        final List<String> permissionsToRequest = new ArrayList<>();
-        for (String permission : permissions) {
-            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                permissionsToRequest.add(permission);
-            }
-        }
-
-        try {
-            File filename = new File(MyApplication.appFolderPath + "/ghioca.log");
-            filename.createNewFile();
-            String cmd = "logcat -d -f" + filename.getAbsolutePath();
-            Runtime.getRuntime().exec(cmd);
-        } catch (Exception e) {}
-
-        if (!permissionsToRequest.isEmpty()) {
-            ActivityCompat.requestPermissions(this, permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
+        if (SharedPreferencesManager.getRemainingPhotoNumber() <=0) {
+            Toast.makeText(this, "Hai finito le tue foto! ty:)", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
+
+            final String[] permissions = {
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE};
+
+            final List<String> permissionsToRequest = new ArrayList<>();
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                    permissionsToRequest.add(permission);
+                }
+            }
+
+            try {
+                File filename = new File(MyApplication.appFolderPath + "/ghioca.log");
+                filename.createNewFile();
+                String cmd = "logcat -d -f" + filename.getAbsolutePath();
+                Runtime.getRuntime().exec(cmd);
+            } catch (Exception e) {
+            }
+
+            if (!permissionsToRequest.isEmpty()) {
+                ActivityCompat.requestPermissions(this, permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
+            } else {
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
         }
     }
 
