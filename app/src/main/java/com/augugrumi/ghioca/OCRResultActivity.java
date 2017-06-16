@@ -146,8 +146,10 @@ public class OCRResultActivity extends AppCompatActivity
                             public void onSuccess(String result) {
                                 Log.i("ONSUCCESS", "YANDEX2");
                                 //description = result;
-                                alreadyTranslatedText.append(position, result);
-                                updateView(result);
+
+                                String sanitized = result.substring(1, result.length() - 1);
+                                alreadyTranslatedText.append(position, sanitized);
+                                updateView(sanitized);
                             }
 
                             @Override
@@ -200,6 +202,8 @@ public class OCRResultActivity extends AppCompatActivity
     private void updateView(String newText) {
 
         textView.setText(newText);
+        text.clear();
+        text.add(newText);
 
     }
 
