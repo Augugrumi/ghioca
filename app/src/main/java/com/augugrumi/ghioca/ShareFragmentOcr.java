@@ -19,8 +19,7 @@ public class ShareFragmentOcr extends ShareFragment {
         StringBuilder toShare = new StringBuilder(description);
         toShare.append("\n");
         for (String res : results) {
-            toShare.append(WordUtils.uncapitalize((WordUtils.capitalize(res)).replaceAll(" ", "")));
-            toShare.append(" ");
+            toShare.append(WordUtils.uncapitalize((WordUtils.capitalize(res))));
         }
 
         toShare.append("#GhioCa");
