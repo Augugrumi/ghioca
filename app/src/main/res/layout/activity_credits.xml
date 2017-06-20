@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="#FFFFFFFF"
-        tools:context="com.augugrumi.ghioca.CreditsActivity">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:background="#FFFFFFFF"
+            tools:context="com.augugrumi.ghioca.CreditsActivity">
+
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:orientation="vertical"
-                  android:layout_marginTop="60dp">
+                  android:padding="20dp">
 
         <TextView
                 android:text="@string/augugrumi_team"
@@ -24,8 +23,8 @@
         <TextView
                 android:text="@string/creators"
                 android:textAlignment="center"
-                android:textColor="@color/primary_text"
-                android:textSize="25sp"
+                android:textColor="@color/material_drawer_secondary_text"
+                android:textSize="20sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:id="@+id/textView3"/>
         <TextView
@@ -36,7 +35,7 @@
                 android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="80dp"/>
+                android:layout_marginTop="30dp"/>
 
         <LinearLayout android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
@@ -47,7 +46,7 @@
                     android:id="@+id/facebook"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp" />
+                    android:layout_margin="8dp"/>
 
             <android.support.v7.widget.AppCompatImageButton
                     android:id="@+id/github"
@@ -59,5 +58,23 @@
                     android:layout_margin="8dp"
             />
         </LinearLayout>
+
+        <TextView
+                android:text="@string/thank"
+                android:textAlignment="center"
+                android:textColor="@color/primary_text"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"/>
+        <TextView
+                android:text="@string/testers"
+                android:textAlignment="center"
+                android:textColor="@color/material_drawer_secondary_text"
+                android:textSize="18sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
     </LinearLayout>
-</LinearLayout>
+</ScrollView>
