@@ -181,6 +181,11 @@ public class ImageSearchingDialogFragment extends DialogFragment {
                                 results.add(res);
                     }
                     onSearcherSuccess();
+                    for(String s : results) {
+                        if (s == null || s.trim().equals("")) {
+                            results.remove(s);
+                        }
+                    }
                     Log.i("SUCCESS", "GOOGLE");
                 }
 
@@ -210,6 +215,11 @@ public class ImageSearchingDialogFragment extends DialogFragment {
                                 if (!results.contains(tag))
                                     results.add(tag);
                         description = result.getDescription();
+                    }
+                    for(String s : results) {
+                        if (s == null || s.trim().equals("")) {
+                            results.remove(s);
+                        }
                     }
                     onSearcherSuccess();
                     Log.i("SUCCESS", "AZURE");
@@ -243,6 +253,11 @@ public class ImageSearchingDialogFragment extends DialogFragment {
                                     results.add(tag);
 
                     }
+                    for(String s : results) {
+                        if (s == null || s.trim().equals("")) {
+                            results.remove(s);
+                        }
+                    }
                     onSearcherSuccess();
                     Log.i("SUCCESS", "WATSON");
                 }
@@ -273,6 +288,11 @@ public class ImageSearchingDialogFragment extends DialogFragment {
                             for (String tag : tags)
                                 if (!results.contains(tag))
                                     results.add(tag);
+                    }
+                    for(String s : results) {
+                        if (s == null || s.trim().equals("")) {
+                            results.remove(s);
+                        }
                     }
                     onSearcherSuccess();
                     Log.i("SUCCESS", "IMAGGA");
