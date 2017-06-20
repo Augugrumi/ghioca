@@ -20,8 +20,10 @@
     <string name="select_picture">Seleziona immagine</string>
     <string name="share">Condividi&#8230;</string>
     <string name="error">Errore</string>
-    <string name="error_sub">Si è verificcato un problema</string>
+    <string name="error_sub">Si è verificato un problema</string>
     <string name="find_proj">Puoi trovare il progetto su</string>
     <string name="translate_in">Traduci in…</string>
     <string name="select_language">seleziona la lingua!</string>
+
+    <string name="thank">Grazie ai nostri tester</string>
 </resources>
