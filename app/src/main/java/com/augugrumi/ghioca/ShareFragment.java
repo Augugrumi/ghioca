@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.augugrumi.ghioca.utility.AppInstallationChecker;
+import com.augugrumi.ghioca.utility.MyPermissionChecker;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
@@ -67,6 +68,7 @@ public abstract class ShareFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MyPermissionChecker.checkPermissions(getActivity());
         setRetainInstance(true);
     }
 

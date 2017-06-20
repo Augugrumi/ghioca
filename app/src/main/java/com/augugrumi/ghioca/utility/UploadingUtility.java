@@ -40,6 +40,7 @@ public class UploadingUtility {
             public void onFileUploadSuccess(final FPFile fpFile) {
                 Log.i("provaupload", "6" + fpFile.getUrl().toString());
                 Log.i("provaupload", "7 url->" + fpFile.getUrl().toString());
+                uploadFragment.dismiss();
                 listener.onFinish(fpFile.getUrl());
             }
 
@@ -53,7 +54,6 @@ public class UploadingUtility {
             @Override
             public void onFileUploadProgress(Uri uri, float progress) {
                 Log.i("provaupload", "--progress" + progress);
-                uploadFragment.dismiss();
                 listener.onProgressUpdate(Math.round(progress));
             }
         });

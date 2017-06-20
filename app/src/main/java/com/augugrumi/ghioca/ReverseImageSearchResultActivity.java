@@ -147,6 +147,14 @@ public class ReverseImageSearchResultActivity extends AppCompatActivity
                 // Put Chips
                 final String resultToDisplay = results.get(i);
                 final ChipView chip = new ChipView(this, null);
+
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                params.setMargins(0, 0, 20, 10);
+                chip.setLayoutParams(params);
+
                 //chip.setDeletable(true);
                 //chip.setDeleteIconColor(getResources().getColor(android.R.color.white));
                 if (resultsToShare.contains(resultToDisplay)) {

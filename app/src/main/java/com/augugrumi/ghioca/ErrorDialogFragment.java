@@ -28,6 +28,7 @@ public class ErrorDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //MyPermissionChecker.checkPermissions(getActivity());
         setRetainInstance(true);
     }
 

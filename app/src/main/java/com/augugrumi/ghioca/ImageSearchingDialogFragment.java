@@ -15,6 +15,7 @@ import com.augugrumi.ghioca.listener.ImaggaReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.TranslateListener;
 import com.augugrumi.ghioca.listener.WatsonReverseImageSearchListener;
 import com.augugrumi.ghioca.listener.defaultimplementation.DefaultUploadingListener;
+import com.augugrumi.ghioca.utility.MyPermissionChecker;
 import com.augugrumi.ghioca.utility.NetworkingUtility;
 import com.augugrumi.ghioca.utility.SearchingUtility;
 import com.augugrumi.ghioca.utility.TranslateUtility;
@@ -113,6 +114,7 @@ public class ImageSearchingDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MyPermissionChecker.checkPermissions(getActivity());
         setRetainInstance(true);
         results = new ArrayList<>();
         description = "";
@@ -159,7 +161,6 @@ public class ImageSearchingDialogFragment extends DialogFragment {
             }
         };
 
-        // FIXME the translation should be related to the phone language, with Locale.getDefault().getDisplayLanguage()
         TranslateUtility.translateWithYandex(description,
             com.augugrumi.ghioca.translation.language.Language.fromString(Locale.getDefault().getLanguage()),
             yandexListener);
@@ -180,6 +181,11 @@ public class ImageSearchingDialogFragment extends DialogFragment {
                                 results.add(res);
                     }
                     onSearcherSuccess();
+                    for(String s : results) {
+                        if (s == null || s.trim().equals("")) {
+                            results.remove(s);
+                        }
+                    }
                     Log.i("SUCCESS", "GOOGLE");
                 }
 
@@ -209,6 +215,11 @@ public class ImageSearchingDialogFragment extends DialogFragment {
                                 if (!results.contains(tag))
                                     results.add(tag);
                         description = result.getDescription();
+                    }
+                    for(String s : results) {
+                        if (s == null || s.trim().equals("")) {
+                            results.remove(s);
+                        }
                     }
                     onSearcherSuccess();
                     Log.i("SUCCESS", "AZURE");
@@ -242,6 +253,11 @@ public class ImageSearchingDialogFragment extends DialogFragment {
                                     results.add(tag);
 
                     }
+                    for(String s : results) {
+                        if (s == null || s.trim().equals("")) {
+                            results.remove(s);
+                        }
+                    }
                     onSearcherSuccess();
                     Log.i("SUCCESS", "WATSON");
                 }
@@ -272,6 +288,11 @@ public class ImageSearchingDialogFragment extends DialogFragment {
                             for (String tag : tags)
                                 if (!results.contains(tag))
                                     results.add(tag);
+                    }
+                    for(String s : results) {
+                        if (s == null || s.trim().equals("")) {
+                            results.remove(s);
+                        }
                     }
                     onSearcherSuccess();
                     Log.i("SUCCESS", "IMAGGA");
